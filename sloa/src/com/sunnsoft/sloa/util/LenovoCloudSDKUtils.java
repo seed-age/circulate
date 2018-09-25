@@ -397,6 +397,7 @@ public class LenovoCloudSDKUtils {
 		Integer totalSize = jsonObject.getInteger("total_size");
 		Integer contentSize = jsonObject.getInteger("content_size");
 		JSONArray jsonArray = jsonObject.getJSONArray("content");
+		
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		List<Map<String, Object>> contents = new ArrayList<Map<String, Object>>();
