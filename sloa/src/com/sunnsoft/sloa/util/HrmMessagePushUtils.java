@@ -21,8 +21,9 @@ import net.sf.json.JSONObject;
  */
 public class HrmMessagePushUtils {
 
-	public static final String ADD_URL = "http://oa-test.seedland.cc/social/PushRemindWebService.jsp";
-
+	//public static final String ADD_URL = "http://oa-test.seedland.cc/social/PushRemindWebService.jsp";
+	public static final String ADD_URL = "https://oa.seedland.cc/social/PushRemindWebService.jsp";
+	
 	/**
 	 * 消息推送! --> 确认时提醒所有人
 	 * 

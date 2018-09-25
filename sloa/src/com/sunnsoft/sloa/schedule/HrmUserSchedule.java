@@ -37,10 +37,10 @@ public class HrmUserSchedule {
 	@PostConstruct
 	private void init() {
 		System.out.println("初始化OA联系人!");
-		//this.doJob();
+		this.doJob();
 	}
 	
-	/*@Scheduled(cron = "0 30 2 * * ?")*/
+	@Scheduled(cron = "0 30 2 * * ?")
 	public void doJob() {
 		if (!scheduleOn) {// 开关没打开则不跑定时任务。
 			return;
