@@ -193,9 +193,9 @@ public class LenovoCloudSDKUtils {
 	public static Map<String, Object> getSessionAndS(String longId)
 			throws ParseException, UnsupportedEncodingException, IOException, NoSuchAlgorithmException {
 		//生产
-		//String url = "http://box.seedland.cc/v2/sso/token/";
+		String url = "http://box.seedland.cc/v2/sso/token/";
 		//测试
-		String url = "http://box-test.seedland.cc/v2/sso/token/";
+//		String url = "http://box-test.seedland.cc/v2/sso/token/";
 		Map<String, Object> params = new HashMap<>();
 		String userSlug = longId; // 当前用户的登录名
 		//String userSlug = ""; // 当前用户的登录名
@@ -246,8 +246,8 @@ public class LenovoCloudSDKUtils {
 		//测试
 		String url = "http://box-test.seedland.cc/v2/sso/token/";
 		Map<String, Object> params = new HashMap<>();
-		//String userSlug = getLoginId(); // 当前用户的登录名
-		String userSlug = "limin5"; // 当前用户的登录名
+		String userSlug = getLoginId(); // 当前用户的登录名
+//		String userSlug = "limin5"; // 测试时使用
 		//System.out.println("当前用户的登录名: " + userSlug);
 		Long timestamp = System.currentTimeMillis(); // 当前时间戳
 		String magic = "LENOVOCLOUD";
@@ -308,9 +308,9 @@ public class LenovoCloudSDKUtils {
 	public static String getAPPBoxSession(UserMssage mssage, int type)
 			throws NoSuchAlgorithmException, UnsupportedEncodingException, IOException {
 		//生产
-//		String url = "http://box.seedland.cc/v2/sso/token/";
+		String url = "http://box.seedland.cc/v2/sso/token/";
 		//测试
-		String url = "http://box-test.seedland.cc/v2/sso/token/";
+//		String url = "http://box-test.seedland.cc/v2/sso/token/";
 		
 		Map<String, Object> params = new HashMap<>();
 		String userSlug = mssage.getLoginId(); // 当前用户的登录名
@@ -367,8 +367,10 @@ public class LenovoCloudSDKUtils {
 	public static String getAPPSearch(String session, String s, String path, String pathType, 
 			int pageRows, int page, String sort, String query)
 			throws NoSuchAlgorithmException, UnsupportedEncodingException, IOException {
+		// 生成
+		String url = "http://box.seedland.cc/v2/search/databox/" + path;
 		//测试
-		String url = "http://box-test.seedland.cc/v2/search/databox/" + path;
+//		String url = "http://box-test.seedland.cc/v2/search/databox/" + path;
 		
 		Map<String, Object> params = new HashMap<>();
 		params.put("path_type", pathType);
