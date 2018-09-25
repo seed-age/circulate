@@ -379,7 +379,7 @@ public class LenovoCloudSDKUtils {
 		params.put("sort", sort);
 		//params.put("query", query);
 		params.put("S", s);
-		 
+		
 		String sendGet = CloseableHttpClientUtils.sendGetAndHeader(url, session, query, params);
 		
 		//解析json格式的数据
