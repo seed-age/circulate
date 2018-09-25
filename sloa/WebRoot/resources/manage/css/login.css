@@ -1,0 +1,40 @@
+@charset "utf-8";
+/* CSS Document */
+/*=================================
+3G应用专区-后台管理系统
+dateTime: 2011-08-15
+author: Monny Pan
+=================================*/
+
+/*登录界面 start*/
+html,body{ background:#FFF; }
+.sjloginbox { width:350px; height:238px; margin:150px auto 0; background:url(../images/bg_login.jpg?123) 0 0 no-repeat; overflow:hidden; }
+.sjloginbox .cont1 {width:350px; height:75px; text-align:center; overflow:hidden;  }
+.sjloginbox .cont1 h2{ height:75px; line-height:9999px; overflow:hidden; }
+.sjloginbox .cont2 {width:320px; height:193px; padding:0px 10px 20px 20px; font-size:14px; text-align:left; }
+.sjloginbox .cont2 .a1{ height:23px; padding:16px 0 0 92px; }
+.sjloginbox .cont2 .a2{ height:23px; padding:13px 0 0 92px; _padding:11px 0 0 92px; }
+.sjloginbox .cont2 .a3{ height:23px; padding:6px 0 0 92px; _padding:6px 0 0 92px; }
+.sjloginbox .cont2 .intxt{ width:157px; padding:3px 5px 2px; overflow:hidden; height:18px; border:0; background:none; }
+.sjloginbox .cont2 .intxtv{ width:71px; padding:3px 5px 2px; overflow:hidden; height:18px; border:0; background:none; }
+.sjloginbox .cont2 .btnx{ width:310px; height:50px; padding-top:15px; }
+.sjloginbox .cont2 .btn_en{ display:block; width:76px; height:25px; margin-top:6px; *margin-top:20px; _margin-top:18px; margin-left:96px; background:url(../images/blank.gif) repeat; }
+.sjloginbox .cont2 .btn_ht{ display:block; width:60px; height:20px; position:absolute; right:0px; top:40px; line-height:9999px; overflow:hidden; }
+/*登录界面 end*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

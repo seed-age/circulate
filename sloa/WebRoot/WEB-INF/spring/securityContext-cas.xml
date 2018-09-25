@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:sec="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+              http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.xsd">
+
+	<sec:http auto-config="false" session-fixation-protection="newSession"
+		entry-point-ref="casProcessingFilterEntryPoint">
+		<sec:intercept-url pattern="/remoting/**"
+			access="ROLE_ANONYMOUS,ROLE_USER" />
+		<sec:intercept-url pattern="/login.htm"
+			access="ROLE_ANONYMOUS,ROLE_USER" />
+		<sec:intercept-url pattern="/validateCode.gif"
+			access="ROLE_ANONYMOUS,ROLE_USER" />
+		<sec:intercept-url pattern="/empty/**"
+			access="ROLE_ANONYMOUS,ROLE_USER" />
+		<sec:intercept-url pattern="/file/**"
+			access="ROLE_ANONYMOUS,ROLE_USER" />
+		<sec:intercept-url pattern="/css/**"
+			access="ROLE_ANONYMOUS,ROLE_USER" />
+		<sec:intercept-url pattern="/resources/**"
+			access="ROLE_ANONYMOUS,ROLE_USER" />
+		<sec:intercept-url pattern="/img/**"
+			access="ROLE_ANONYMOUS,ROLE_USER" />
+		<sec:intercept-url pattern="/**" access="ROLE_USER" />
+		<sec:intercept-url pattern="/*" access="ROLE_USER" />
+		<!--
+			<sec:form-login login-page="/login.htm"
+			authentication-failure-url="/login.htm?error=1"
+			default-target-url="/main.htm"/>
+		-->
+		<sec:concurrent-session-control
+			max-sessions="1" />
+		<sec:anonymous />
+		<sec:logout logout-success-url="${cas.logout.url}" />
+		<sec:remember-me />
+	</sec:http>
+
+	<sec:authentication-manager alias="authenticationManager" />
+
+	<bean id="serviceProperties" class="org.springframework.security.ui.cas.ServiceProperties">
+		<property name="service" value="${cas.service.url}" />
+		<property name="sendRenew" value="false" />
+	</bean>
+
+	<bean id="casProcessingFilter" class="org.springframework.security.ui.cas.CasProcessingFilter">
+		<sec:custom-filter position="CAS_PROCESSING_FILTER" />
+		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="authenticationFailureUrl" value="/cas-failed.htm" />
+		<property name="defaultTargetUrl" value="/" />
+	</bean>
+	<bean id="casProcessingFilterEntryPoint"
+		class="org.springframework.security.ui.cas.CasProcessingFilterEntryPoint">
+		<property name="loginUrl" value="${cas.login.url}" />
+		<property name="serviceProperties" ref="serviceProperties" />
+	</bean>
+	<bean id="casAuthenticationProvider"
+		class="org.springframework.security.providers.cas.CasAuthenticationProvider">
+		<sec:custom-authentication-provider />
+		<property name="userDetailsService" ref="userDetailService" />
+		<property name="serviceProperties" ref="serviceProperties" />
+		<property name="ticketValidator">
+			<bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+				<constructor-arg index="0" value="${cas.ticket.validate.url}" />
+			</bean>
+		</property>
+		<property name="key" value="an_id_for_this_auth_provider_only" />
+	</bean>
+
+	<bean id="loggerListener"
+		class="org.springframework.security.event.authentication.LoggerListener" />
+
+	<!--
+		<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+	-->
+	<!--
+		<property name="basename"
+		value="classpath:org/springframework/security/messages"/>
+	-->
+	<!--  </bean>-->
+
+	<sec:authentication-provider
+		user-service-ref="userDetailService">
+		<sec:password-encoder ref="passwordEncoder">
+			<sec:salt-source user-property="username" />
+		</sec:password-encoder>
+	</sec:authentication-provider>
+
+	<bean id="passwordEncoder"
+		class="org.springframework.security.providers.encoding.ShaPasswordEncoder">
+	</bean>
+
+	<bean id="userDetailService" class="com.sunnsoft.base.auth.SystemUserDetailService">
+		<property name="adminList" ref="adminList"></property>
+		<property name="daoHandler" ref="daoHandler" />
+	</bean>
+
+	<!--
+		<bean class="com.kingsys.hk.servlet.filter.ValidateCodeCheckFilter">
+	-->
+	<!--
+		<sec:custom-filter before="AUTHENTICATION_PROCESSING_FILTER "/>
+	-->
+	<!--
+		<property name="formLoginUrl"
+		value="/j_spring_security_check"></property>
+	-->
+	<!--
+		<property name="failRedirectUrl"
+		value="/Main/backend/login.jsp?error=2"></property>
+	-->
+	<!--  </bean>-->
+
+	<bean class="com.sunnsoft.servlet.filter.WebServiceCheckFilter">
+		<sec:custom-filter before="AUTHENTICATION_PROCESSING_FILTER " />
+		<property name="allowIps">
+			<list>
+				<value>192.168.3</value>
+				<value>127.0.0.1</value>
+			</list>
+		</property>
+		<property name="webServiceUrl" value="/remoting/**" />
+		<property name="failRedirectUrl" value="/login.htm?error=1"></property>
+	</bean>
+
+	<bean id="adminList" class="com.sunnsoft.util.auth.AdminList">
+		<property name="adminMap">
+			<map>
+				<entry key="xfsys" value="6d788de0b92eb847ed843990a2b1b2cb6533c6f4"></entry>
+			</map>
+		</property>
+	</bean>
+	<!--  <sec:authentication-manager alias="authenticationManager" />-->
+</beans>
+
+

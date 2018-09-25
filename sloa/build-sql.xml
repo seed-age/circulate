@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="runScript">
+
+	<property name="sql.driver" value="com.mysql.jdbc.Driver" />
+	<property name="sql.url" value="jdbc:mysql://${db.server}/${db.schema}" />
+	<property name="sql.user" value="${jdbc.username}" />
+	<property name="sql.pass" value="${jdbc.password}" />
+	<property name="lib.dir" value="${basedir}/WebRoot/WEB-INF/lib" />
+
+	<path id="classpath">
+
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+
+	</path>
+
+
+	<target name="runScript">
+		<sql driver="${sql.driver}" encoding="utf-8" classpathref="classpath" url="${sql.url}" userid="${sql.user}" password="${sql.pass}">
+			<transaction src="${basedir}/db/gzctzq.sql" />
+		</sql>
+	</target>
+
+</project>

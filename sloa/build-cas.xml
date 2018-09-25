@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="war" name="${project.name}">
+
+	<target name="init">
+
+		<property name="Name" value="${project.name}" />
+		<property name="name" value="${project.name}" />
+		<property name="version" value="0.7" />
+		<property name="year" value="2010" />
+
+		<echo message="----------- ${Name} ${version} [${year}] ------------" />
+
+		<property name="debug" value="off" />
+		<property name="optimize" value="on" />
+		<property name="deprecation" value="on" />
+
+		<!--    java源文件路径 -->
+
+		<property name="src.dir" value="${basedir}/src" />
+
+		<!--    jar包路径 -->
+		<property name="lib.dir" value="${basedir}/WebRoot/WEB-INF/lib" />
+
+		<!--    webapp路径 -->
+		<property name="webapp.dir" value="${basedir}/WebRoot" />
+		<property name="packages" value="com.westwind.*" />
+
+		<!--    准备源文件路径 -->
+		<property name="build.src" value="${basedir}/target/build" />
+
+		<!--    编译源文件路径 -->
+		<property name="build.dest" value="${basedir}/target/bin" />
+
+		<!--    准备webapp文件路径 -->
+		<property name="buildwar.dest" value="${basedir}/target/warsrc" />
+
+		<!--    准备javadoc文件路径 -->
+		<property name="build.javadocs" value="${basedir}/target/doc" />
+
+		<!--    打包jar文件路径 -->
+		<property name="jar.dest" value="${basedir}/target/jar" />
+
+		<!--    打包war文件路径 -->
+		<property name="war.dest" value="${basedir}/target/war" />
+
+		<!--    resin-home路径 -->
+		<!--   <property name="resin.home" value="C:\resin-pro-3.0.17"/> -->
+
+		<!--    tomcat-home路径 -->
+		<property name="tomcat.home" value="C:\tomcat-618"/>
+		<property name="tomcat.windows.service" value="tomcat-618"/>
+
+		<property name="wars.home" value="G:\project\wars-deploy"/>
+		<property name="themes.home" value="G:\project\themes"/>
+
+		<property name="j2eelib.dir" value="${basedir}/jeelib" />
+
+		<!--    classpath -->
+		<path id="classpath">
+
+			<fileset dir="${j2eelib.dir}">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar" />
+			</fileset>
+			<!--<pathelement location="lib/"/>-->
+		</path>
+
+		<filter token="year" value="${year}" />
+		<filter token="version" value="${version}" />
+		<filter token="date" value="${TODAY}" />
+		<filter token="log" value="true" />
+		<filter token="verbose" value="true" />
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Help on usage -->
+	<!-- =================================================================== -->
+	<target name="usage" depends="init">
+		<echo message="${Name} Build file" />
+		<echo message="-------------------------------------------------------------" />
+		<echo message="" />
+		<echo message=" available targets are:" />
+		<echo message="" />
+		<echo message=" jar --> generates the ${name}.jar file" />
+		<echo message=" build --> compiles the source code" />
+		<echo message=" javadoc --> generates the API documentation" />
+		<echo message=" clean --> cleans up the directory" />
+		<echo message="" />
+		<echo message=" Please rename build.properties.default to build.properties" />
+		<echo message=" and edit build.properties to specify JSDK 2.3 classpath." />
+		<echo message="" />
+		<echo message=" See the comments inside the build.xml file for more details." />
+		<echo message="-------------------------------------------------------------" />
+		<echo message="" />
+		<echo message="" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- 准备源文件-->
+	<!-- =================================================================== -->
+	<target name="prepare-src" depends="init">
+		<!-- create directories -->
+		<mkdir dir="${build.src}" />
+		<mkdir dir="${build.dest}" />
+		<mkdir dir="${jar.dest}" />
+		<mkdir dir="${war.dest}" />
+		<mkdir dir="${buildwar.dest}" />
+
+		<!-- copy src files -->
+		<copy todir="${build.src}">
+			<fileset dir="${src.dir}" />
+		</copy>
+		<copy todir="${buildwar.dest}">
+			<fileset dir="${webapp.dir}" />
+		</copy>
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- 编译源文件-->
+	<!-- =================================================================== -->
+	<target name="build" depends="prepare-src">
+		<javac encoding="UTF-8" srcdir="${build.src}" destdir="${buildwar.dest}/WEB-INF/classes" debug="${debug}" optimize="${optimize}">
+			<classpath refid="classpath" />
+		</javac>
+		<copy todir="${buildwar.dest}/WEB-INF/classes">
+			<fileset dir="${build.src}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- 打war包-->
+	<!-- =================================================================== -->
+
+	<target name="war" depends="clean,build">
+		<copy overwrite="true" tofile="${buildwar.dest}/WEB-INF/classes/log4j.properties" file="${buildwar.dest}/WEB-INF/classes/log4j-deploy.properties"/>
+		<copy overwrite="true" tofile="${buildwar.dest}/WEB-INF/classes/prtproject.properties" file="${buildwar.dest}/WEB-INF/classes/prtproject-cas.properties">
+			<filterchain>
+				<filterreader classname="org.apache.tools.ant.filters.ReplaceTokens">
+			      	<param type="token" name="cas.client.server" value="${cas.client.server}"/>
+					<param type="token" name="cas.server" value="${cas.server}"/>
+					<param type="token" name="cas.validate.server" value="${cas.validate.server}"/>
+			      	<param type="token" name="db.server" value="${db.server}"/>
+			    </filterreader>
+			</filterchain>
+		</copy>
+		<copy overwrite="true" tofile="${buildwar.dest}/WEB-INF/classes/struts.xml" file="${buildwar.dest}/WEB-INF/classes/struts-deploy.xml"/>
+		<copy failonerror="false" overwrite="true" tofile="${buildwar.dest}/WEB-INF/content/main.jsp" file="${buildwar.dest}/WEB-INF/content/main-deploy.jsp"/>
+		<copy failonerror="false" overwrite="true" tofile="${buildwar.dest}/WEB-INF/spring/aopContext.xml" file="${buildwar.dest}/WEB-INF/spring/aopContext-deploy.xml"/>
+		<copy failonerror="false" overwrite="true" tofile="${buildwar.dest}/WEB-INF/spring/scheduleContext.xml" file="${buildwar.dest}/WEB-INF/spring/scheduleContext-deploy.xml"/>
+		<copy failonerror="false" overwrite="true" tofile="${buildwar.dest}/WEB-INF/spring/securityContext.xml" file="${buildwar.dest}/WEB-INF/spring/securityContext-cas.xml"/>
+		<copy failonerror="false" overwrite="true" tofile="${buildwar.dest}/WEB-INF/spring/remoteContext.xml" file="${buildwar.dest}/WEB-INF/spring/remoteContext-cas.xml"/>
+		<copy overwrite="true" tofile="${buildwar.dest}/WEB-INF/web.xml" file="${buildwar.dest}/WEB-INF/web-cas.xml"/>
+		<copy overwrite="true" todir="${buildwar.dest}/resources/themes">
+			<fileset dir="${themes.home}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<war warfile="${war.dest}/${name}.war" webxml="${buildwar.dest}/WEB-INF/web.xml">
+			<lib dir="${buildwar.dest}/WEB-INF/lib">
+			</lib>
+			<classes dir="${buildwar.dest}/WEB-INF/classes">
+				<exclude name="**/*.java"/>
+				<exclude name="**/*.pdb"/>
+				<exclude name="**/*.pdm"/>
+			</classes>
+			<fileset dir="${buildwar.dest}">
+				<exclude name="WEB-INF/classes/**"/>
+				<exclude name="WEB-INF/lib/*"/>
+			</fileset>
+		</war>
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- 发布到本的resin和tomcat-->
+	<!-- =================================================================== -->
+
+	<target name="publish" depends="war">
+		<!--
+		<copy todir="${resin.home}/webapps">
+			<fileset dir="${war.dest}">
+				<include name="**/*.war" />
+			</fileset>
+		</copy>
+		-->
+		<!--
+		<exec command="net stop ${tomcat.windows.service}"></exec>
+		<delete quiet="true" dir="${tomcat.home}/webapps/${name}" />
+		-->
+		<copy todir="${wars.home}">
+			<fileset dir="${war.dest}">
+				<include name="**/*.war" />
+			</fileset>
+		</copy>
+		<!--
+		<exec command="net start ${tomcat.windows.service}"></exec>
+		-->
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- 产生javadoc api 文档-->
+	<!-- =================================================================== -->
+	<target name="javadoc" depends="build">
+		<mkdir dir="${build.javadocs}" />
+		<javadoc packagenames="${packages}" sourcepath="${build.src}" destdir="${build.javadocs}" author="true" version="true" use="true" splitindex="true" windowtitle="${Name} API" doctitle="${Name}">
+			<classpath refid="classpath" />
+		</javadoc>
+	</target>
+	<!-- =================================================================== -->
+	<!-- 清除临时文件-->
+	<!-- =================================================================== -->
+	<target name="clean" depends="init">
+		<delete quiet="true" dir="${build.src}" />
+		<delete quiet="true" dir="${build.dest}" />
+		<delete quiet="true" dir="${buildwar.dest}" />
+	</target>
+
+</project>

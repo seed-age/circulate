@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="build" >
+	
+	<target name="init">
+		
+			<property name="lib.dir" value="${basedir}/WebRoot/WEB-INF/lib" />
+			<property name="jeelib.dir" value="${basedir}/jeelib" />
+			
+			<path id="classpath">
+				<fileset dir="${lib.dir}">
+					<include name="**.jar" />
+				</fileset>
+				<fileset dir="${jeelib.dir}">
+					<include name="*.jar" />
+				</fileset>
+				<!--<pathelement location="lib/"/>-->
+				<path location="${basedir}/bin"/>
+				<path location="${basedir}/build/classes"/>
+				<path location="${basedir}/WebRoot/WEB-INF/classes"/>
+			</path>
+	</target>
+	
+	
+	<target name="genhbm" depends="init">
+		<taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask" classpathref="classpath" />
+		<hibernatetool  destdir="${basedir}/src" templatepath="templates/hibernate/">
+			<jdbcconfiguration
+			  configurationfile="hibernate-reverse.cfg.xml"
+			  packagename="com.sunnsoft.sloa.db.vo"
+			  revengfile="hibernate.reveng.xml"
+			  reversestrategy="com.sunnsoft.hibernate.ReverseStrategy"
+			  detectOptimisticLock="true"
+			  detectonetoone="true"
+			  detectmanytomany="true"
+			>
+
+
+		   </jdbcconfiguration>
+			<hbm2java
+			 jdk5="true"
+			 ejb3="false"
+			/>
+		   <hbm2hbmxml/>
+			<hbmtemplate template="template/dao/daohome.ftl" exporterclass="org.hibernate.tool.hbm2x.DAOExporter"
+			filepattern="{package-name}/{class-name}DAO.java"/> 
+			
+		</hibernatetool>
+	</target>
+	
+	<target name="build" depends="genhbm">
+		
+		<java classname="org.gteam.db.generator.DAOBuilder" dir="${basedir}"  fork="true" classpathref="classpath">
+			<sysproperty key="file.encoding" value="UTF-8"/>
+			<jvmarg line="-Xmx512m -XX:MaxPermSize=128m "/>
+		</java>
+		
+	</target>
+</project>

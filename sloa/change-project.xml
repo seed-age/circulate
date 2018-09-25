@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--本任务用来修改项目文件中的包名错误以及相关的project文件等 ，用于初始化项目-->
+<project basedir="." default="build" >
+	
+	<!-- 母项目名  -->
+	<property name="src.project.name" value="mybox" /> 
+	<!-- 目标项目名   请修改 myproject 为实际的新项目名，再运行本脚本-->
+	<property name="target.project.name" value="sloa" />
+	
+	<target name="init">
+		
+			<property name="lib.dir" value="${basedir}/WebRoot/WEB-INF/lib" />
+			<property name="jeelib.dir" value="${basedir}/jeelib" />
+			
+			<path id="classpath">
+				<fileset dir="${lib.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${jeelib.dir}">
+					<include name="hibernate*.jar" />
+				</fileset>
+				<!--<pathelement location="lib/"/>-->
+				<path location="${basedir}/bin"/>
+				<path location="${basedir}/build/classes"/>
+				<path location="${basedir}/WebRoot/WEB-INF/classes"/>
+			</path>
+	</target>
+	
+	<target name="build" depends="init">
+		
+		<java classname="org.gteam.util.ChangeProjectName" dir="${basedir}" fork="true" classpathref="classpath">
+			<sysproperty key="file.encoding" value="UTF-8"/>
+			<arg value="${src.project.name}"/>
+			<arg value="${target.project.name}"/>
+		</java>
+		
+	</target>
+</project>

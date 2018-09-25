@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd" default-lazy-init="false">  
+
+	<bean id="imgStore" class="com.sunnsoft.util.LocalFileStore">
+		<property name="rootFilePath">
+			<value>${image.path}</value>
+		</property>
+	</bean>
+	<bean id="userTempStore" class="com.sunnsoft.util.LocalFileStore">
+		<property name="rootFilePath">
+			<value>${image.temp.path}</value>
+		</property>
+		<property name="emptyRoot">
+			<value>true</value>
+		</property>
+	</bean>
+	<!-- 通用文件存储 ，给Helper类做附件通用基础存储使用 -->
+	<bean id="generalFileStore" class="com.sunnsoft.util.LocalFileStore">
+		<property name="rootFilePath">
+			<value>${general.file.store.path}</value>
+		</property>
+	</bean>
+	
+	<!-- 通用临时文件存储 ，给登录用户做附件临时存储使用 -->
+	<bean id="generalFileTempStore" class="com.sunnsoft.util.LocalFileStore">
+		<property name="rootFilePath">
+			<value>${general.file.tempstore.path}</value>
+		</property>
+	</bean>
+</beans>

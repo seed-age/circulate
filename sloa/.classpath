@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="WebServiceClient"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/httpclient-4.3.5.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/httpclient-cache-4.3.5.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/httpcore-4.3.2.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/httpmime-4.3.5.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/javax.servlet-api-3.1-b02.jar" sourcepath="C:/Users/QIHUI/AppData/Local/Temp/.org.sf.feeling.decompiler1534729053841/source/javax.servlet-api-3.1-b02-sources.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/json.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/ueditor-1.1.2.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="build">
+
+	<target name="init">
+
+		<echo message="building jar" />
+		<property name="debug" value="off" />
+		<property name="optimize" value="on" />
+		<property name="deprecation" value="on" />
+
+		<!--    java源文件路径 -->
+
+		<property name="src.dir" value="${basedir}/src" />
+		<!--    准备源文件路径 -->
+		<property name="build.src" value="${basedir}/target/build" />
+
+		<!--    编译源文件路径 -->
+		<property name="build.dest" value="${basedir}/target/bin" />
+		<!--    准备javadoc文件路径 -->
+		<property name="build.javadocs" value="${basedir}/target/doc" />
+		
+		<!--    jar包路径 -->
+		<property name="lib.dir" value="${basedir}/WebRoot/WEB-INF/lib" />
+
+		<property name="j2eelib.dir" value="${basedir}/jeelib" />
+
+		<!--    classpath -->
+		<path id="classpath">
+
+			<fileset dir="${j2eelib.dir}">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar" />
+			</fileset>
+			<!--<pathelement location="lib/"/>-->
+		</path>
+		
+		<property file="${src.dir}/prtproject.properties" />
+		<mkdir dir="${build.src}" />
+		<mkdir dir="${build.dest}" />
+		<copy todir="${build.src}">
+			<fileset dir="${src.dir}" />
+		</copy>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- 编译源文件-->
+	<!-- =================================================================== -->
+	<target name="build" depends="init">
+		<javac encoding="UTF-8" srcdir="${build.src}" destdir="${build.dest}" debug="${debug}" optimize="${optimize}">
+			<classpath refid="classpath" />
+		</javac>
+		<echo message="building jar file..." />
+		<jar destfile="${basedir}/${project.name}.jar">
+			<fileset dir="${build.dest}">
+			</fileset>
+		</jar>
+		<echo message="jar builded" />
+		<antcall target="clean"></antcall>
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- 产生javadoc api 文档-->
+	<!-- =================================================================== -->
+	<target name="javadoc" depends="build">
+		<mkdir dir="${build.javadocs}" />
+		<javadoc packagenames="${packages}" sourcepath="${build.src}" destdir="${build.javadocs}" author="true" version="true" use="true" splitindex="true" windowtitle="${Name} API" doctitle="${Name}">
+			<classpath refid="classpath" />
+		</javadoc>
+	</target>
+	<!-- =================================================================== -->
+	<!-- 清除临时文件-->
+	<!-- =================================================================== -->
+	<target name="clean" depends="init">
+		<delete quiet="true" dir="${basedir}/target/" />
+	</target>
+
+</project>

@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="2.4"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee   http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+	<display-name>sloa</display-name>
+	<description>sloa</description>
+	
+	<!--SSO生产环境 过滤器 配置开始
+	<filter>
+		<filter-name>checkLoginFilter</filter-name>
+		<filter-class>
+			com.pactera.sso.client.filter.CheckLoginFilter
+		</filter-class>
+		<init-param>
+			<param-name>containerType</param-name>
+			<param-value>Tomcat</param-value>
+		</init-param>
+		<init-param>
+			<param-name>configLocation</param-name>
+			<param-value>/WEB-INF/Setting.xml</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>checkLoginFilter</filter-name> -->
+		<!-- 需要过滤 可以再添加 
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>-->
+	<!--SSO 过滤器 配置结束 -->
+
+	<!--SSO API配置开始 
+	<servlet>
+		<servlet-name>checkLoginServlet</servlet-name>
+		<servlet-class>com.pactera.sso.client.servlet.CheckLoginServlet</servlet-class>
+		<init-param>
+			<param-name>containerType</param-name>
+			<param-value>Tomcat</param-value>
+		</init-param>
+		<init-param>
+			<param-name>configLocation</param-name>
+			<param-value>/WEB-INF/Setting.xml</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>checkLoginServlet</servlet-name>
+		<url-pattern>/checkLoginAPI</url-pattern>
+	</servlet-mapping>-->
+	<!--SSO API配置结束-->
+
+	<!--SSO 监听器 配置开始
+	<servlet>
+		<servlet-name>ssoLogoutServlet</servlet-name>
+		<servlet-class>com.pactera.sso.client.servlet.SsoLocalModelLogoutServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ssoLogoutServlet</servlet-name>
+		<url-pattern>/sso_localmodel_exit</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>verifyImageServlet</servlet-name>
+		<servlet-class>com.pactera.sso.client.servlet.SsoLocalModelCodeAndPwdServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>verifyImageServlet</servlet-name>
+		<url-pattern>/VerifyCodeAndRememberPwd</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+    		<servlet-name>ssoLoginServlet</servlet-name>
+    		<servlet-class>com.pactera.sso.client.servlet.SsoLocalModelLoginServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+     		<servlet-name>ssoLoginServlet</servlet-name>
+   			<url-pattern>/sso_localmodel_login</url-pattern>
+    </servlet-mapping>
+
+  	<servlet>
+	    	<servlet-name>clientGetCookiesServlet</servlet-name>
+    		<servlet-class>com.pactera.sso.client.servlet.ClientGetCookiesServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+     		<servlet-name>clientGetCookiesServlet</servlet-name>
+   			<url-pattern>/clientGetCookiesServlet</url-pattern>
+    </servlet-mapping>
+
+  	<servlet>
+	    	<servlet-name>ssoSecurityKeyUpdateServlet</servlet-name>
+    		<servlet-class>com.pactera.sso.client.servlet.SsoSecurityKeyUpdateServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+     		<servlet-name>ssoSecurityKeyUpdateServlet</servlet-name>
+   			<url-pattern>/sso_Quartz_KeyUpdate</url-pattern>
+    </servlet-mapping>
+
+  	<servlet>
+	    	<servlet-name>ssoSecurityFileUpdateServlet</servlet-name>
+    		<servlet-class>com.pactera.sso.client.servlet.SsoSecurityFileUpdateServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+     		<servlet-name>ssoSecurityFileUpdateServlet</servlet-name>
+   			<url-pattern>/sso_Quartz_FileUpdate</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+	    	<servlet-name>ssoForbiddenSystemServlet</servlet-name>
+    		<servlet-class>com.pactera.sso.client.servlet.SsoForbiddenSystemServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+     		<servlet-name>ssoForbiddenSystemServlet</servlet-name>
+   			<url-pattern>/updateIsForbidden.axd</url-pattern>
+    </servlet-mapping>-->
+    
+    <!--SSO生产环境 监听器 配置结束-->
+	
+	<!-- used by String ! enable log4j proprerties file use ${webapproot} locate 
+		log files diractory -->
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>sloa</param-value>
+	</context-param>
+	<!-- - Location of the XML file that defines the root application context 
+		- Applied by ContextLoaderListener. -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath:net/bull/javamelody/monitoring-spring.xml
+			/WEB-INF/spring/*Context.xml
+		</param-value>
+	</context-param>
+	<!-- used by String ! log4j proprerties file -->
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>/WEB-INF/classes/log4j.properties</param-value>
+	</context-param>
+	<!-- used by String ! log4j proprerties file check reload inteval （in ms） -->
+	<context-param>
+		<param-name>log4jRefreshInterval</param-name>
+		<param-value>10000</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
+	<!-- log4j listener -->
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+	<!-- spring configue loader -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<!-- Concurrent Session Control,can make only one session validated by one 
+		login user -->
+	<listener>
+		<listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+	</listener>
+
+	<!-- <listener> -->
+	<!-- <listener-class>com.sunnsoft.util.UserImageTempPathDeleteSessionListener 
+		</listener-class> -->
+	<!-- </listener> -->
+
+	<filter>
+		<filter-name>javamelody</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+		<init-param>
+			<param-name>monitoring-path</param-name>
+			<param-value>/system/mr</param-value>
+		</init-param>
+		<init-param>
+			<param-name>log</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter>
+		<filter-name>setCharacterEncoding</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter>
+		<filter-name>openSessionInViewFilterDelegate</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+<!-- 	<filter> -->
+<!-- 		<filter-name>springSecurityFilterChain</filter-name> -->
+<!-- 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class> -->
+<!-- 	</filter> -->
+	<filter>
+		<filter-name>struts2</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	</filter>
+	<filter>
+		<filter-name>profileFilter</filter-name>
+		<filter-class>com.sunnsoft.servlet.filter.ProfileFilter</filter-class>
+	</filter>
+	<filter>
+		<filter-name>decryptParameterFilter</filter-name>
+		<filter-class>com.sunnsoft.servlet.filter.DecryptParameterFilter</filter-class>
+		<init-param>
+			<param-name>privateKey</param-name>
+			<param-value>MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJUUNwdznSOxZgkVlx6kLwT8yT9Nladkr+0GLTVv0PF15qgIAWJ6qpzNlmohrpw4igPFCZ6VqKJHdFVKTIEKixUw+eZlUEXtvlGMuTbsYPgx9KnkjXj8Ni/FGJHBQs7pagdXb90PE5VjIV9eiBIoWoLGTQ9XLCgaOJqjr7PL3N1fAgMBAAECgYATIWb2Y9W0cN1hKQ4ddoA6KZ5Bq1kbBAa3aeV/R/wOIE0bHvvegVNHj/JPaEcZ8P91AGH9ocLkIDtDfqdWn929BkRm/MDjv9N5gGHKNhVKtEEfmOkXgQ1gRsxv6olIUCVSCGtv78p6HVWKd4yMgSpowa00bN05yzanJj8pdujzUQJBAMlozCi9EC49O26d0GbIBGyZoZjQZuZIrdQ8M3fKWG7h0nSN4XUmOAIu8JbJ+VWVVoPupa33KmG1oZnSqdHFvIUCQQC9fF15Rqsp4pNaGGY4qQ+6hjNl1cZ36ukBVmknpU4xjFdKk81bJb4PzfjDBh3DZpFgz1eEQ3XiYiXCBALKeDmTAkBMQKzqz4mMuAoEOyNnhlqGczPHEz+h9+o37ALgW29Xq49uKTkujSWvTe4waI9JY5y5nmSDlIwrKgTgo+0/SkmxAkEArs6IvVVAmsd4AOn5g9QTupQL3qq1CfQhOSaqo/SQio1aCmcIUEolaRcvo1uFIbsB6zndFxvVKSA6jR5+JKN9GQJAGIb5gfBUk6Mi2hrHMk9bQhu9G48zOBT6vbHtMhn9GlgWgNCP4KW7kS/4GO/0tPA2UiPeClY6VaG7GwZsYTOkHA==</param-value>
+		</init-param>
+		<init-param>
+			<param-name>decryptParamNames</param-name>
+			<param-value>j_username,j_password</param-value>
+		</init-param>
+	</filter>
+	<filter>
+		<filter-name>bracketsEndParamterRenameFilter</filter-name>
+		<filter-class>com.sunnsoft.servlet.filter.BracketsEndParamterRenameFilter</filter-class>
+	</filter>
+	<filter>
+		<filter-name>browserIpExtractorFilter</filter-name>
+		<filter-class>com.sunnsoft.servlet.filter.BrowserIpExtractorFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>browserIpExtractorFilter</filter-name>
+		<url-pattern>*.htm</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>bracketsEndParamterRenameFilter</filter-name>
+		<url-pattern>*.htm</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>decryptParameterFilter</filter-name>
+		<url-pattern>/system/login-process</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>openSessionInViewFilterDelegate</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>setCharacterEncoding</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+<!-- 	<filter-mapping> -->
+<!-- 		<filter-name>springSecurityFilterChain</filter-name> -->
+<!-- 		<url-pattern>/*</url-pattern> -->
+<!-- 	</filter-mapping> -->
+	<!-- struts 2 的 filter 一定要放最后。否则，struts2的action全部不会被这些filter过滤 -->
+
+	<filter-mapping>
+		<filter-name>javamelody</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>profileFilter</filter-name>
+		<url-pattern>*.htm</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>*.htm</url-pattern>
+	</filter-mapping>
+
+	<!-- <filter-mapping> -->
+	<!-- <filter-name>struts2</filter-name> -->
+	<!-- <url-pattern>*.html</url-pattern> -->
+	<!-- </filter-mapping> -->
+
+	<!-- servlet -->
+	<servlet>
+		<servlet-name>ImgDownloadServlet</servlet-name>
+		<servlet-class>com.sunnsoft.servlet.FileDownloadServlet</servlet-class>
+		<init-param>
+			<param-name>fileStoreBeanId</param-name>
+			<param-value>imgStore</param-value>
+		</init-param>
+		<!-- <init-param> -->
+		<!-- <param-name>fileNotFoundDefault</param-name> -->
+		<!-- <param-value>/empty/img/default_person.gif</param-value> -->
+		<!-- </init-param> -->
+	</servlet>
+
+	<servlet>
+		<servlet-name>GeneralFileDownloadServlet</servlet-name>
+		<servlet-class>com.sunnsoft.servlet.FileDownloadServlet</servlet-class>
+		<init-param>
+			<param-name>fileStoreBeanId</param-name>
+			<param-value>generalFileStore</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet>
+		<servlet-name>GeneralTempFileDownloadServlet</servlet-name>
+		<servlet-class>com.sunnsoft.servlet.FileDownloadServlet</servlet-class>
+		<init-param>
+			<param-name>fileStoreBeanId</param-name>
+			<param-value>generalFileTempStore</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet>
+		<servlet-name>ValidateCodeServlet</servlet-name>
+		<servlet-class>com.sunnsoft.servlet.ValidateCodeServlet</servlet-class>
+		<init-param>
+			<param-name>width</param-name>
+			<param-value>80</param-value>
+		</init-param>
+		<init-param>
+			<param-name>height</param-name>
+			<param-value>23</param-value>
+		</init-param>
+		<init-param>
+			<param-name>codeCount</param-name>
+			<param-value>4</param-value>
+		</init-param>
+		<init-param>
+			<param-name>leftMargin</param-name>
+			<param-value>5</param-value>
+		</init-param>
+		<init-param>
+			<param-name>maxRandomPositionX</param-name>
+			<param-value>8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>randomLineCount</param-name>
+			<param-value>8</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>DruidStatView</servlet-name>
+		<servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DruidStatView</servlet-name>
+		<url-pattern>/system/druid/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>ImgDownloadServlet</servlet-name>
+		<url-pattern>/system/img/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>GeneralFileDownloadServlet</servlet-name>
+		<url-pattern>/file/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>GeneralTempFileDownloadServlet</servlet-name>
+		<url-pattern>/temp/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>ValidateCodeServlet</servlet-name>
+		<url-pattern>/vcode.jpg</url-pattern>
+	</servlet-mapping>
+
+	<!-- <error-page> -->
+	<!-- <exception-type>java.lang.Throwable</exception-type> -->
+	<!-- <location>/error.jsp</location> -->
+	<!-- </error-page> -->
+
+	<error-page>
+		<error-code>404</error-code>
+		<location>/not-found.jsp</location>
+	</error-page>
+
+	<!-- <error-page> -->
+	<!-- <error-code>403</error-code> -->
+	<!-- <location>/403.jsp</location> -->
+	<!-- </error-page> -->
+
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>

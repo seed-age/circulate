@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<project name="cxf wsdl2java" basedir="." default="cxfWSDLToJava">   
+ 
+   <path id="cxf.classpath">
+   	  <fileset dir="${basedir}/jeelib">
+   	   	     <include name="*.jar"/>
+   	   	  </fileset>
+      <fileset dir="${basedir}/WebRoot/WEB-INF/lib">
+         <include name="*.jar"/>
+      </fileset>
+   </path>
+       
+   <target name="cxfWSDLToJava">
+   	  <!-- 下列参数的顺序是能修改的 ! -->
+      <java classname="org.apache.cxf.tools.wsdlto.WSDLToJava" fork="true" >
+      	<!-- 生成的代码是utf-8 -->
+      	 <jvmarg value="-Dfile.encoding=utf-8"/>
+         <arg value="-client"/>
+         <arg value="-d"/>
+         <arg value="WebServiceClient"/>
+      	<!-- 是否生成 Soap头部代码？ 对应部分需要在头部带有认证信息的webservice，下列选项是必须的-->
+      	 <arg value="-exsh"/>
+      	 <arg value="true"/>
+      	<!-- oa 联系人接口地址-->
+         <arg value="http://oa-test.seedland.cc//services/HrmService?wsdl"/>
+         <classpath>
+            <path refid="cxf.classpath"/>
+         </classpath>
+      </java>
+   </target>
+</project>
