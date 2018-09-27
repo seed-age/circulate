@@ -1,16 +1,14 @@
 package com.sunnsoft.actionbase;
 
-import java.io.File;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+import com.sunnsoft.util.FileStore;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
-import com.sunnsoft.util.FileStore;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 
 @Deprecated
 public abstract class BaseUploadFileSave extends ActionSupport implements

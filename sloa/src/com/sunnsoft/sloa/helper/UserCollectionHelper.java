@@ -1,30 +1,15 @@
 package com.sunnsoft.sloa.helper;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.*;
-import org.hibernate.criterion.*;
+import org.gteam.constants.SystemConstants;
+import org.gteam.service.IService;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
-import org.gteam.constants.SystemConstants;
-import org.gteam.db.dao.*;
-import org.gteam.db.helper.hibernate.*;
-import com.sunnsoft.sloa.db.vo.*;
-import com.sunnsoft.sloa.service.*;
-import org.gteam.service.IService;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class UserCollectionHelper extends HelperAbstract<UserCollection>{

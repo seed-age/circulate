@@ -1,43 +1,34 @@
 package com.sunnsoft.sloa.util;
 
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.http.ParseException;
-import org.apache.struts2.ServletActionContext;
-import org.gteam.util.FastJSONUtils;
-import org.slf4j.Logger;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.lenovo.css.lenovocloud.sdk.LenovoCloudSDK;
 import com.lenovo.css.lenovocloud.sdk.exception.BoxException;
 import com.lenovo.css.lenovocloud.sdk.model.UserLoginModel;
 import com.pactera.sso.client.utils.SsoUserUtil;
-//import com.pactera.sso.client.servlet.SsoUserUtil;
 import com.sunnsoft.sloa.config.Config;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.User;
 import com.sunnsoft.sloa.db.vo.UserMssage;
-import com.sunnsoft.util.DateUtils;
+import org.apache.http.ParseException;
+import org.apache.struts2.ServletActionContext;
+import org.gteam.util.FastJSONUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
+
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import com.pactera.sso.client.servlet.SsoUserUtil;
 
 /**
  * 调用网盘的工具类

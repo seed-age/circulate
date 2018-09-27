@@ -1,9 +1,8 @@
 package com.sunnsoft.hibernate.interceptor;
 
-import java.lang.reflect.ParameterizedType;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.lang.reflect.ParameterizedType;
 
 /**
  * 

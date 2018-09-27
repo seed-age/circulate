@@ -1,17 +1,16 @@
 package com.sunnsoft.sloa.actions.web.createmail;
 
-import java.io.File;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.config.Config;
 import com.sunnsoft.sloa.util.LenovoCloudSDKUtils;
 import com.sunnsoft.util.FileStore;
 import com.sunnsoft.util.struts2.Results;
+
+import javax.annotation.Resource;
+import java.io.File;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.Map;
 
 public class Test extends BaseParameter {
 

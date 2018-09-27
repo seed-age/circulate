@@ -1,19 +1,17 @@
 package com.sunnsoft.util.struts2;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.StrutsStatics;
 import org.springframework.web.util.HtmlUtils;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
 * 防止xss和sql注入攻击的过滤器。

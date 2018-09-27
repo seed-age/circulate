@@ -1,19 +1,12 @@
 package com.sunnsoft.sloa.helper;
 
-import java.lang.reflect.Method;
-import java.util.*;
-
+import com.sunnsoft.sloa.db.vo.UserInfo;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Junction;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-
 import org.gteam.db.helper.hibernate.Each;
 import org.gteam.db.helper.hibernate.HelperException;
-import com.sunnsoft.sloa.db.vo.UserInfo;
+import org.hibernate.criterion.*;
+
+import java.lang.reflect.Method;
 
 @SuppressWarnings("unchecked")
 public class UserInfoProperty<T> {

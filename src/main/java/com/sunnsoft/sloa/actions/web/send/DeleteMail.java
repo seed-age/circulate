@@ -1,15 +1,14 @@
 package com.sunnsoft.sloa.actions.web.send;
 
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.util.Assert;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.util.Assert;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 已发传阅(web端)---点击删除: 批量删除传阅(逻辑删除)

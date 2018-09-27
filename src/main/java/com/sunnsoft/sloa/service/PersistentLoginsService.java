@@ -3,21 +3,19 @@
  */
 package com.sunnsoft.sloa.service;
 
-import java.util.List;
-import java.util.Map;
-import org.gteam.service.IService;
+import com.sunnsoft.sloa.db.handler.DaoHandler;
+import com.sunnsoft.sloa.db.vo.PersistentLogins;
+import com.sunnsoft.sloa.helper.PersistentLoginsHelper;
+import org.gteam.db.dao.OrderBy;
 import org.gteam.db.dao.PageList;
 import org.gteam.db.dao.PageScroll;
-import org.gteam.db.dao.OrderBy;
 import org.gteam.db.dao.TransactionalCallBack;
-import com.sunnsoft.sloa.db.handler.DaoHandler;
-
+import org.gteam.service.IService;
 import org.hibernate.criterion.DetachedCriteria;
-
 import org.springframework.orm.hibernate3.HibernateCallback;
 
-import com.sunnsoft.sloa.helper.PersistentLoginsHelper;
-import com.sunnsoft.sloa.db.vo.PersistentLogins;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public interface PersistentLoginsService extends IService<PersistentLogins, String> {

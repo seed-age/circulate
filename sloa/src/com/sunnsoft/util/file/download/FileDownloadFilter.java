@@ -1,25 +1,17 @@
 package com.sunnsoft.util.file.download;
 
+import com.sunnsoft.util.FileStore;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import com.sunnsoft.util.FileStore;
 /**
  * 可以支持断点续传,主要用于文件下载应用。不适合图片等展示在浏览器的文件
  * @author Administrator

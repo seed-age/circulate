@@ -1,16 +1,15 @@
 package com.sunnsoft.sloa.actions.system.users;
 
-import java.util.List;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.db.vo.User;
 import com.sunnsoft.sloa.service.UserService;
 import com.sunnsoft.sloa.util.SysLogger;
 import com.sunnsoft.sloa.util.UserUtils;
 import com.sunnsoft.util.struts2.Results;
-
 import org.gteam.db.helper.hibernate.Each;
 import org.gteam.util.FastJSONUtils;
+
+import java.util.List;
 
 public class DeleteBeans extends ActionSupport {
 	

@@ -1,28 +1,17 @@
 package com.sunnsoft.sloa.schedule;
 
-import javax.annotation.Resource;
-
+import com.sunnsoft.sloa.db.handler.Services;
+import com.sunnsoft.sloa.db.vo.AttachmentItem;
+import com.sunnsoft.sloa.service.AttachmentItemService;
+import com.sunnsoft.util.FileStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
-
-import com.sunnsoft.sloa.db.handler.Services;
-import com.sunnsoft.sloa.db.vo.AttachmentItem;
-import com.sunnsoft.sloa.db.vo.UserMssage;
-import com.sunnsoft.sloa.service.AttachmentItemService;
-import com.sunnsoft.sloa.service.UserService;
-import com.sunnsoft.util.FileStore;
-import com.sunnsoft.util.struts2.Results;
-
-import localhost.services.hrmservice.HrmService;
-import localhost.services.hrmservice.HrmServicePortType;
-import weaver.hrm.webservice.DepartmentBean;
-import weaver.hrm.webservice.SubCompanyBean;
-import weaver.hrm.webservice.UserBean;
 
 /**
  * 1. 如果有用户在新建传阅的时候上传了附件, 但是又因为网络原因或是人为原因, 直接终止了浏览器(PC端)或是APP端. 但是上传的附件是会保存到数据库中的.

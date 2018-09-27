@@ -1,14 +1,12 @@
 package com.sunnsoft.sloa.actions.system.users;
 
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.criterion.Order;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.helper.UserHelper;
 import com.sunnsoft.sloa.service.UserService;
 import com.sunnsoft.util.struts2.Results;
-
+import org.apache.commons.lang.StringUtils;
 import org.gteam.constants.SystemConstants;
+import org.hibernate.criterion.Order;
 
 public class UsersGridData extends ActionSupport {
 

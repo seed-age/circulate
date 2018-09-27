@@ -1,10 +1,9 @@
 package com.sunnsoft.sloa.actions.app.wait;
 
-import org.springframework.util.Assert;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.util.Assert;
 /**
  * 待发传阅(APP)---点击编辑：批量删除传阅信息(物理删除)
  * @author chenjian

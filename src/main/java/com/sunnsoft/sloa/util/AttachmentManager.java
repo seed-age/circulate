@@ -1,23 +1,18 @@
 package com.sunnsoft.sloa.util;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.util.List;
-import java.util.UUID;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import com.sunnsoft.sloa.db.vo.AttachmentItem;
 import com.sunnsoft.sloa.helper.AttachmentItemHelper;
 import com.sunnsoft.sloa.service.AttachmentItemService;
 import com.sunnsoft.util.FileStore;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
 
-import org.gteam.db.helper.hibernate.Each;
+import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @SuppressWarnings("unchecked")

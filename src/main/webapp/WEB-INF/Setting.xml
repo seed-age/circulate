@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SettingConfig>
+
+	<!-- 1 -->
+	<!--数据库连接  -->
+<!-- 	<ConnectionString -->
+<!-- 			dataSourceUrl="jdbc:mysql://192.168.64.227:3306/sso_db?useUnicode=true" -->
+<!-- 			userID="692AF58EF484F07D" -->
+<!-- 			password="4F33E1B9C69A8A04315FB95F43D2737144221948CE353142" -->
+<!-- 			providerName="com.mysql.jdbc.Driver" -->
+<!-- 	/> -->
+	<ConnectionString
+			dataSourceUrl="jdbc:mysql://192.168.16.24:3306/sso_db?useUnicode=true"
+			userID="B92A0074B9E10DF2D73A6F2539912148"
+			password="7DF75B4C46444F9D3863857B5D010707"
+			providerName="com.mysql.jdbc.Driver"
+	/>
+	<!-- 2 -->
+	<!--活动目录连接设置-->
+	<ActiveDirectoryConfiguration
+			server="ad.seedland.cc"
+			domain="seedland.cc"
+			directoryPath="DC=seedland,DC=cc"
+			groupName="administrators"
+			filter="(and(objectCategory=person)(objectClass=user)(samaccountname=usertosearch))"
+			filterReplace="usertosearch"
+			userName="8EED27F8DE3E9320"
+			password="FB39F08D09285D5EC595EB2C7C9B681C344B3D4B8BA5B8F3"
+			expirationTime="60"
+			passwordWarnExpireDays="10"
+	/>
+
+	<!-- 3 -->
+	<!--当前站点的设置，包括：
+		systemCode：系统代码(代理中的唯一标识码)
+		key：加密密码(代理中配置)
+ 	        expirationTime: 过期时间
+        	useProxyUrl:true/false
+          	proxyUrl:通常情况下，单点登录采用HttpModule/JavaServletFilter来实现，针对所有的请求，都实现用户的验证功能。
+              		对于一般项目，我们要求被接入系统从单点登录提供的标准变量中获取用户名：
+              		（.net）HttpContext.Current.User.Identity.Name（推荐）
+              		（.net）HttpContext.Current.Item["WD_SSO_UserName"]
+              		（java）request.getAttribute("loginid")
+              		但一些项目从一些特殊的渠道获取用户名，如从Session["UserId"]获取用户名，那么在ProxyUrl所对应的页面中，就可以对该变量赋值，再实现重定向，可以进行跳转。
+              		（另：可以通过重新包装单点登录dll来实现相同功能。）
+		logoutResponseMode:退出应答方式  PAGE:重定向到指定登录页面  TXT:返回指定格式字符串  20180424 add by huhl
+ 	-->
+	<CurrentSite
+			systemCode="SSO1010"
+			key="EL61300NomNsAYP9K0Vi"
+			sessionIdName="JSESSIONID"
+			dateTimeFormat="yyyy-MM-dd HH:mm:ss"
+			IsForbidden="false"
+			IsToolbarForceVisible="true"
+			logoutResponseMode="PAGE"
+	/>
+
+
+	<!-- 4 -->
+	<!--Cookie的设置-->
+	<CookieDomains path="/" >
+		<domain name=".seedland.cc"
+           		regex=".*(.seedland.cc)"
+           		myHost="ssonew.seedland.cc"
+           		loginUrl="http://ssonew.seedland.cc/login"
+           		crossdomainUrl="http://ssonew.seedland.cc/crossdomain"
+           		defaultSite="https://cy.seedland.cc/">
+   		</domain>
+	</CookieDomains>
+
+
+
+	<!--
+		系统中的地址，包括：
+		logonFlag:  0访问统一登录页面  1访问代理本地登录页面
+		loginUrl：登陆页面地址  代理本地 Java /login_sso.jsp  远程.net http://xq-sso-6-231.cfld-dev.cn/login.aspx?   
+																  http://xq-sso-6-231.cfld-dev.cn/LoginLight.aspx?
+		errorUrl：错误页面地址  代理本地 Java /error_sso.jsp  远程.net http://sso.lcg.com.cn/Error.aspx
+		changePasswordUrl：修改密码地址
+	-->
+
+	<!-- 5 -->
+	<!--本地登录URL设置-->
+
+	<Urls loginUrl="/LocalModelPage/html/login.html"
+		  errorUrl="/error_sso.jsp"
+		  defaulteurl="/index.jsp" />
+
+	<!--Java版本下格式有所区别-->
+	<!--用户信息设置 用户验证方式,值为 SSO、AD、DB:	SSO为单点登录服务器验证，AD为本地AD验证，DB为本地数据库验证-->
+	<UserConfiguration value="SSO" />
+
+	<!-- 标识凭证存储对象，head:在request.header中，attr:在request.attribute中 -->
+	<TookenSaveModel value="head" />
+
+	<!--DB认证，接口程序集配置-->
+	<DBAssemblyDefinition  AssemblyName="com.pactera.sso.client.servlet.ILocalModelDBValidataion" TypeName="com.pactera.sso.client.servlet.LocalModelDBValidataionImpl" />
+
+	<!-- cookies检测job，将指定cookies值进行删除、置空、授权（赋值为用户标识）  
+		checkpoint:success|for_value|false; 	验权成功、失败(可多值，正则表达式)
+		operator:delete、clear、assign; 
+		UserConfig:AD|SSO; 
+		domain:; 
+		cookies:（正则表达式）;	-->
+	<CookieCheckJobs>
+	</CookieCheckJobs>
+
+	<!--Java版本下格式有所区别-->
+
+	<IncludeFileExtension
+			ext_value=".*(\.ico$|\.gif$|\.jpg$|\.png$|\.bmp$|\.css$|\.js$|\.jsx$|\.axd|/sys/webservice/.*|/resource/.*|/app/.*|/file/.*)"
+			content_value=".*(/wd_sso_logout$)"
+			for_value=".*(/VerifyCodeAndRememberPwd$|/ssologout|/sso_localmodel_login|/ssoLoginServlet$|/wd_sso_logout$|/error_sso.jsp$|/clientGetCookiesServlet$|/LocalModelPage/html/login.html)"/>
+</SettingConfig>

@@ -5,17 +5,9 @@ package com.sunnsoft.test;
  最后用用Graphics2D直接输出直接输出 。 
  下面代码实现了简单的打印功能： 
  */
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.print.Book;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
+
+import java.awt.*;
+import java.awt.print.*;
 
 public class PrintTest implements Printable {
 	/** */

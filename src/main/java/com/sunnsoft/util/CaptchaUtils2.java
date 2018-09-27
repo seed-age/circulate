@@ -1,13 +1,13 @@
 package com.sunnsoft.util;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.patchca.color.RandomColorFactory;
 import org.patchca.service.ConfigurableCaptchaService;
 import org.patchca.utils.encoder.EncoderHelper;
 import org.patchca.word.AdaptiveRandomWordFactory;
+
+import java.awt.*;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * @author 林宇民 Andy (llade)

@@ -3,30 +3,13 @@
  */
 
 package com.sunnsoft.sloa.db.handler;
-import java.lang.reflect.Field;
 
+import com.sunnsoft.sloa.db.dao.*;
 import org.apache.commons.logging.Log;
-import org.gteam.db.dao.ICommonDAO;
 import org.apache.commons.logging.LogFactory;
+import org.gteam.db.dao.ICommonDAO;
 
-import com.sunnsoft.sloa.db.dao.AttachmentItemDAO;
-import com.sunnsoft.sloa.db.dao.DictionaryDAO;
-import com.sunnsoft.sloa.db.dao.DiscussDAO;
-import com.sunnsoft.sloa.db.dao.HrmdepartmentDAO;
-import com.sunnsoft.sloa.db.dao.HrmsubcompanyDAO;
-import com.sunnsoft.sloa.db.dao.MailDAO;
-import com.sunnsoft.sloa.db.dao.MenuDAO;
-import com.sunnsoft.sloa.db.dao.PersistentLoginsDAO;
-import com.sunnsoft.sloa.db.dao.ReceiveDAO;
-import com.sunnsoft.sloa.db.dao.RoleDAO;
-import com.sunnsoft.sloa.db.dao.SystemBackupLogDAO;
-import com.sunnsoft.sloa.db.dao.SystemLogDAO;
-import com.sunnsoft.sloa.db.dao.TagDAO;
-import com.sunnsoft.sloa.db.dao.UpdateRecordDAO;
-import com.sunnsoft.sloa.db.dao.UserCollectionDAO;
-import com.sunnsoft.sloa.db.dao.UserDAO;
-import com.sunnsoft.sloa.db.dao.UserInfoDAO;
-import com.sunnsoft.sloa.db.dao.UserMssageDAO;
+import java.lang.reflect.Field;
 /**
  * @author 林宇民(llade)
  * @version 1.0

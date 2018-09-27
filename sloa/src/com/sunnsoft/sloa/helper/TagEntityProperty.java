@@ -1,15 +1,14 @@
 package com.sunnsoft.sloa.helper;
 
-import java.util.Collection;
-import java.util.Stack;
-
-import org.gteam.db.helper.hibernate.HelperException;
-
 import org.apache.commons.lang3.StringUtils;
+import org.gteam.db.helper.hibernate.HelperException;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
+
+import java.util.Collection;
+import java.util.Stack;
 
 public class TagEntityProperty<T> {
 	

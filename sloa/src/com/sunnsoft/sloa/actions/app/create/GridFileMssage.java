@@ -1,15 +1,5 @@
 package com.sunnsoft.sloa.actions.app.create;
 
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.fastjson.JSONObject;
 import com.lenovo.css.lenovocloud.sdk.LenovoCloudSDK;
 import com.lenovo.css.lenovocloud.sdk.model.FileListModel;
@@ -21,6 +11,14 @@ import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.UserMssage;
 import com.sunnsoft.sloa.util.LenovoCloudSDKUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Resource;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 新建传阅--去网盘上查询附件信息: 获取个人空间文件列表, 数据以分页形式返回.

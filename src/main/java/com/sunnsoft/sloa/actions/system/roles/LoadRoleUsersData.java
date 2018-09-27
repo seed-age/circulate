@@ -1,18 +1,13 @@
 package com.sunnsoft.sloa.actions.system.roles;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.db.vo.User;
 import com.sunnsoft.sloa.helper.UserHelper;
 import com.sunnsoft.sloa.service.UserService;
 import com.sunnsoft.util.struts2.Results;
-
 import org.gteam.util.FastJSONUtils;
+
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class LoadRoleUsersData extends ActionSupport {

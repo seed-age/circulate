@@ -1,15 +1,13 @@
 package com.sunnsoft.ext.base;
 
-import java.io.File;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.opensymphony.xwork2.ActionSupport;
+import com.sunnsoft.util.FileStore;
 import org.apache.commons.io.FileUtils;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
-import com.opensymphony.xwork2.ActionSupport;
-import com.sunnsoft.util.FileStore;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 
 public class StrutsUploadAction extends ActionSupport implements
 		ServletRequestAware {

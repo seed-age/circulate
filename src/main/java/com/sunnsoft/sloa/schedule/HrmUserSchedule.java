@@ -1,23 +1,20 @@
 package com.sunnsoft.sloa.schedule;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.UserMssage;
 import com.sunnsoft.sloa.service.UserService;
-
 import localhost.services.hrmservice.HrmService;
 import localhost.services.hrmservice.HrmServicePortType;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 import weaver.hrm.webservice.DepartmentBean;
 import weaver.hrm.webservice.SubCompanyBean;
 import weaver.hrm.webservice.UserBean;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 每天凌晨 1点 定时更新 联系人 信息

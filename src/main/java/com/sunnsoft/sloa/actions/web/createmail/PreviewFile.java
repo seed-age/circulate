@@ -1,13 +1,5 @@
 package com.sunnsoft.sloa.actions.web.createmail;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSONObject;
 import com.lenovo.css.lenovocloud.sdk.LenovoCloudSDK;
 import com.lenovo.css.lenovocloud.sdk.model.PathType;
@@ -18,6 +10,13 @@ import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.AttachmentItem;
 import com.sunnsoft.sloa.util.LenovoCloudSDKUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
+
+import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 新建传阅/已发传阅: 点击附件可对附件进行预览操作 b、预览：点击预览，新页面打开预览附件文件 (只实现了预览功能, 也只能打开word文档)

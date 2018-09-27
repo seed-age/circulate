@@ -1,5 +1,9 @@
 package com.sunnsoft.sloa.bizz;
 
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,11 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.sql.DataSource;
-
-import org.springframework.stereotype.Component;
 /**
  * 使用SQL语句查询用户信息
  * @author chenjian

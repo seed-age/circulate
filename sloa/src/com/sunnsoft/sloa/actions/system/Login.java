@@ -1,20 +1,13 @@
 package com.sunnsoft.sloa.actions.system;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.Result;
+import com.opensymphony.xwork2.ActionSupport;
+import com.sunnsoft.sloa.config.Config;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.csrf.CsrfToken;
 
-import com.opensymphony.xwork2.ActionSupport;
-import com.sunnsoft.sloa.auth.SystemUser;
-import com.sunnsoft.sloa.config.Config;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class Login extends ActionSupport implements ServletResponseAware,ServletRequestAware{
 

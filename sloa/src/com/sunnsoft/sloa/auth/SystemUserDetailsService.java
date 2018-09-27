@@ -1,7 +1,8 @@
 package com.sunnsoft.sloa.auth;
 
-import java.util.Date;
-
+import com.sunnsoft.sloa.db.vo.User;
+import com.sunnsoft.sloa.helper.UserHelper;
+import com.sunnsoft.sloa.service.UserService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,9 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.Assert;
 
-import com.sunnsoft.sloa.db.vo.User;
-import com.sunnsoft.sloa.helper.UserHelper;
-import com.sunnsoft.sloa.service.UserService;
+import java.util.Date;
 
 public class SystemUserDetailsService implements UserDetailsService,
 		InitializingBean {

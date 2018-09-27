@@ -1,25 +1,19 @@
 package com.sunnsoft.sloa.helper;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-
+import com.sunnsoft.sloa.db.vo.AttachmentItem;
+import com.sunnsoft.sloa.db.vo.Receive;
+import com.sunnsoft.sloa.db.vo.UpdateRecord;
 import org.apache.commons.lang3.StringUtils;
-
 import org.gteam.db.helper.hibernate.Each;
 import org.gteam.db.helper.hibernate.HelperException;
 import org.gteam.db.helper.hibernate.ScrollEach;
 import org.gteam.db.helper.json.EachEntity2Map;
 import org.gteam.util.EntityUtils;
 
-import com.sunnsoft.sloa.db.vo.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  *  

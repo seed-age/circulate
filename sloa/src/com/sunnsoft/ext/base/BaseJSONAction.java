@@ -1,11 +1,11 @@
 package com.sunnsoft.ext.base;
 
-import java.lang.reflect.ParameterizedType;
-
 import com.opensymphony.xwork2.ActionSupport;
 import org.gteam.constants.SystemConstants;
 import org.gteam.util.JSONUtils;
 import org.gteam.util.JSONUtils.JsonHelper;
+
+import java.lang.reflect.ParameterizedType;
 
 @SuppressWarnings("unchecked")
 public class BaseJSONAction<T> extends ActionSupport {

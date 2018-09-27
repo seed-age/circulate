@@ -1,9 +1,8 @@
 package com.sunnsoft.util;
 
+import javax.crypto.Cipher;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-
-import javax.crypto.Cipher;
 
 public class KeyGen {
 

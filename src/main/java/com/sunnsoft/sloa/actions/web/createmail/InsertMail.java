@@ -1,18 +1,5 @@
 package com.sunnsoft.sloa.actions.web.createmail;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.gteam.db.dao.TransactionalCallBack;
-import org.gteam.service.IService;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSONObject;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
@@ -23,6 +10,12 @@ import com.sunnsoft.sloa.db.vo.UserMssage;
 import com.sunnsoft.sloa.util.HrmMessagePushUtils;
 import com.sunnsoft.sloa.util.mail.MessageUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.gteam.db.dao.TransactionalCallBack;
+import org.gteam.service.IService;
+import org.springframework.util.Assert;
+
+import java.util.*;
 
 /**
  * 新建传阅 --点击发送/保存: 接收人名称, 附件 , 传阅主题, 传阅内容. (删除附件没有实现)

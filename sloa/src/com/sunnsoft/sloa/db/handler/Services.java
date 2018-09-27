@@ -1,8 +1,5 @@
 package com.sunnsoft.sloa.db.handler;
 
-import com.sunnsoft.sloa.service.*;
-import com.sunnsoft.sloa.helper.*;
-
 public class Services {
 
 	private static AttachmentItemService attachmentItemService;

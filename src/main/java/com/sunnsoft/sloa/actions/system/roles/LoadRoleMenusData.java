@@ -1,18 +1,13 @@
 package com.sunnsoft.sloa.actions.system.roles;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.db.vo.Menu;
 import com.sunnsoft.sloa.helper.MenuHelper;
 import com.sunnsoft.sloa.service.MenuService;
 import com.sunnsoft.util.struts2.Results;
-
 import org.gteam.util.FastJSONUtils;
+
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class LoadRoleMenusData extends ActionSupport {

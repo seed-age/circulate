@@ -1,15 +1,14 @@
 package com.sunnsoft.sloa.actions.web.received;
 
-import java.util.Date;
-
-import org.springframework.util.Assert;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.Discuss;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.util.Assert;
+
+import java.util.Date;
 
 /**
  * 收到传阅: 发表评论，点击文本框输入评论内容，点击“发送”按钮，发布评论

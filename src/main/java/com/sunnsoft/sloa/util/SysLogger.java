@@ -1,20 +1,18 @@
 package com.sunnsoft.sloa.util;
 
-import java.util.Date;
-import java.util.concurrent.Executor;
-
-import javax.annotation.Resource;
-
+import com.sunnsoft.sloa.auth.SystemUser;
+import com.sunnsoft.sloa.db.vo.SystemLog;
+import com.sunnsoft.sloa.db.vo.User;
+import com.sunnsoft.sloa.service.SystemLogService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
 
-import com.sunnsoft.sloa.auth.SystemUser;
-import com.sunnsoft.sloa.db.vo.SystemLog;
-import com.sunnsoft.sloa.db.vo.User;
-import com.sunnsoft.sloa.service.SystemLogService;
+import javax.annotation.Resource;
+import java.util.Date;
+import java.util.concurrent.Executor;
 
 @Service
 public class SysLogger {

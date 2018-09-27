@@ -1,14 +1,13 @@
 package com.sunnsoft.util.encrypt;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
+import org.apache.commons.lang.StringUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.lang.StringUtils;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 
 
 

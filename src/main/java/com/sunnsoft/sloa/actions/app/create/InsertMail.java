@@ -1,15 +1,5 @@
 package com.sunnsoft.sloa.actions.app.create;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.gteam.db.dao.TransactionalCallBack;
-import org.gteam.service.IService;
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSONObject;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
@@ -20,6 +10,15 @@ import com.sunnsoft.sloa.db.vo.UserMssage;
 import com.sunnsoft.sloa.util.HrmMessagePushUtils;
 import com.sunnsoft.sloa.util.mail.MessageUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.gteam.db.dao.TransactionalCallBack;
+import org.gteam.service.IService;
+import org.springframework.util.Assert;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 新建传阅(APP端): 添加收件人(多个) , 添加附件(多个) , 传阅主题 , 传阅内容 APP端是没有选项的, 但是 要默认选中 PC端

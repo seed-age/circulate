@@ -1,11 +1,10 @@
 package com.sunnsoft.sloa.actions.web.createmail;
 
-import org.springframework.util.Assert;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.UserMssage;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.util.Assert;
 
 /**
  * 新建传阅---添加联系人--点击同部门: 查询出该用户所在部门的所有人员信息.

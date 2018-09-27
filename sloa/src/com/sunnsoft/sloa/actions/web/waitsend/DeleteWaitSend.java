@@ -1,13 +1,9 @@
 package com.sunnsoft.sloa.actions.web.waitsend;
 
-import java.util.List;
-
-import org.springframework.util.Assert;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
-import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.util.Assert;
 
 /**
  * 待发传阅: 删除选择的传阅 (这里的删除是物理删除.) 批量

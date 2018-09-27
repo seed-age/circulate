@@ -1,19 +1,14 @@
 package com.sunnsoft.sloa.actions.app.received;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import org.springframework.util.Assert;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.sloa.db.vo.UserMssage;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.util.Assert;
+
+import java.util.*;
 
 /**
  * 已收传阅---查看传阅对象: 点击添加联系人, 添加传阅对象

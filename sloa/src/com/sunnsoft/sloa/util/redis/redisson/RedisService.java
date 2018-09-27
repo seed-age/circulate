@@ -1,30 +1,15 @@
 package com.sunnsoft.sloa.util.redis.redisson;
 
+import org.redisson.Config;
+import org.redisson.Redisson;
+import org.redisson.RedissonClient;
+import org.redisson.core.*;
+
+import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PreDestroy;
-
-import org.apache.commons.lang3.StringUtils;
-import org.redisson.Config;
-import org.redisson.Redisson;
-import org.redisson.RedissonClient;
-import org.redisson.core.RAtomicDouble;
-import org.redisson.core.RAtomicLong;
-import org.redisson.core.RBlockingQueue;
-import org.redisson.core.RBucket;
-import org.redisson.core.RCountDownLatch;
-import org.redisson.core.RDeque;
-import org.redisson.core.RList;
-import org.redisson.core.RLock;
-import org.redisson.core.RMap;
-import org.redisson.core.RQueue;
-import org.redisson.core.RScoredSortedSet;
-import org.redisson.core.RSet;
-import org.redisson.core.RSortedSet;
-import org.redisson.core.RTopic;
 
 /**
  * 

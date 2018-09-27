@@ -3,24 +3,18 @@
  */
 package com.sunnsoft.sloa.service;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-
-import org.hibernate.criterion.DetachedCriteria;
-
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.context.ApplicationContext;
-
-import org.gteam.db.dao.PageList;
-import org.gteam.db.dao.PageScroll;
-import org.gteam.db.dao.OrderBy;
-import org.gteam.db.dao.TransactionalCallBack;
-import org.gteam.db.dao.BaseDAO;
-import org.gteam.config.ConfigHelper;
-import com.sunnsoft.sloa.helper.MailHelper;
-import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.handler.DaoHandler;
+import com.sunnsoft.sloa.db.vo.Mail;
+import com.sunnsoft.sloa.helper.MailHelper;
+import org.gteam.config.ConfigHelper;
+import org.gteam.db.dao.*;
+import org.hibernate.criterion.DetachedCriteria;
+import org.springframework.context.ApplicationContext;
+import org.springframework.orm.hibernate3.HibernateCallback;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author 林宇民(llade)

@@ -1,18 +1,17 @@
 package com.sunnsoft.sloa.actions.system.roles;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.db.vo.Role;
 import com.sunnsoft.sloa.helper.RoleHelper;
 import com.sunnsoft.sloa.service.RoleService;
 import com.sunnsoft.util.struts2.Results;
-
 import org.gteam.db.helper.hibernate.Each;
 import org.gteam.util.FastJSONUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class LoadRolesNodeData extends ActionSupport {

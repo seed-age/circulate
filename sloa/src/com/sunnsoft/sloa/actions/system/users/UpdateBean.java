@@ -1,10 +1,5 @@
 package com.sunnsoft.sloa.actions.system.users;
 
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.db.vo.User;
 import com.sunnsoft.sloa.helper.UserHelper;
@@ -12,6 +7,10 @@ import com.sunnsoft.sloa.service.RoleService;
 import com.sunnsoft.sloa.service.UserService;
 import com.sunnsoft.sloa.util.UserUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
 
 public class UpdateBean extends ActionSupport {
 	

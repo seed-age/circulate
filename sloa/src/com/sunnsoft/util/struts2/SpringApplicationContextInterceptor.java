@@ -1,12 +1,11 @@
 package com.sunnsoft.util.struts2;
 
-import javax.servlet.ServletContext;
-
+import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+import javax.servlet.ServletContext;
 
 /**
  * 从拦截器获取spring的ApplicationContext

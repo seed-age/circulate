@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/task
+    http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+<!--	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">-->
+<!--	  <property name="corePoolSize" value="5" />-->
+<!--	  <property name="maxPoolSize" value="10" />-->
+<!--	  <property name="queueCapacity" value="25" />-->
+<!--	</bean>-->
+	<task:scheduler id="taskScheduler" 
+			   pool-size="10"/>
+
+    <task:executor id="taskExecutor"
+    		   pool-size="5-50"
+               queue-capacity="5000"
+               rejection-policy="CALLER_RUNS"/>
+
+    <task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
+    
+    
+    <alias name="taskExecutor" alias="threadPool"/>  
+<!--	 公用线程池 -->
+
+<!--	<bean id="threadPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">-->
+<!--	  <property name="corePoolSize" value="10" />-->
+<!--	  <property name="maxPoolSize" value="40" />-->
+<!--	  <property name="queueCapacity" value="250" />-->
+<!--	</bean>-->
+	
+</beans>

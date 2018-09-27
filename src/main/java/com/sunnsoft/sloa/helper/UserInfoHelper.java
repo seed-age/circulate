@@ -1,30 +1,26 @@
 package com.sunnsoft.sloa.helper;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-
-
+import com.sunnsoft.sloa.db.vo.User;
+import com.sunnsoft.sloa.db.vo.UserInfo;
+import com.sunnsoft.sloa.service.UserInfoService;
+import com.sunnsoft.sloa.service.UserService;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.gteam.constants.SystemConstants;
+import org.gteam.db.dao.BaseDAO;
+import org.gteam.db.dao.PageList;
+import org.gteam.db.dao.PageScroll;
+import org.gteam.db.dao.TransactionalCallBack;
+import org.gteam.db.helper.hibernate.*;
+import org.gteam.service.IService;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
-import org.gteam.constants.SystemConstants;
-import org.gteam.db.dao.*;
-import org.gteam.db.helper.hibernate.*;
-import com.sunnsoft.sloa.db.vo.*;
-import com.sunnsoft.sloa.service.*;
-import org.gteam.service.IService;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class UserInfoHelper extends HelperAbstract<UserInfo>{

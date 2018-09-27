@@ -1,19 +1,17 @@
 package com.sunnsoft.sloa.actions.web.createmail;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.opensymphony.xwork2.ActionContext;
+import com.sunnsoft.sloa.actions.common.BaseParameter;
 import org.apache.commons.io.FileUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.sunnsoft.sloa.actions.common.BaseParameter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 /**
  * 新建传阅--富文本上传图片
  * @author chenjian

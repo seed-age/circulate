@@ -1,8 +1,5 @@
 package com.sunnsoft.sloa.config.security;
 
-import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
-import org.springframework.stereotype.Component;
-
 /**
  * spring security java config 无法与原有的web.xml里的其他类型filter顺序自定义，导致很多问题。因此暂时不采用java config方式进行配置。
  * @author llade

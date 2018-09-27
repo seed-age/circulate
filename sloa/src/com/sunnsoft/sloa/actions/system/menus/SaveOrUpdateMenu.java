@@ -1,11 +1,5 @@
 package com.sunnsoft.sloa.actions.system.menus;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.db.vo.Menu;
 import com.sunnsoft.sloa.db.vo.Role;
@@ -14,6 +8,11 @@ import com.sunnsoft.sloa.service.MenuService;
 import com.sunnsoft.sloa.service.RoleService;
 import com.sunnsoft.sloa.util.UserUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class SaveOrUpdateMenu extends ActionSupport {

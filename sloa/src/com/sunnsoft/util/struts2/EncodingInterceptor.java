@@ -1,16 +1,14 @@
 package com.sunnsoft.util.struts2;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Iterator;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts2.StrutsStatics;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+import org.apache.struts2.StrutsStatics;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Iterator;
 
 public class EncodingInterceptor extends AbstractInterceptor {
 

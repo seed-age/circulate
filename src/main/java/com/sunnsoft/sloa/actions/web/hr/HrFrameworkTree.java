@@ -1,12 +1,5 @@
 package com.sunnsoft.sloa.actions.web.hr;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.gteam.db.helper.json.EachEntity2Map;
-
 import com.alibaba.fastjson.JSON;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
@@ -17,6 +10,12 @@ import com.sunnsoft.sloa.helper.HrmdepartmentHelper;
 import com.sunnsoft.sloa.helper.HrmsubcompanyHelper;
 import com.sunnsoft.sloa.helper.UserMssageHelper;
 import com.sunnsoft.util.struts2.Results;
+import org.gteam.db.helper.json.EachEntity2Map;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class HrFrameworkTree extends BaseParameter{
 

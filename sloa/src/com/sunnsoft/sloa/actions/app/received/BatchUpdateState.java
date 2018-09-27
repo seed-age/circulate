@@ -1,11 +1,5 @@
 package com.sunnsoft.sloa.actions.app.received;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.util.Assert;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.Mail;
@@ -13,6 +7,11 @@ import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.sloa.util.HrmMessagePushUtils;
 import com.sunnsoft.sloa.util.mail.MessageUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.util.Assert;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 收到传阅(PC端/APP端)--点击 跳过/ 点击编辑--选择跳过 : 批量快捷处理未读传阅，把未读传阅改为已读，同时并确认.

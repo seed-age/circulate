@@ -1,16 +1,16 @@
 package com.sunnsoft.util.pdf;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import com.itextpdf.awt.geom.Rectangle2D.Float;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.pdf.parser.ImageRenderInfo;
 import com.itextpdf.text.pdf.parser.RenderListener;
 import com.itextpdf.text.pdf.parser.TextRenderInfo;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * pdf渲染监听,当找到渲染的文本时，得到文本的坐标x,y,w,h

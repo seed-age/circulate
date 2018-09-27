@@ -1,15 +1,14 @@
 package com.sunnsoft.sloa.actions.web.createmail;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
 import com.alibaba.fastjson.JSONObject;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.bizz.UserMssageSql;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.util.struts2.Results;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 /**
  * 新建传阅---点击右侧联系人和常用组: 查询 分部信息, 部门信息, 人员信息展示到前端.(初始版)
  * 

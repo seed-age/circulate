@@ -1,17 +1,16 @@
 package com.sunnsoft.sloa.actions.system;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.struts2.interceptor.ServletRequestAware;
-import org.apache.struts2.interceptor.ServletResponseAware;
-import org.springframework.security.web.csrf.CsrfToken;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.auth.SystemUser;
 import com.sunnsoft.sloa.config.Config;
 import com.sunnsoft.sloa.util.UserUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.apache.struts2.interceptor.ServletRequestAware;
+import org.apache.struts2.interceptor.ServletResponseAware;
+import org.springframework.security.web.csrf.CsrfToken;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class Main extends ActionSupport implements ServletRequestAware,ServletResponseAware{
 	

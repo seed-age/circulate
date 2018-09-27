@@ -1,11 +1,5 @@
 package com.sunnsoft.sloa.actions.system.users;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.db.vo.Role;
 import com.sunnsoft.sloa.db.vo.User;
@@ -14,6 +8,11 @@ import com.sunnsoft.sloa.service.RoleService;
 import com.sunnsoft.sloa.service.UserService;
 import com.sunnsoft.sloa.util.UserUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class InsertBean extends ActionSupport { 

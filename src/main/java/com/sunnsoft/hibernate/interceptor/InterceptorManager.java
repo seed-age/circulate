@@ -1,14 +1,10 @@
 package com.sunnsoft.hibernate.interceptor;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * 

@@ -1,19 +1,15 @@
 package com.sunnsoft.sloa.helper;
 
-import java.lang.reflect.Method;
-import java.util.*;
-
+import com.sunnsoft.sloa.db.vo.Hrmsubcompany;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Junction;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-
 import org.gteam.db.helper.hibernate.Each;
 import org.gteam.db.helper.hibernate.HelperException;
-import com.sunnsoft.sloa.db.vo.Hrmsubcompany;
+import org.hibernate.criterion.*;
+
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.List;
+import java.util.Stack;
 
 @SuppressWarnings("unchecked")
 public class HrmsubcompanyProperty<T> {

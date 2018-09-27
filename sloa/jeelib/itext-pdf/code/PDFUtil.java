@@ -1,20 +1,15 @@
 package com.sunnsoft.util.pdf;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
-
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.log.Logger;
 import com.itextpdf.text.log.LoggerFactory;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfGState;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.*;
+
+import java.io.InputStream;
+import java.io.OutputStream;
 /**
  * 
  * @author llade 改进

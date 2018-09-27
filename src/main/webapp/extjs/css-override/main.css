@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+ /* style rows on mouseover */
+ .x-grid-row-over .x-grid-cell-inner {
+     font-weight: bold;
+     cursor: hand;
+ }
+ 
+ .x-grid-cell-inner-nohand {
+ 	 font-weight: normal;
+     cursor: auto;
+ }
+ /*grid 行间隔色*/
+ .x-grid3-row-alt {
+ 	background-color: #eff8f6;
+ }
+

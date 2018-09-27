@@ -1,9 +1,9 @@
 package com.sunnsoft.util.pdf;
 
+import com.itextpdf.text.BaseColor;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.itextpdf.text.BaseColor;
 
 /**
  * 需要替换的区域

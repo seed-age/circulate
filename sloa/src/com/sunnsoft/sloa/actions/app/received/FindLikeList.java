@@ -1,16 +1,5 @@
 package com.sunnsoft.sloa.actions.app.received;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.gteam.db.dao.PageList;
-import org.gteam.db.helper.json.EachEntity2Map;
-import org.springframework.util.Assert;
-import com.alibaba.fastjson.JSONObject;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.AttachmentItem;
@@ -19,6 +8,11 @@ import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.sloa.helper.ReceiveHelper;
 import com.sunnsoft.util.PageUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.gteam.db.helper.json.EachEntity2Map;
+import org.springframework.util.Assert;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 收到传阅(PC端/APP端)---搜索:传阅关键词查询，全局模糊查询，包括主题、接收人，发起人、和传阅详情内容

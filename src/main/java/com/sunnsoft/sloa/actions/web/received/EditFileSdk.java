@@ -1,16 +1,5 @@
 package com.sunnsoft.sloa.actions.web.received;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSONObject;
 import com.lenovo.css.lenovocloud.sdk.LenovoCloudSDK;
 import com.lenovo.css.lenovocloud.sdk.model.EditFileModel;
@@ -23,6 +12,16 @@ import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.UserMssage;
 import com.sunnsoft.sloa.util.LenovoCloudSDKUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
+
+import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
+
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 /**
  * (PC端)传阅详情页面---点击修改附件按钮: 在线修改传阅附件(网盘)

@@ -1,14 +1,14 @@
 package com.sunnsoft.sloa.actions.system.menus;
 
-import java.util.Iterator;
-import java.util.List;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.db.vo.Menu;
 import com.sunnsoft.sloa.helper.MenuHelper;
 import com.sunnsoft.sloa.service.MenuService;
 import com.sunnsoft.sloa.util.UserUtils;
 import com.sunnsoft.util.struts2.Results;
+
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class MoveMenu extends ActionSupport {

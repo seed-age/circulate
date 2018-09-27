@@ -1,14 +1,13 @@
 package com.sunnsoft.test;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class JsonLibTest {
 

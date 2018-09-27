@@ -1,9 +1,9 @@
 package com.sunnsoft.sloa.auth;
 
-import java.util.Collection;
-
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
 
 public class AccessTokenAuthenticationToken extends AbstractAuthenticationToken {
 	private static final long serialVersionUID = 1L;

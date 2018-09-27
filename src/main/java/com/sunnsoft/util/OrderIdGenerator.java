@@ -1,11 +1,11 @@
 package com.sunnsoft.util;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.InitializingBean;
 
 public class OrderIdGenerator implements InitializingBean {
 

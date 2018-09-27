@@ -1,17 +1,16 @@
 package com.sunnsoft.sloa.actions.app.index;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSONObject;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.util.Assert;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 传阅首页(APP端): 统计数量 (当前用户所有的传阅, 不管是已发或者是收到)

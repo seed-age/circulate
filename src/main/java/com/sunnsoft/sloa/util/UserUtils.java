@@ -1,6 +1,9 @@
 package com.sunnsoft.sloa.util;
 
 
+import com.opensymphony.xwork2.ActionContext;
+import com.sunnsoft.sloa.auth.SystemUser;
+import com.sunnsoft.sloa.db.handler.Services;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,10 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-
-import com.opensymphony.xwork2.ActionContext;
-import com.sunnsoft.sloa.auth.SystemUser;
-import com.sunnsoft.sloa.db.handler.Services;
 
 //@SuppressWarnings("unchecked")
 public class UserUtils {

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<!-- 曝露远程服务 例子 -->
+<!--	<bean name="/user-service.service" class="org.springframework.remoting.caucho.HessianServiceExporter">  -->
+<!--	    <property name="service" ref="userService"/>  -->
+<!--	    <property name="serviceInterface">  -->
+<!--	        <value>com.sunnsoft.sloa.service.UserService</value>  -->
+<!--	    </property>  -->
+<!--	</bean>  -->
+<!--	<bean id="emptyUserService" class="com.sunnsoft.sloa.remote.impl.EmptyUserServiceImpl">-->
+<!--		<property name="userService" ref="userService"></property>-->
+<!--	</bean>-->
+<!--	<bean name="/user-service.service" class="org.springframework.remoting.caucho.HessianServiceExporter">-->
+<!--	    <property name="service" ref="emptyUserService"/>-->
+<!--	    <property name="serviceInterface">-->
+<!--	        <value>com.sunnsoft.sloa.remote.service.EmptyUserService</value>-->
+<!--	    </property>-->
+<!--	</bean>-->
+<!---->
+<!--	<bean name="/menu-auth-service.service" class="org.springframework.remoting.caucho.HessianServiceExporter">-->
+<!--	    <property name="service" ref="menuAuthService">-->
+<!--	    </property>-->
+<!--	    <property name="serviceInterface">-->
+<!--	        <value>com.sunnsoft.sloa.remote.service.MenuAuthService</value>-->
+<!--	    </property>-->
+<!--	</bean>-->
+
+</beans>

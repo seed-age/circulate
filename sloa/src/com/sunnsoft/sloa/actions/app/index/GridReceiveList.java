@@ -1,13 +1,5 @@
 package com.sunnsoft.sloa.actions.app.index;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.gteam.db.helper.json.EachEntity2Map;
-import org.springframework.util.Assert;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.AttachmentItem;
@@ -15,6 +7,13 @@ import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.util.PageUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.gteam.db.helper.json.EachEntity2Map;
+import org.springframework.util.Assert;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 传阅首页(APP端)--收到传阅: 点击跳转到收到传阅列表， 展示的数据通过 传递一个状态 决定是 所有的 传阅中 待办 已完成 的其中一个状态的数据列表

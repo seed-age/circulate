@@ -1,15 +1,13 @@
 package com.sunnsoft.sloa.util;
 
+import com.sunnsoft.util.base.DataDictonary;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Component;
-
-import com.sunnsoft.util.base.DataDictonary;
 
 @Component("userDictonary")
 public class UserDbDataDictionary implements DataDictonary {

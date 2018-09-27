@@ -1,18 +1,5 @@
 package com.sunnsoft.sloa.actions.web.received;
 
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-import javax.annotation.Resource;
-
-import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.InterceptorRef;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
-
 import com.lenovo.css.lenovocloud.sdk.LenovoCloudSDK;
 import com.lenovo.css.lenovocloud.sdk.model.PathType;
 import com.lenovo.css.lenovocloud.sdk.model.UploadModel;
@@ -25,6 +12,18 @@ import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.sloa.db.vo.UserMssage;
 import com.sunnsoft.sloa.util.LenovoCloudSDKUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.InterceptorRef;
+import org.springframework.util.Assert;
+
+import javax.annotation.Resource;
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 /**
  * (PC端)上传附件(上传到联想网盘): 点击添加附件, 可以多个附件上传. 返回数据, 附件的名称, 大小, 状态 在已收传阅 进行新增上传附件.

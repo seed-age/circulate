@@ -1,14 +1,13 @@
 package com.sunnsoft.sloa.db.handler;
 
-import javax.annotation.PostConstruct;
-
+import com.sunnsoft.sloa.service.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import com.sunnsoft.sloa.service.*;
+import javax.annotation.PostConstruct;
 
 @Component
 public class ServicesInitializer implements ApplicationContextAware{

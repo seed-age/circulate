@@ -1,9 +1,5 @@
 package com.sunnsoft.sloa.actions.system.roles;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.db.vo.Menu;
 import com.sunnsoft.sloa.db.vo.Role;
@@ -13,6 +9,10 @@ import com.sunnsoft.sloa.service.RoleService;
 import com.sunnsoft.sloa.service.UserService;
 import com.sunnsoft.sloa.util.UserUtils;
 import com.sunnsoft.util.struts2.Results;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class SaveOrUpdateRole extends ActionSupport {

@@ -1,13 +1,5 @@
 package com.sunnsoft.sloa.actions.web.createmail;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSONObject;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
@@ -16,6 +8,9 @@ import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.sloa.db.vo.UserMssage;
 import com.sunnsoft.util.DateUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.util.Assert;
+
+import java.util.*;
 
 /**
  * 新建传阅--添加联系--点击最近: 查询出该用户在新建传阅中添加联系人时, 七天以内添加联系人的数据.

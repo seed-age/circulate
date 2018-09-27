@@ -1,12 +1,12 @@
 package com.sunnsoft.util;
 
-import java.awt.image.BufferedImageOp;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.patchca.color.ColorFactory;
 import org.patchca.filter.library.WobbleImageOp;
 import org.patchca.filter.predefined.CurvesRippleFilterFactory;
+
+import java.awt.image.BufferedImageOp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author 林宇民 Andy (llade)

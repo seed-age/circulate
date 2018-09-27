@@ -1,18 +1,15 @@
 package com.sunnsoft.sloa.actions.web.send;
 
-import java.util.Map;
-
-import org.gteam.db.dao.PageList;
-import org.gteam.db.helper.json.EachEntity2Map;
-import org.springframework.util.Assert;
-
-import com.alibaba.fastjson.JSONObject;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.Discuss;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.util.PageUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.gteam.db.helper.json.EachEntity2Map;
+import org.springframework.util.Assert;
+
+import java.util.Map;
 /**
  * 已发传阅--评论：点击评论icon，跳转评论列表页面，查看评论.(分页)
  * @author chenjian

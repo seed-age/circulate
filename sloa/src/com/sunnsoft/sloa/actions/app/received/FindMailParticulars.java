@@ -1,14 +1,5 @@
 package com.sunnsoft.sloa.actions.app.received;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.gteam.db.helper.json.EachEntity2Map;
-import org.springframework.util.Assert;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.AttachmentItem;
@@ -17,6 +8,14 @@ import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.sloa.util.HrmMessagePushUtils;
 import com.sunnsoft.sloa.util.mail.MessageUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.gteam.db.helper.json.EachEntity2Map;
+import org.springframework.util.Assert;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 点击 已收/已发/待发/已删除 --> 传阅列表中某一条数据: 跳转到传阅详情页面, 展示该传阅的详细信息.

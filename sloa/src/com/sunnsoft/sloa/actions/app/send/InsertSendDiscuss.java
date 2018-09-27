@@ -1,17 +1,12 @@
 package com.sunnsoft.sloa.actions.app.send;
 
-import java.util.Date;
-
-import org.gteam.db.dao.PageList;
-import org.springframework.util.Assert;
-
-import com.alibaba.fastjson.JSONObject;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
-import com.sunnsoft.sloa.db.vo.Discuss;
 import com.sunnsoft.sloa.db.vo.Mail;
-import com.sunnsoft.util.PageUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.util.Assert;
+
+import java.util.Date;
 
 /**
  * 已发传阅(APP端): 评论传阅 发表评论，点击文本框输入评论内容，点击“发送”按钮，发布评论

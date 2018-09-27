@@ -1,10 +1,9 @@
 package com.sunnsoft.sloa.hibernate;
 
-import org.springframework.stereotype.Component;
-
 import com.sunnsoft.hibernate.interceptor.InterceptorHelper;
 import com.sunnsoft.hibernate.interceptor.PojoInterceptor;
 import com.sunnsoft.sloa.db.vo.User;
+import org.springframework.stereotype.Component;
 
 /**
  * 

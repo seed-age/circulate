@@ -1,14 +1,13 @@
 package com.sunnsoft.sloa.actions.app.received;
 
-import java.util.List;
-
-import org.springframework.util.Assert;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.util.Assert;
+
+import java.util.List;
 /**
  * 已收传阅--点击传阅: 修改该传阅的状态!
  * @author chenjian

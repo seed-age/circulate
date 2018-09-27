@@ -1,13 +1,5 @@
 package com.sunnsoft.sloa.actions.web.createmail;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.gteam.db.dao.TransactionalCallBack;
-import org.gteam.service.IService;
-import org.springframework.util.Assert;
-
 import com.lenovo.css.lenovocloud.sdk.LenovoCloudSDK;
 import com.lenovo.css.lenovocloud.sdk.model.FileGetIdModel;
 import com.lenovo.css.lenovocloud.sdk.model.PathType;
@@ -18,6 +10,12 @@ import com.sunnsoft.sloa.db.vo.AttachmentItem;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.util.LenovoCloudSDKUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.gteam.db.dao.TransactionalCallBack;
+import org.gteam.service.IService;
+import org.springframework.util.Assert;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 新建传阅--删除附件: 点击删除, 去网盘上查询该附件的信息, 并删除该附件(本地删除, 网盘上的不做删除).

@@ -1,17 +1,11 @@
 package com.sunnsoft.sloa.actions.app.create;
 
-import javax.annotation.Resource;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.schedule.HrmUserSchedule;
 import com.sunnsoft.util.struts2.Results;
 
-import localhost.services.hrmservice.HrmService;
-import localhost.services.hrmservice.HrmServicePortType;
-import weaver.hrm.webservice.DepartmentBean;
-import weaver.hrm.webservice.SubCompanyBean;
-import weaver.hrm.webservice.UserBean;
+import javax.annotation.Resource;
 
 /**
  * 获取联系人信息的测试接口(用于测试)

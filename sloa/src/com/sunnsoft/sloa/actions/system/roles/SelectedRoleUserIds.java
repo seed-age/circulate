@@ -1,13 +1,12 @@
 package com.sunnsoft.sloa.actions.system.roles;
 
-import java.util.List;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.helper.UserHelper;
 import com.sunnsoft.util.struts2.Results;
-
 import org.gteam.util.FastJSONUtils;
+
+import java.util.List;
 
 public class SelectedRoleUserIds extends ActionSupport {
 	

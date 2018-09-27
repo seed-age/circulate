@@ -1,18 +1,15 @@
 package com.sunnsoft.sloa.auth;
 
 
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import com.sunnsoft.sloa.db.vo.User;
+import org.gteam.constants.RoleConstants;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.sunnsoft.sloa.db.vo.User;
-
-import org.gteam.constants.RoleConstants;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class SystemUser implements UserDetails {
 

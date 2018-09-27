@@ -1,5 +1,10 @@
 package com.sunnsoft.sloa.util.redis.jedis;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Transaction;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -7,12 +12,6 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Transaction;
 
 
 public class RedisLock implements Lock, Serializable {

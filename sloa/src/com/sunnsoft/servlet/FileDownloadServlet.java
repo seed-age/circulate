@@ -1,26 +1,21 @@
 package com.sunnsoft.servlet;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URLEncoder;
+import com.sunnsoft.util.FileStore;
+import com.sunnsoft.util.ImageUtils;
+import com.sunnsoft.util.MimeTypeDictionary;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import com.sunnsoft.sloa.actions.web.received.SendDownloadFile;
-import com.sunnsoft.util.FileStore;
-import com.sunnsoft.util.ImageUtils;
-import com.sunnsoft.util.MimeTypeDictionary;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class FileDownloadServlet extends HttpServlet {
 

@@ -1,14 +1,13 @@
 package com.sunnsoft.sloa.actions.system;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.auth.SystemUser;
 import com.sunnsoft.sloa.db.vo.User;
 import com.sunnsoft.sloa.service.UserService;
 import com.sunnsoft.sloa.util.UserUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class SaveSetting extends ActionSupport {
 	

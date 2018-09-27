@@ -1,15 +1,5 @@
 package com.sunnsoft.sloa.actions.web.received;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.gteam.db.helper.json.EachEntity2Map;
-import org.springframework.util.Assert;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.AttachmentItem;
@@ -18,6 +8,11 @@ import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.sloa.helper.ReceiveHelper;
 import com.sunnsoft.util.PageUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.gteam.db.helper.json.EachEntity2Map;
+import org.springframework.util.Assert;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 收到传阅--传阅列表: 默认显示所有的已收传阅: 0 所有收到的传阅 1 传阅中 2 待办传阅 3 已完成 4 未读 5 已读

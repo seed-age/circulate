@@ -1,17 +1,10 @@
 package com.sunnsoft.test;
 
-import java.util.List;
-
 import localhost.services.hrmservice.HrmService;
 import localhost.services.hrmservice.HrmServicePortType;
-import weaver.hrm.webservice.ArrayOfDepartmentBean;
-import weaver.hrm.webservice.ArrayOfJobTitleBean;
-import weaver.hrm.webservice.ArrayOfSubCompanyBean;
-import weaver.hrm.webservice.ArrayOfUserBean;
-import weaver.hrm.webservice.DepartmentBean;
-import weaver.hrm.webservice.JobTitleBean;
-import weaver.hrm.webservice.SubCompanyBean;
-import weaver.hrm.webservice.UserBean;
+import weaver.hrm.webservice.*;
+
+import java.util.List;
 
 public class Test {
 

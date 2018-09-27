@@ -1,12 +1,5 @@
 package com.sunnsoft.sloa.actions.app.create;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSONObject;
 import com.lenovo.css.lenovocloud.sdk.LenovoCloudSDK;
 import com.lenovo.css.lenovocloud.sdk.model.PathType;
@@ -17,6 +10,11 @@ import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.AttachmentItem;
 import com.sunnsoft.sloa.util.LenovoCloudSDKUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.util.Assert;
+
+import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 新建传阅/已发传阅: 点击附件可对附件进行预览操作

@@ -1,13 +1,11 @@
 package com.sunnsoft.sloa.schedule;
 
-import javax.annotation.Resource;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-
 import com.sunnsoft.sloa.service.UserService;
 import com.sunnsoft.util.FileStore;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 @Service
 public class TestSchedule {

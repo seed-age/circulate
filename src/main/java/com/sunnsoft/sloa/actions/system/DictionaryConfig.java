@@ -1,10 +1,9 @@
 package com.sunnsoft.sloa.actions.system;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.util.base.DataDictonary;
 import com.sunnsoft.util.struts2.Results;
+import org.apache.commons.lang.StringUtils;
 
 public class DictionaryConfig extends ActionSupport {
 	

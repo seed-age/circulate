@@ -1,12 +1,11 @@
 package com.sunnsoft.sloa.helper;
 
+import com.sunnsoft.util.DateUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.sunnsoft.util.DateUtils;
 
 public class RoleDateProperty extends RoleProperty<Date>{
 	

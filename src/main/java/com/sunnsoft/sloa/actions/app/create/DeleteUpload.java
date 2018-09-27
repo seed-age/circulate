@@ -1,17 +1,15 @@
 package com.sunnsoft.sloa.actions.app.create;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.util.Assert;
-
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.config.Config;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.AttachmentItem;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.util.struts2.Results;
+import org.springframework.util.Assert;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 新建传阅--删除附件: 点击删除, 去网盘上查询该附件的信息, 并删除该附件(本地, 网盘上的不做删除).

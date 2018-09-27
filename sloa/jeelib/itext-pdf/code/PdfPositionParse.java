@@ -1,13 +1,14 @@
 package com.sunnsoft.util.pdf;
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
 
 /**
  * 解析PDF中文本的x,y位置

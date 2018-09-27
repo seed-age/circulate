@@ -1,13 +1,13 @@
 package com.sunnsoft.hibernate;
 
-import java.util.List;
-
 import org.hibernate.cfg.reveng.DelegatingReverseEngineeringStrategy;
 import org.hibernate.cfg.reveng.ReverseEngineeringSettings;
 import org.hibernate.cfg.reveng.ReverseEngineeringStrategy;
 import org.hibernate.cfg.reveng.TableIdentifier;
 import org.hibernate.mapping.ForeignKey;
 import org.springframework.util.Assert;
+
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class ReverseStrategy extends DelegatingReverseEngineeringStrategy {

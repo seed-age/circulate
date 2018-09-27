@@ -1,17 +1,18 @@
 package com.sunnsoft.sloa.actions.app.index;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.gteam.db.helper.json.EachEntity2Map;
-import org.springframework.util.Assert;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.AttachmentItem;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.util.PageUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.gteam.db.helper.json.EachEntity2Map;
+import org.springframework.util.Assert;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 传阅首页(APP端)--已发传阅: 点击页面跳转到已发传阅 默认选中所有传阅列表，该列表的数据不做任何筛选(就是传阅中和已完成) status

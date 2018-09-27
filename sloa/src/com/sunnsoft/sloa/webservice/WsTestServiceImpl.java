@@ -1,16 +1,15 @@
 package com.sunnsoft.sloa.webservice;
 
+import com.sunnsoft.servlet.filter.BrowserIpExtractorFilter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.transport.http.AbstractHTTPDestination;
+
 import javax.annotation.Resource;
 import javax.jws.WebService;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.transport.http.AbstractHTTPDestination;
-
-import com.sunnsoft.servlet.filter.BrowserIpExtractorFilter;
 
 /**
  * webservice 示例 ，详细配置请参考web.xml配置和cxf-servlet.xml配置。反向代理后的IP地址获取请使用{@link BrowserIpExtractorFilter}

@@ -1,17 +1,15 @@
 package com.sunnsoft.sloa.actions.system.log;
 
-import java.util.Date;
-
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.criterion.Order;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sunnsoft.sloa.helper.SystemLogHelper;
 import com.sunnsoft.sloa.service.SystemLogService;
 import com.sunnsoft.sloa.util.UserUtils;
 import com.sunnsoft.util.struts2.Results;
-
+import org.apache.commons.lang.StringUtils;
 import org.gteam.constants.SystemConstants;
+import org.hibernate.criterion.Order;
+
+import java.util.Date;
 
 public class LogGridData extends ActionSupport {
 	

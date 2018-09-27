@@ -1,22 +1,19 @@
 package com.sunnsoft.sloa.util;
 
+import com.sunnsoft.sloa.db.vo.Dictionary;
+import com.sunnsoft.sloa.service.DictionaryService;
+import com.sunnsoft.util.base.DataDictonary;
+import org.gteam.db.helper.hibernate.ScrollEach;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Component;
-
-import com.sunnsoft.sloa.db.vo.Dictionary;
-import com.sunnsoft.sloa.service.DictionaryService;
-import com.sunnsoft.util.base.DataDictonary;
-
-import org.gteam.db.helper.hibernate.ScrollEach;
 /**
  * 
  * @author llade
