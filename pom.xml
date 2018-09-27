@@ -202,6 +202,12 @@
       <version>3.2.6</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.pactera.sso</groupId>
+      <artifactId>client</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
   </dependencies>
 
   <repositories>
