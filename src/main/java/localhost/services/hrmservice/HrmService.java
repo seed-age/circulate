@@ -15,7 +15,7 @@ import java.net.URL;
  * 
  */
 @WebServiceClient(name = "HrmService", 
-                  wsdlLocation = "https://oa.seedland.cc//services/HrmService?wsdl",
+                  wsdlLocation = "https://oa-uat.seedland.cc:8443/services/HrmService?wsdl",
                   targetNamespace = "http://localhost/services/HrmService") 
 public class HrmService extends Service {
 
@@ -26,11 +26,11 @@ public class HrmService extends Service {
     static {
         URL url = null;
         try {
-            url = new URL("https://oa.seedland.cc//services/HrmService?wsdl");
+            url = new URL("https://oa-uat.seedland.cc:8443/services/HrmService?wsdl");
         } catch (MalformedURLException e) {
             java.util.logging.Logger.getLogger(HrmService.class.getName())
                 .log(java.util.logging.Level.INFO, 
-                     "Can not initialize the default wsdl from {0}", "https://oa.seedland.cc//services/HrmService?wsdl");
+                     "Can not initialize the default wsdl from {0}", "https://oa-test.seedland.cc//services/HrmService?wsdl");
         }
         WSDL_LOCATION = url;
     }
