@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <SettingConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-	<!-- 1 -->
+	<!-- 1 dev-->
 	<!--数据库连接  -->
 	<ConnectionString
 			dataSourceUrl="jdbc:mysql://192.168.64.227:3306/sso_db?useUnicode=true"

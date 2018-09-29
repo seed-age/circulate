@@ -1,5 +1,6 @@
 package com.sunnsoft.sloa.util.mail;
 
+import com.sunnsoft.ThirdPartyConfiguration;
 import net.sf.json.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.httpclient.HttpClient;
@@ -25,9 +26,12 @@ public class MessageUtils {
 	 */
 	public static void pushEmobile(String LoginIds, Integer type, Long mailId) {
 
-		String basePushUrl = "http://oa-test.seedland.cc:89/pushMessage.do";
-		String key = "a058f453-82e8-4210-9860-df6d6ae675f5";// emobile后台的推送秘钥
-		String messagetypeid = "100"; // 在mobile后台注册的消息类型id
+		String basePushUrl = ThirdPartyConfiguration.getOaEmobileUrl();//"http://oa-test.seedland.cc:89/pushMessage.do";
+		//String basePushUrl = "https://moa.seedland.cc:8443/pushMessage.do";
+		String key = ThirdPartyConfiguration.getOaEmobileKey();//"a058f453-82e8-4210-9860-df6d6ae675f5";// emobile后台的推送秘钥
+		//String key = "7633cb7b-b114-4e42-b80b-f004f41f863b";// emobile后台的推送秘钥
+        String messagetypeid = ThirdPartyConfiguration.getOaEmobileTypeid();//"100"; // 在mobile后台注册的消息类型id
+		//String messagetypeid = "34"; // 在mobile后台注册的消息类型id
 		String reviceIds = LoginIds; // 接收者的loginid，多用户使用英文半角逗号分开
 		System.out.println("e-mobile的LoginIds：：：：：：：：：：：：：：：" + LoginIds);
 		String badge = "1"; // 消息数量+1

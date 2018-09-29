@@ -1,10 +1,13 @@
 package com.sunnsoft.sloa.schedule;
 
+import com.sunnsoft.ThirdPartyConfiguration;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.UserMssage;
 import com.sunnsoft.sloa.service.UserService;
+import com.sunnsoft.util.SpringUtils;
 import localhost.services.hrmservice.HrmService;
 import localhost.services.hrmservice.HrmServicePortType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -22,7 +25,7 @@ import java.util.List;
  * @author chenjian
  *
  */
-//@Service
+@Service
 public class HrmUserSchedule {
 
 	@Resource
@@ -34,7 +37,12 @@ public class HrmUserSchedule {
 	@PostConstruct
 	private void init() {
 		System.out.println("初始化OA联系人!");
-		this.doJob();
+		//this.doJob();
+	}
+
+	//@Scheduled(cron = "0/10 * * * * ?")
+	public void test() {
+		//System.out.println("thirdPartyConfiguration: " + SpringUtils.getBean(ThirdPartyConfiguration.class));
 	}
 	
 	@Scheduled(cron = "0 30 2 * * ?")
@@ -48,7 +56,7 @@ public class HrmUserSchedule {
 		//String ip = "192.168.4.183"; // 测试环境
 		//String ip = "https://oa-uat.seedland.cc:8443/services/HrmService"; // 测试环境
 		//String ip = "oa-uat.seedland.cc:8443"; // 生产环境
-		String ip = "oa.seedland.cc"; // 生产环境
+		String ip = ThirdPartyConfiguration.getOaHrmSchedulerUrl();//"oa.seedland.cc"; // 生产环境
 		
 		HrmService client = new HrmService();
 		HrmServicePortType service = client.getHrmServiceHttpPort();

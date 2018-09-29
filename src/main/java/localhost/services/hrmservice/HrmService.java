@@ -1,5 +1,7 @@
 package localhost.services.hrmservice;
 
+import com.sunnsoft.ThirdPartyConfiguration;
+
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
@@ -15,7 +17,7 @@ import java.net.URL;
  * 
  */
 @WebServiceClient(name = "HrmService", 
-                  wsdlLocation = "https://oa-uat.seedland.cc:8443/services/HrmService?wsdl",
+                  wsdlLocation = "${oa.hrm.ws.url}",
                   targetNamespace = "http://localhost/services/HrmService") 
 public class HrmService extends Service {
 
@@ -26,11 +28,11 @@ public class HrmService extends Service {
     static {
         URL url = null;
         try {
-            url = new URL("https://oa-uat.seedland.cc:8443/services/HrmService?wsdl");
+            url = new URL(ThirdPartyConfiguration.getOaHrmWsUrl());
         } catch (MalformedURLException e) {
             java.util.logging.Logger.getLogger(HrmService.class.getName())
                 .log(java.util.logging.Level.INFO, 
-                     "Can not initialize the default wsdl from {0}", "https://oa-test.seedland.cc//services/HrmService?wsdl");
+                     "Can not initialize the default wsdl from {0}", ThirdPartyConfiguration.getOaHrmWsUrl());
         }
         WSDL_LOCATION = url;
     }

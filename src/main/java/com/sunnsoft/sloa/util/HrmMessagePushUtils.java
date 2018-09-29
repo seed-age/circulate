@@ -1,5 +1,6 @@
 package com.sunnsoft.sloa.util;
 
+import com.sunnsoft.ThirdPartyConfiguration;
 import net.sf.json.JSONObject;
 import org.apache.struts2.ServletActionContext;
 
@@ -19,7 +20,7 @@ import java.net.URL;
  */
 public class HrmMessagePushUtils {
 
-	public static final String ADD_URL = "http://oa-test.seedland.cc/social/PushRemindWebService.jsp";
+	public static final String ADD_URL = ThirdPartyConfiguration.getOaHrmPushUrl();//"http://oa-test.seedland.cc/social/PushRemindWebService.jsp";
 	//public static final String ADD_URL = "https://oa.seedland.cc/social/PushRemindWebService.jsp";
 	
 	/**

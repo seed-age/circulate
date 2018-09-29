@@ -4,16 +4,26 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	
-	<bean id="orderIdGenerator" class="com.sunnsoft.util.OrderIdGenerator">
-	</bean>
-	
-	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
-                <property name="pointcut">
-                        <bean class="net.bull.javamelody.MonitoredWithInterfacePointcut">
-                                <property name="interfaceName" value="org.gteam.service.IService" />
-                        </bean>
-                </property>
+
+    <bean id="orderIdGenerator" class="com.sunnsoft.util.OrderIdGenerator">
     </bean>
+
+    <bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+        <property name="pointcut">
+            <bean class="net.bull.javamelody.MonitoredWithInterfacePointcut">
+                <property name="interfaceName" value="org.gteam.service.IService"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="prop" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <array>
+                <value>classpath:project.properties</value>
+            </array>
+        </property>
+    </bean>
+    <bean id="springUtils" class="com.sunnsoft.util.SpringUtils"/>
+    <bean id="thirdPartyConfiguration" class="com.sunnsoft.ThirdPartyConfiguration"/>
 
 </beans>
