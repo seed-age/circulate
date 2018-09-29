@@ -3,10 +3,16 @@
 
 	<!-- 1 -->
 	<!--数据库连接  -->
+<!-- 	<ConnectionString -->
+<!-- 			dataSourceUrl="jdbc:mysql://192.168.64.227:3306/sso_db?useUnicode=true" -->
+<!-- 			userID="692AF58EF484F07D" -->
+<!-- 			password="4F33E1B9C69A8A04315FB95F43D2737144221948CE353142" -->
+<!-- 			providerName="com.mysql.jdbc.Driver" -->
+<!-- 	/> -->
 	<ConnectionString
-			dataSourceUrl="jdbc:mysql://192.168.64.227:3306/sso_db?useUnicode=true"
-			userID="692AF58EF484F07D"
-			password="4F33E1B9C69A8A04315FB95F43D2737144221948CE353142"
+			dataSourceUrl="jdbc:mysql://192.168.16.24:3306/sso_db?useUnicode=true"
+			userID="B92A0074B9E10DF2D73A6F2539912148"
+			password="7DF75B4C46444F9D3863857B5D010707"
 			providerName="com.mysql.jdbc.Driver"
 	/>
 	<!-- 2 -->
@@ -14,12 +20,12 @@
 	<ActiveDirectoryConfiguration
 			server="ad.seedland.cc"
 			domain="seedland.cc"
-			directoryPath="DC=seedland,DC=cn"
+			directoryPath="DC=seedland,DC=cc"
 			groupName="administrators"
 			filter="(and(objectCategory=person)(objectClass=user)(samaccountname=usertosearch))"
 			filterReplace="usertosearch"
-			userName="71D87B0877784251"
-			password="97F576BD455C5049E34ECE8F6F2785792952E3078F699D09"
+			userName="8EED27F8DE3E9320"
+			password="FB39F08D09285D5EC595EB2C7C9B681C344B3D4B8BA5B8F3"
 			expirationTime="60"
 			passwordWarnExpireDays="10"
 	/>
@@ -41,7 +47,7 @@
  	-->
 	<CurrentSite
 			systemCode="SSO1010"
-			key="189Un284p7rZ7qk08nd1"
+			key="EL61300NomNsAYP9K0Vi"
 			sessionIdName="JSESSIONID"
 			dateTimeFormat="yyyy-MM-dd HH:mm:ss"
 			IsForbidden="false"
@@ -54,14 +60,24 @@
 	<!--Cookie的设置-->
 	<CookieDomains path="/" >
 		<domain name=".seedland.cc"
-				regex=".*(.seedland.cc)"
-				myHost="test-sso-java.seedland.cc"
-				loginUrl="http://test-sso-java.seedland.cc/login"
-				crossdomainUrl="http://test-sso-java.seedland.cc/crossdomain"
-				defaultSite="http://cc-test.seedland.cc/">
-		</domain>
+           		regex=".*(.seedland.cc)"
+           		myHost="ssonew.seedland.cc"
+           		loginUrl="http://ssonew.seedland.cc/login"
+           		crossdomainUrl="http://ssonew.seedland.cc/crossdomain"
+           		defaultSite="https://cy.seedland.cc/">
+   		</domain>
 	</CookieDomains>
 
+
+
+	<!--
+		系统中的地址，包括：
+		logonFlag:  0访问统一登录页面  1访问代理本地登录页面
+		loginUrl：登陆页面地址  代理本地 Java /login_sso.jsp  远程.net http://xq-sso-6-231.cfld-dev.cn/login.aspx?   
+																  http://xq-sso-6-231.cfld-dev.cn/LoginLight.aspx?
+		errorUrl：错误页面地址  代理本地 Java /error_sso.jsp  远程.net http://sso.lcg.com.cn/Error.aspx
+		changePasswordUrl：修改密码地址
+	-->
 
 	<!-- 5 -->
 	<!--本地登录URL设置-->
