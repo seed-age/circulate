@@ -5,6 +5,113 @@
 	<display-name>sola</display-name>
 	<description>sola</description>
 
+	<!--SSO生产环境 过滤器 配置开始 -->
+	<filter>
+		<filter-name>checkLoginFilter</filter-name>
+		<filter-class>
+			com.pactera.sso.client.filter.CheckLoginFilter
+		</filter-class>
+		<init-param>
+			<param-name>containerType</param-name>
+			<param-value>Tomcat</param-value>
+		</init-param>
+		<init-param>
+			<param-name>configLocation</param-name>
+			<param-value>/WEB-INF/Setting.xml</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>checkLoginFilter</filter-name>
+		<!-- 需要过滤 可以再添加 -->
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!--SSO 过滤器 配置结束 -->
+
+	<!--SSO API配置开始 -->
+	<servlet>
+		<servlet-name>checkLoginServlet</servlet-name>
+		<servlet-class>com.pactera.sso.client.servlet.CheckLoginServlet</servlet-class>
+		<init-param>
+			<param-name>containerType</param-name>
+			<param-value>Tomcat</param-value>
+		</init-param>
+		<init-param>
+			<param-name>configLocation</param-name>
+			<param-value>/WEB-INF/Setting.xml</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>checkLoginServlet</servlet-name>
+		<url-pattern>/checkLoginAPI</url-pattern>
+	</servlet-mapping>
+	<!--SSO API配置结束-->
+
+	<!--SSO 监听器 配置开始-->
+	<servlet>
+		<servlet-name>ssoLogoutServlet</servlet-name>
+		<servlet-class>com.pactera.sso.client.servlet.SsoLocalModelLogoutServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ssoLogoutServlet</servlet-name>
+		<url-pattern>/sso_localmodel_exit</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>verifyImageServlet</servlet-name>
+		<servlet-class>com.pactera.sso.client.servlet.SsoLocalModelCodeAndPwdServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>verifyImageServlet</servlet-name>
+		<url-pattern>/VerifyCodeAndRememberPwd</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ssoLoginServlet</servlet-name>
+		<servlet-class>com.pactera.sso.client.servlet.SsoLocalModelLoginServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ssoLoginServlet</servlet-name>
+		<url-pattern>/sso_localmodel_login</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>clientGetCookiesServlet</servlet-name>
+		<servlet-class>com.pactera.sso.client.servlet.ClientGetCookiesServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>clientGetCookiesServlet</servlet-name>
+		<url-pattern>/clientGetCookiesServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ssoSecurityKeyUpdateServlet</servlet-name>
+		<servlet-class>com.pactera.sso.client.servlet.SsoSecurityKeyUpdateServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ssoSecurityKeyUpdateServlet</servlet-name>
+		<url-pattern>/sso_Quartz_KeyUpdate</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ssoSecurityFileUpdateServlet</servlet-name>
+		<servlet-class>com.pactera.sso.client.servlet.SsoSecurityFileUpdateServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ssoSecurityFileUpdateServlet</servlet-name>
+		<url-pattern>/sso_Quartz_FileUpdate</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ssoForbiddenSystemServlet</servlet-name>
+		<servlet-class>com.pactera.sso.client.servlet.SsoForbiddenSystemServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ssoForbiddenSystemServlet</servlet-name>
+		<url-pattern>/updateIsForbidden.axd</url-pattern>
+	</servlet-mapping>
+
+	<!--SSO生产环境 监听器 配置结束-->
+
 	<!-- used by String ! enable log4j proprerties file use ${webapproot} locate
 		log files diractory -->
 	<context-param>

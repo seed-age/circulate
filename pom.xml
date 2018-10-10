@@ -838,6 +838,8 @@
                                       tofile="${project.build.directory}/ROOT/WEB-INF/Setting.xml" overwrite="true"/>
                                 <copy file="${project.basedir}/src/main/resources/config/log4j-${profiles.active}.properties"
                                       tofile="${project.build.directory}/ROOT/WEB-INF/log4j.properties" overwrite="true"/>
+                                <copy file="${project.basedir}/src/main/resources/config/web-${profiles.active}.xml"
+                                      tofile="${project.build.directory}/ROOT/WEB-INF/web.xml" overwrite="true"/>
                             </tasks>
                         </configuration>
                     </execution>
