@@ -1,4 +1,4 @@
-package com.sunnsoft.test;
+package com.sunnsoft;
 
 public class TestThreadLocal {
 

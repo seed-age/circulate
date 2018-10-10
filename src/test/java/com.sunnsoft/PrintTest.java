@@ -1,4 +1,4 @@
-package com.sunnsoft.test;
+package com.sunnsoft;
 
 /*用java实现打印 ，java.awt中提供了一些打印的API, 
  要实现打印 ，首先要获得打印对象 ，然后继承Printable实现接口方法print ，以便打印机进行打印 ， 

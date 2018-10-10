@@ -1,4 +1,4 @@
-package com.sunnsoft.test;
+package com.sunnsoft;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;

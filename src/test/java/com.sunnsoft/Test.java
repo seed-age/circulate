@@ -1,4 +1,4 @@
-package com.sunnsoft.test;
+package com.sunnsoft;
 
 import localhost.services.hrmservice.HrmService;
 import localhost.services.hrmservice.HrmServicePortType;

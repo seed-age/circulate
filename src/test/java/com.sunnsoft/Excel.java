@@ -1,4 +1,4 @@
-package com.sunnsoft.test;
+package com.sunnsoft;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -53,25 +53,25 @@ public class Excel {
 
 	private static String getCellValue(Cell cell) {
 		String obj = null;
-		if (cell == null) {
-			return obj;
-		}
-		switch (cell.getCellType()) {
-//		case HSSFCell.CELL_TYPE_NUMERIC:
-			case NUMERIC:
-			obj = (int) cell.getNumericCellValue() + "";
-			// System.out.println(obj);
-			break;
-//		case HSSFCell.CELL_TYPE_STRING:
-			case STRING:
-			obj = StringUtils.isNotEmpty(cell.getStringCellValue()) == true ? cell
-					.getStringCellValue()
-					: null;
-			// System.out.println(obj);
-			break;
-		default:
-			break;
-		}
+//		if (cell == null) {
+//			return obj;
+//		}
+//		switch (cell.getCellType()) {
+////		case HSSFCell.CELL_TYPE_NUMERIC:
+//			case NUMERIC:
+//			obj = (int) cell.getNumericCellValue() + "";
+//			// System.out.println(obj);
+//			break;
+////		case HSSFCell.CELL_TYPE_STRING:
+//			case STRING:
+//			obj = StringUtils.isNotEmpty(cell.getStringCellValue()) == true ? cell
+//					.getStringCellValue()
+//					: null;
+//			// System.out.println(obj);
+//			break;
+//		default:
+//			break;
+//		}
 		return obj;
 	}
 }

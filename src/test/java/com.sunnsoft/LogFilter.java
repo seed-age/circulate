@@ -1,4 +1,4 @@
-package com.sunnsoft.test;
+package com.sunnsoft;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

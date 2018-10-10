@@ -1,4 +1,4 @@
-package com.sunnsoft.test;
+package com.sunnsoft;
 import java.util.concurrent.atomic.AtomicInteger;
 
  public class UniqueThreadIdGenerator {

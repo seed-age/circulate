@@ -1,9 +1,9 @@
-package com.sunnsoft.test;
+package com.sunnsoft;
 
 import java.text.ParseException;
 import java.util.Calendar;
 
-public class DateUitlTest {
+public class dfDateUitlTest {
 
 	/**
 	 * @param args

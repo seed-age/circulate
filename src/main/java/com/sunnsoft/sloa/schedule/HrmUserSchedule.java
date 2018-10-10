@@ -7,7 +7,6 @@ import com.sunnsoft.sloa.service.UserService;
 import com.sunnsoft.util.SpringUtils;
 import localhost.services.hrmservice.HrmService;
 import localhost.services.hrmservice.HrmServicePortType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,6 @@ import java.util.List;
  */
 @Service
 public class HrmUserSchedule {
-
 	@Resource
 	private UserService userService;
 
@@ -40,7 +38,7 @@ public class HrmUserSchedule {
 		//this.doJob();
 	}
 
-	//@Scheduled(cron = "0/10 * * * * ?")
+	@Scheduled(cron = "0/10 * * * * ?")
 	public void test() {
 		//System.out.println("thirdPartyConfiguration: " + SpringUtils.getBean(ThirdPartyConfiguration.class));
 	}
