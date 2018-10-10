@@ -280,6 +280,9 @@
     border: 0;
     background: transparent;
 }
+.oa-receive-table .layui-table .tab-redact{
+    display:none;
+}
 .oa-receive-table .layui-table .tab-icon img{
     height: 100%;
     width: 100%;
