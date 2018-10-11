@@ -313,6 +313,7 @@ function uploaderFile(){
         // chunkSize:10,//大于多好B分开上传
     });
 
+
     uploader.on( 'beforeFileQueued', function( file ) {
         var reg = /^(dwt|dwg|dws|dxf)$/i;
         if(reg.test(file.ext)){

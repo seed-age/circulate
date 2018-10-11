@@ -148,7 +148,7 @@
 											<div class="checked-item">
 												<input type="checkbox" id="ifImportant" value="重要传阅" title="重要传阅" lay-skin="primary" checked>
 											</div>
-											<div class="checked-item" style="display:none;">
+											<div class="checked-item" style="display:none;" >
 												<input id="ifUpdate" value="允许修订Word、Excel附件" title="允许修订Word、Excel附件" lay-skin="primary" checked>
 											</div>
 											<div class="checked-item">
