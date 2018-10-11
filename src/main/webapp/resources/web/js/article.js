@@ -743,7 +743,7 @@ layui.use(['element','form','layer','jquery'], function(){
         });
 
         uploader.on( 'beforeFileQueued', function( file ) {
-            var reg = /^(dwt|dwg|dws|dxf)$/;
+            var reg = /^(dwt|dwg|dws|dxf)$/i;
             if(reg.test(file.ext)){
 //        		var layer = layui.layer;
                 layer.msg('目前不支持<span style="color:#008cd6;">'+file.ext+'</span>格式',{time: 2000});
