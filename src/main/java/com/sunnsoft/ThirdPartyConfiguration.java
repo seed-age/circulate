@@ -22,10 +22,10 @@ public class ThirdPartyConfiguration {
     private String oaHrmPushUrl;
     @Value("${oa.hrm.ws.url}")
     private String oaHrmWsUrl;
-    @Value("oa.hrm.scheduler.url")
+    @Value("${oa.hrm.scheduler.url}")
     private String oaHrmSchedulerUrl;
 
-    @Value("oa.oss.url")
+    @Value("${oa.oss.url}")
     private String oaOssUrl;
 
     public static String getOaEmobileUrl() {
