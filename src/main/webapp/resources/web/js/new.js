@@ -312,7 +312,7 @@ function uploaderFile(){
         threads :1//上传并发数。允许同时最大上传进程数
         // chunkSize:10,//大于多好B分开上传
     });
-    
+
     uploader.on( 'beforeFileQueued', function( file ) {
         var reg = /^(dwt|dwg|dws|dxf)$/i;
         if(reg.test(file.ext)){
