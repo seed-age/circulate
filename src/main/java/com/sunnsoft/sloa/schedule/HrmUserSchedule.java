@@ -44,7 +44,7 @@ public class HrmUserSchedule {
 	@Scheduled(cron = "0/10 * * * * ?")
 	public void test() {
 		//System.out.println("thirdPartyConfiguration: " + SpringUtils.getBean(ThirdPartyConfiguration.class));
-		logger.debug("thirdPartyConfiguration:" + SpringUtils.getBean(ThirdPartyConfiguration.class));
+		logger.debug("thirdPartyConfiguration:" + SpringUtils.getBean(ThirdPartyConfiguration.Configuration.class));
 	}
 	
 	@Scheduled(cron = "0 30 2 * * ?")

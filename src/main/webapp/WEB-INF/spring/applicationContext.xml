@@ -24,6 +24,6 @@
         </property>
     </bean>
     <bean id="springUtils" class="com.sunnsoft.util.SpringUtils"/>
-    <bean id="thirdPartyConfiguration" class="com.sunnsoft.ThirdPartyConfiguration"/>
+    <bean id="thirdPartyConfiguration" class="com.sunnsoft.ThirdPartyConfiguration.Configuration"/>
 
 </beans>
