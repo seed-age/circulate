@@ -134,7 +134,7 @@ public class BatchUpdateState extends BaseParameter {
 		if (mailCount > 0) {
 			
 			if (mailCount == mailId.length) {
-				msg = "标识传阅为已读状态成功, " + msg;
+				msg = "标识传阅为已读状态成功";
 				code = "200";
 				json = "null";
 				return Results.GLOBAL_FORM_JSON;

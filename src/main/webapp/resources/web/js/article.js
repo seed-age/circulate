@@ -528,7 +528,8 @@ layui.use(['element','form','layer','jquery'], function(){
 						}
 					);
 				}else{
-					layer.msg('删除失败，传阅对象不能为空',{time: 2000});
+					//layer.msg('删除失败，传阅对象不能为空',{time: 2000});
+					layer.msg('传阅对象只有一个用户时，不允许删除',{time: 2000});
 				}
 			});
         }.bind(that));
@@ -652,8 +653,11 @@ layui.use(['element','form','layer','jquery'], function(){
 			page:1
 		}
 	});
-	commentPage.getPage();
-	commentPage.clickPage();
+	setTimeout(function(){
+        commentPage.getPage();
+        commentPage.clickPage();
+	},50)
+
 	// 评论发送
 	$('.oa-receive-right .input-addon').on('click',function(){
 		var discussContent = $(this).siblings('input[name=discussContent]');
