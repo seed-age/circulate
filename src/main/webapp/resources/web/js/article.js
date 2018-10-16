@@ -641,7 +641,7 @@ layui.use(['element','form','layer','jquery'], function(){
 			$(data.elem).parents('.layui-table-header').siblings('.layui-table-body').find('input[name="choice"]').prop('checked',false);
         }
 	});
-	
+
 	// 评论加载
 	var commentPage = new CommentPage({
 		type:'post',
@@ -653,10 +653,18 @@ layui.use(['element','form','layer','jquery'], function(){
 			page:1
 		}
 	});
+
 	setTimeout(function(){
-        commentPage.getPage();
-        commentPage.clickPage();
-	},50)
+		try{
+            commentPage.getPage();
+            commentPage.clickPage();
+		}catch (e) {
+            setTimeout(function(){
+                layer.msg('评论加载出错',{time: 2000});
+            },0)
+        }
+
+	},100)
 
 	// 评论发送
 	$('.oa-receive-right .input-addon').on('click',function(){
