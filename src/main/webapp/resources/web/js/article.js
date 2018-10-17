@@ -442,7 +442,7 @@ layui.use(['element','form','layer','jquery'], function(){
             mailId:storageData.article
         },
         templateTag:'.object-tab .layui-table-body tbody'
-    });
+});
     ArticleObjext.prototype.templateHTML = function(that,data){
         layui.use(['form','table'], function(){
             $('.object-tab .title-left').html('传阅对象（'+data.length+'个）');
@@ -522,11 +522,20 @@ layui.use(['element','form','layer','jquery'], function(){
                 }
             });
         }.bind(that));
-    };
-    articleObjext = new ArticleObjext();
-    setTimeout(function(){
-        articleObjext.getData();
-    },100)
+    }
+    function showUser(){
+        articleObjext = new ArticleObjext();
+        setTimeout(function(){
+            articleObjext.getData();
+        },100)
+		setTimeout(function(){
+			if($('.object-tab .layui-table-body tbody').children().length === 0){
+				showUser()
+			}
+		},500)
+	}
+    showUser();
+
     // 批量删除
     $('.object-tab .title-right .annex-dele').on('click',function(e){
         var choice = $(this).parents('.object-tab').find('.layui-table-body tbody tr').children().children('input[name="choice"]:checked');

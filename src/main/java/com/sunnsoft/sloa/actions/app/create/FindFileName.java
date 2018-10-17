@@ -81,6 +81,47 @@ public class FindFileName extends BaseParameter {
 		}
 					
 		try {
+
+			// 校验文件是否是cad文件
+			for (int i = 0; i < neid.length ; i++) {
+				// 根据文件ID获取到文件信息
+				FileModel fileModel = sdk.getFileById(neid[i], session);
+
+				// 文件原名
+				String desc = fileModel.getDesc();
+				String fileName = null;
+				//文件后缀
+				String typeName = null;
+
+				//判断
+				if (desc.equals("")) {
+					//使用路径中的文件名
+					String path = fileModel.getPath();
+					//分割
+					String[] split = path.split("/");
+					//取最后一个, 得到文件名称
+					fileName = split[split.length - 1];
+
+					// 获取文件后缀
+					typeName = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
+
+				} else {
+					//得到文件名称
+					fileName = desc;
+					// 获取文件后缀
+					typeName = desc.substring(desc.lastIndexOf(".") + 1).trim();
+				}
+
+				// 如果是 cad 文件, 则跳过此次循环.
+				if (typeName.equalsIgnoreCase("dwt") || typeName.equalsIgnoreCase("dwg") || typeName.equalsIgnoreCase("dws") || typeName.equalsIgnoreCase("dxf")) {
+					success = false;
+					code = "205";
+					msg = "目前不支持dwg格式的文件";
+					json = "null";
+					return Results.GLOBAL_FORM_JSON;
+				}
+
+			}
 			Map<String, Object> map = new HashMap<>();
 			List<AttachmentItem> list = new ArrayList<>();
 			// 生成批次ID
@@ -125,11 +166,6 @@ public class FindFileName extends BaseParameter {
 
 					// 3.1 获取上传附件后缀;
 					suffix = desc.substring(desc.lastIndexOf("."));
-				}
-
-				// 如果是 cad 文件, 则跳过此次循环.
-				if (typeName.equalsIgnoreCase("dwt") || typeName.equalsIgnoreCase("dwg") || typeName.equalsIgnoreCase("dws") || typeName.equalsIgnoreCase("dxf")) {
-					continue;
 				}
 
 				// 3.2 重新生成上传之后的附件名称;
