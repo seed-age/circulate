@@ -5,6 +5,7 @@ import com.lenovo.css.lenovocloud.sdk.LenovoCloudSDK;
 import com.lenovo.css.lenovocloud.sdk.model.FileListModel;
 import com.lenovo.css.lenovocloud.sdk.model.FileModel;
 import com.lenovo.css.lenovocloud.sdk.model.PathType;
+import com.sunnsoft.ThirdPartyConfiguration;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.config.Config;
 import com.sunnsoft.sloa.db.handler.Services;
@@ -13,6 +14,7 @@ import com.sunnsoft.sloa.util.LenovoCloudSDKUtils;
 import com.sunnsoft.util.struts2.Results;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.net.URLEncoder;
@@ -43,6 +45,8 @@ public class GridFileMssage extends BaseParameter {
 	@Override
 	public String execute() throws Exception {
 
+		Assert.notNull(userId,"用户ID不能为空");
+
 		// 设置默认参数
 		if (page == null) {
 			page = 0; // 0 : 网盘的第一页是 从 0 开始
@@ -51,7 +55,10 @@ public class GridFileMssage extends BaseParameter {
 
 		// 设置url(测试地址)
 		LenovoCloudSDK sdk = LenovoCloudSDKUtils.getLenovoCloudSDK(config);
-		
+
+		System.out.println("OA地址: " + ThirdPartyConfiguration.getOaHrmWsUrl());
+		System.out.println("网盘地址: " + ThirdPartyConfiguration.getOaOssUrl());
+
 		UserMssage userMssage = Services.getUserMssageService().createHelper().getUserId().Eq(userId).uniqueResult();
 		// 根据SSO登录获取当前用户的session
 		String session = null;

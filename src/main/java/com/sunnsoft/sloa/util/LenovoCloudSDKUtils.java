@@ -83,7 +83,13 @@ public class LenovoCloudSDKUtils {
 				//获取当前时间
 				long now = System.currentTimeMillis();
 				//存储网盘session的最后更新时间
-				long sessionTime = user.getAccessTokenExpire().getTime();
+				long sessionTime = 0L;
+				if(user.getAccessToken() != null){
+					 sessionTime = user.getAccessTokenExpire().getTime();
+				}else {
+					return getBoxSession(sdk, config, user, 1);
+				}
+
 				LOGGER.warn("获取当前时间: " + now + "  ::::::  获取网盘session最后的存储时间: " + sessionTime);
 				//进行比较
 				if((now - sessionTime) > 23*60*60*1000L) {

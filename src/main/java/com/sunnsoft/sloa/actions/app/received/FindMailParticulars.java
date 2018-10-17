@@ -420,7 +420,7 @@ public class FindMailParticulars extends BaseParameter {
 				}
 				success = true;
 				code = "200";
-				msg = "查询已收传阅详情成功!" + msg;
+				msg = "查询已收传阅详情成功!";
 				break;
 
 			default:

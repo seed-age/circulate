@@ -7,6 +7,7 @@ import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.util.struts2.Results;
 import org.springframework.util.Assert;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,7 +49,7 @@ public class DeleteMail extends BaseParameter {
 				// 修改状态
 				mail.setStatus(7); // 7 表示已删除
 				//设置删除时间
-				
+				mail.setDeleteTime(new Date());
 				// 更新
 				Services.getMailService().update(mail);
 

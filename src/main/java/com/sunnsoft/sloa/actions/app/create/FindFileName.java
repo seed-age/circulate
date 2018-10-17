@@ -126,6 +126,12 @@ public class FindFileName extends BaseParameter {
 					// 3.1 获取上传附件后缀;
 					suffix = desc.substring(desc.lastIndexOf("."));
 				}
+
+				// 如果是 cad 文件, 则跳过此次循环.
+				if (typeName.equalsIgnoreCase("dwt") || typeName.equalsIgnoreCase("dwg") || typeName.equalsIgnoreCase("dws") || typeName.equalsIgnoreCase("dxf")) {
+					continue;
+				}
+
 				// 3.2 重新生成上传之后的附件名称;
 				String newName = UUID.randomUUID().toString() + suffix;
 
