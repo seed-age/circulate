@@ -506,10 +506,10 @@ layui.use(['element','form','layer','jquery'], function(){
                 string += '    </td>';
                 string += '</tr>';
             }
-            this.templateTag.append(string);
-            alert('5.数据完成添加进父级')
+            this.templateTag.html(string);
+            alert('5.数据完成添加进父级'+ string)
             form.render();
-            alert('6.然后开始渲染')
+            alert('6.然后开始渲染'+this.templateTag.selector)
             objTable();
             $(window).resize(function(){
                 objTable();
