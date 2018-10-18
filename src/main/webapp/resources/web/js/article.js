@@ -429,20 +429,35 @@ layui.use(['element','form','layer','jquery'], function(){
             }
         })
     }
-
-
+    // 继承
+    function extend(Child,Parent){
+        var F = function(){};
+        F.prototype = Parent.prototype;
+        Child.prototype = new F();
+        Child.prototype.constructor = Child;
+        Child.uber = Parent.prototype;
+    };
     // 加载传阅对象
-    function ArticleObjext(){};
-    ArticleObjext.prototype = new Pages({
-        type:'post',
-        url:'/web/received/find-mail-object.htm',
-        dataType:'json',
-        data:{
-            // userId:$.session.get('userId'),
-            mailId:storageData.article
-        },
-        templateTag:'.object-tab .layui-table-body tbody'
-});
+    function ArticleObjext(options){
+        this.type = options.type;
+        this.url = options.url;
+        this.data = options.data;
+        this.pageRows;
+        this.totalRecord;//总记录数
+        this.curPage = 1;//当前页
+        this.templateTag = $(options.templateTag);
+    };
+    extend(ArticleObjext,Pages);
+    // ArticleObjext.prototype = new Pages({
+    // 	type:'post',
+    // 	url:'/web/received/find-mail-object.htm',
+    // 	dataType:'json',
+    // 	data:{
+    // 		// userId:$.session.get('userId'),
+    // 		mailId:storageData.article
+    // 	},
+    // 	templateTag:'.object-tab .layui-table-body tbody'
+    // });
     ArticleObjext.prototype.templateHTML = function(that,data){
         layui.use(['form','table'], function(){
             $('.object-tab .title-left').html('传阅对象（'+data.length+'个）');
@@ -522,20 +537,20 @@ layui.use(['element','form','layer','jquery'], function(){
                 }
             });
         }.bind(that));
-    }
-    function showUser(){
-        articleObjext = new ArticleObjext();
-        setTimeout(function(){
-            articleObjext.getData();
-        },100)
-		setTimeout(function(){
-			if($('.object-tab .layui-table-body tbody').children().length === 0){
-				showUser()
-			}
-		},500)
-	}
-    showUser();
-
+    };
+    articleObjext = new ArticleObjext({
+        type:'post',
+        url:'/web/received/find-mail-object.htm',
+        dataType:'json',
+        data:{
+            // userId:$.session.get('userId'),
+            mailId:storageData.article
+        },
+        templateTag:'.object-tab .layui-table-body tbody'
+    });
+    setTimeout(function(){
+        articleObjext.getData();
+    },100)
     // 批量删除
     $('.object-tab .title-right .annex-dele').on('click',function(e){
         var choice = $(this).parents('.object-tab').find('.layui-table-body tbody tr').children().children('input[name="choice"]:checked');
