@@ -459,13 +459,17 @@ layui.use(['element','form','layer','jquery'], function(){
     // 	templateTag:'.object-tab .layui-table-body tbody'
     // });
     ArticleObjext.prototype.templateHTML = function(that,data){
+        alert('1.能请求成功')
         layui.use(['form','table'], function(){
             $('.object-tab .title-left').html('传阅对象（'+data.length+'个）');
+            alert('2.获取个数成功')
             $('input[name="object-total"]').val(data.length);
             var form = layui.form;
-            this.templateTag.html('');//清空上次内容
+            this.templateTag.empty();//清空上次内容
             var string = '';
+            alert('3.清除html内容')
             if(data.length>0){
+                alert('4.data.length>0')
                 for(var i=0;i<data.length;i++){
                     string += '<tr>';
                     string += '	<td><input value="'+data[i].userId+'" type="checkbox" name="choice" lay-filter="choice" lay-skin="primary"></td>';
@@ -495,6 +499,7 @@ layui.use(['element','form','layer','jquery'], function(){
                     string += '</tr>';
                 }
             }else{
+                alert('4-1.data.length<0')
                 string += '<tr>';
                 string += '    <td colspan="7" style="text-align: center;">';
                 string += '       暂无传阅对象！';
@@ -502,7 +507,9 @@ layui.use(['element','form','layer','jquery'], function(){
                 string += '</tr>';
             }
             this.templateTag.append(string);
+            alert('5.数据完成添加进父级')
             form.render();
+            alert('6.然后开始渲染')
             objTable();
             $(window).resize(function(){
                 objTable();
