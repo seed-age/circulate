@@ -459,6 +459,7 @@ layui.use(['element','form','layer','jquery'], function(){
     // 	templateTag:'.object-tab .layui-table-body tbody'
     // });
     ArticleObjext.prototype.templateHTML = function(that,data){
+        console.log(data,typeof data)
         layui.use(['form','table'], function(){
             $('.object-tab .title-left').html('传阅对象（'+data.length+'个）');
             $('input[name="object-total"]').val(data.length);
@@ -501,6 +502,10 @@ layui.use(['element','form','layer','jquery'], function(){
                 string += '    </td>';
                 string += '</tr>';
             }
+
+            console.log(string);
+            console.log(this.templateTag);
+
             // alert('5.数据完成添加进父级'+ string)
             this.templateTag.append('<tbody>'+string+'</tbody>');
             // alert('5-1.templateTag :'+ this.templateTag.html())
@@ -549,7 +554,7 @@ layui.use(['element','form','layer','jquery'], function(){
             // userId:$.session.get('userId'),
             mailId:storageData.article
         },
-        templateTag:'.object-tab .layui-table-body table'
+        templateTag:'.object-tab .layui-table-body #test'
     });
     setTimeout(function(){
         articleObjext.getData();
