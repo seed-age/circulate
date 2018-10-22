@@ -459,7 +459,6 @@ layui.use(['element','form','layer','jquery'], function(){
     // 	templateTag:'.object-tab .layui-table-body tbody'
     // });
     ArticleObjext.prototype.templateHTML = function(that,data){
-        alert('1.能请求成功')
         layui.use(['form','table'], function(){
             $('.object-tab .title-left').html('传阅对象（'+data.length+'个）');
             $('input[name="object-total"]').val(data.length);
@@ -502,11 +501,11 @@ layui.use(['element','form','layer','jquery'], function(){
                 string += '    </td>';
                 string += '</tr>';
             }
-            alert('5.数据完成添加进父级'+ string)
-            this.templateTag.html(string);
-            alert('5-1.templateTag :'+ this.templateTag.html())
+            // alert('5.数据完成添加进父级'+ string)
+            this.templateTag.append('<tbody>'+string+'</tbody>');
+            // alert('5-1.templateTag :'+ this.templateTag.html())
             form.render();
-            alert('6.然后开始渲染'+this.templateTag.length)
+            // alert('6.然后开始渲染'+this.templateTag.length)
             objTable();
             $(window).resize(function(){
                 objTable();
@@ -550,7 +549,7 @@ layui.use(['element','form','layer','jquery'], function(){
             // userId:$.session.get('userId'),
             mailId:storageData.article
         },
-        templateTag:'.object-tab .layui-table-body tbody'
+        templateTag:'.object-tab .layui-table-body table'
     });
     setTimeout(function(){
         articleObjext.getData();
