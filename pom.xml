@@ -766,8 +766,8 @@
 
         <dependency>
             <groupId>cc.seedland.thirdparty</groupId>
-            <artifactId>jrobin-1.5.9.1</artifactId>
-            <version>1.0.0</version>
+            <artifactId>jrobin</artifactId>
+            <version>1.5.9.1</version>
         </dependency>
 
         <dependency>
