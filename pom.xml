@@ -766,8 +766,8 @@
 
         <dependency>
             <groupId>cc.seedland.thirdparty</groupId>
-            <artifactId>jrobin-1.5.9.1</artifactId>
-            <version>1.0.0</version>
+            <artifactId>jrobin</artifactId>
+            <version>1.5.9.1</version>
         </dependency>
 
         <dependency>
@@ -784,7 +784,8 @@
         <repository>
             <id>seedland</id>
             <name>Seedland.cc Repository</name>
-            <url>http://nexus.seedland.cc:8081/repository/maven-public/</url>
+            <!--<url>http://nexus.seedland.cc:8081/repository/maven-public/</url>-->
+            <url>http://developer.seedland.cc/nexus/repository/maven-public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
