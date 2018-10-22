@@ -308,7 +308,7 @@ function uploaderFile(){
         compress:false,//不压缩
         // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
         resize: false,
-        chunked: true,//分开上传
+        // chunked: true,//分开上传
         threads :1//上传并发数。允许同时最大上传进程数
         // chunkSize:10,//大于多好B分开上传
     });

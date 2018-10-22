@@ -21,6 +21,7 @@ public class LoginUser extends BaseParameter {
 		String loginId = LenovoCloudSDKUtils.getLoginId();
 
 		//String loginId = "zhangluoyun";
+		loginId = "limin5";
 		// 根据loginId查询用户信息
 		json = Services.getUserMssageService().createHelper().getLoginId().Eq(loginId).json().uniqueJson();
 
