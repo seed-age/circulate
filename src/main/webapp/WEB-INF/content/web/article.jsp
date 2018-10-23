@@ -194,9 +194,9 @@
 												<col width="80">
 												<col width="80">
 											</colgroup>
-											<div id="test">
+											<%--<tbody>--%>
 
-											</div>
+											<%--</tbody>--%>
 										</table>
 									</div>
 									<!-- <div class="obj-table-footer-height"></div> -->
