@@ -569,7 +569,7 @@ $(document).ready(function(){
                 }else if(totalRecord == choiceArr.length){
                     newChoiceArr = choiceArr.splice(1);
                     if(newChoiceArr.length<=0){
-                        layer.msg('删除失败，传阅对象不能为空',{time: 2000});
+                        layer.msg('传阅对象只有一个用户时，不允许删除',{time: 2000});
                         return false;
                     };
                     layer.confirm(
@@ -630,7 +630,7 @@ $(document).ready(function(){
                         }else if(res.code === '205'){
                             layer.msg('删除传阅对象失败!,你没有权限删除',{time: 2000});
                         }else if(res.code === '501'){
-                            layer.msg('删除失败传阅对象不能为空',{time: 2000});
+                            layer.msg('传阅对象只有一个用户时，不允许删除',{time: 2000});
                         }else{
                             layer.msg('删除失败',{time: 2000});
                         }
