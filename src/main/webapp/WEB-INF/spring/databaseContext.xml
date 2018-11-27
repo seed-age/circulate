@@ -1,125 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans.xsd     http://www.springframework.org/schema/context     http://www.springframework.org/schema/context/spring-context.xsd    http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx.xsd     ">  
-  <context:property-placeholder location="classpath:project.properties"/>  
-  <context:component-scan base-package="com.sunnsoft.sloa"/>  
-  <!--  <bean id="mainDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> -->  
-  <!--    <property name="driverClassName" value="${jdbc.driver.class}"/>  -->  
-  <!--    <property name="url" value="${jdbc.url}"/>  -->  
-  <!--    <property name="username" value="${jdbc.username}"/>  -->  
-  <!--    <property name="password" value="${jdbc.password}"/> -->  
-  <!--    <property name="initialSize" value="10"/>  -->  
-  <!--    <property name="maxActive" value="30"/>  -->  
-  <!--    <property name="logAbandoned" value="true"/>  -->  
-  <!--    <property name="removeAbandoned" value="true"/>  -->  
-  <!--       mysql 默认 8小时超时 ，所以这里要清除1小时没用过的链接  -->  
-  <!--    <property name="removeAbandonedTimeout" value="3600"/>  -->  
-  <!--    <property name="validationQuery" value="select 1"/>  -->  
-  <!--    <property name="testWhileIdle" value="true"/>  -->  
-  <!--    <property name="minEvictableIdleTimeMillis" value="3600000"/>  -->  
-  <!--    <property name="timeBetweenEvictionRunsMillis" value="1800000"/>  -->  
-  <!--  </bean>-->  
-  <bean id="mainDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"> 
-    <property name="driverClassName" value="${jdbc.driver.class}"/>  
-    <property name="url" value="${jdbc.url}"/>  
-    <property name="username" value="${jdbc.username}"/>  
-    <property name="password" value="${jdbc.password}"/>  
-    <!-- 配置初始化大小、最小、最大 -->  
-    <property name="initialSize" value="5"/>  
-    <property name="minIdle" value="5"/>  
-    <property name="maxActive" value="300"/>  
-    <!-- 配置获取连接等待超时的时间 -->  
-    <property name="maxWait" value="60000"/>  
-    <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->  
-    <property name="timeBetweenEvictionRunsMillis" value="60000"/>  
-    <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->  
-    <property name="minEvictableIdleTimeMillis" value="300000"/>  
-    <property name="validationQuery" value="SELECT 'x'"/>  
-    <property name="testWhileIdle" value="true"/>  
-    <property name="testOnBorrow" value="true"/>  
-    <property name="testOnReturn" value="false"/>  
-    <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->  
-    <property name="poolPreparedStatements" value="true"/>  
-    <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>  
-    <!-- 配置监控统计拦截的filters -->  
-    <property name="filters" value="stat"/> 
-  </bean>  
-  <bean id="dataSource" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy"> 
-    <property name="targetDataSource" ref="mainDataSource"/> 
-  </bean>  
-  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"> 
-    <property name="dataSource"> 
-      <ref bean="dataSource"/> 
-    </property>  
-    <property name="hibernateProperties"> 
-      <props> 
-        <prop key="hibernate.dialect">${hibernate.dialect}</prop>  
-        <!-- hibernate 3.3以下版本 -->  
-        <!--<prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>  -->  
-        <!-- hibernate 3.3以上版本 -->  
-        <prop key="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.EhCacheRegionFactory</prop>  
-        <prop key="hibernate.hbm2ddl.auto">update</prop>  
-        <prop key="hibernate.show_sql">${hibernate.showsql}</prop>  
-        <prop key="hibernate.format_sql">true</prop>  
-        <prop key="hibernate.cache.use_query_cache">false</prop>  
-        <prop key="hibernate.generate_statistics">false</prop>  
-        <prop key="hibernate.jdbc.batch_size">15</prop> 
-      </props> 
-    </property>  
-    <!--    <property name="collectionCacheStrategies">-->  
-    <!--    	<props>-->  
-    <!--    	</props>-->  
-    <!--    </property>-->  
-    <property name="mappingDirectoryLocations"> 
-      <list> 
-        <value>classpath:com/sunnsoft/${project.name}/db/vo/</value> 
-      </list> 
-    </property>  
-    <property name="entityInterceptor" ref="interceptorManager"/> 
-  </bean>  
-  <bean id="interceptorManager" class="com.sunnsoft.hibernate.interceptor.InterceptorManager"/>  
-  <bean id="baseTransactionProxy" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" abstract="true" lazy-init="default" autowire="default"> 
-    <property name="transactionManager"> 
-      <ref bean="transactionManager"/> 
-    </property>  
-    <property name="transactionAttributes"> 
-      <props> 
-        <prop key="find*">PROPAGATION_SUPPORTS,readOnly</prop>  
-        <prop key="get*">PROPAGATION_SUPPORTS,readOnly</prop>  
-        <prop key="add*">PROPAGATION_REQUIRED</prop>  
-        <prop key="update*">PROPAGATION_REQUIRED</prop>  
-        <prop key="delete*">PROPAGATION_REQUIRED</prop>  
-        <prop key="set*">PROPAGATION_REQUIRED</prop>  
-        <prop key="initObject*">PROPAGATION_REQUIRED</prop>  
-        <prop key="save*">PROPAGATION_REQUIRED</prop>  
-        <prop key="doJob*">PROPAGATION_REQUIRED</prop>  
-        <prop key="fetch*">PROPAGATION_REQUIRED</prop>  
-        <prop key="exec*">PROPAGATION_REQUIRED</prop>  
-        <prop key="create*">PROPAGATION_REQUIRED</prop>  
-        <prop key="run*">PROPAGATION_REQUIRED</prop>  
-        <prop key="nonTransactional*">PROPAGATION_SUPPORTS</prop>  
-        <prop key="*">PROPAGATION_SUPPORTS,readOnly</prop>  
-        <!--         生产环境下，下这行去掉   -->  
-        <!--       <prop key="_*">PROPAGATION_REQUIRED</prop> --> 
-      </props> 
-    </property> 
-  </bean>  
-  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" lazy-init="default" autowire="default"> 
-    <property name="sessionFactory"> 
-      <ref bean="sessionFactory"/> 
-    </property> 
-  </bean>  
-  <!-- 作用于特定URL的Interceptor -->  
-  <!-- 列出的url在一次 http请求与应答过程中，session都是打开的，不会出现session is closed 异常 -->  
-  <bean id="openSessionInViewFilterDelegate" class="com.sunnsoft.servlet.filter.OpenSessionInViewFilterDelegate"> 
-    <property name="mappings"> 
-      <list> 
-        <value>/**</value> 
-      </list> 
-    </property> 
-  </bean>  
-  <bean id="daoHandler" class="com.sunnsoft.sloa.db.handler.DaoHandler" init-method="init" autowire="byName"/>  
-  <tx:annotation-driven transaction-manager="transactionManager"/>  
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans.xsd     http://www.springframework.org/schema/context     http://www.springframework.org/schema/context/spring-context.xsd    http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx.xsd     ">
+  <context:property-placeholder location="classpath:project.properties"/>
+  <context:component-scan base-package="com.sunnsoft.sloa"/>
+  <!--  <bean id="mainDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> -->
+  <!--    <property name="driverClassName" value="${jdbc.driver.class}"/>  -->
+  <!--    <property name="url" value="${jdbc.url}"/>  -->
+  <!--    <property name="username" value="${jdbc.username}"/>  -->
+  <!--    <property name="password" value="${jdbc.password}"/> -->
+  <!--    <property name="initialSize" value="10"/>  -->
+  <!--    <property name="maxActive" value="30"/>  -->
+  <!--    <property name="logAbandoned" value="true"/>  -->
+  <!--    <property name="removeAbandoned" value="true"/>  -->
+  <!--       mysql 默认 8小时超时 ，所以这里要清除1小时没用过的链接  -->
+  <!--    <property name="removeAbandonedTimeout" value="3600"/>  -->
+  <!--    <property name="validationQuery" value="select 1"/>  -->
+  <!--    <property name="testWhileIdle" value="true"/>  -->
+  <!--    <property name="minEvictableIdleTimeMillis" value="3600000"/>  -->
+  <!--    <property name="timeBetweenEvictionRunsMillis" value="1800000"/>  -->
+  <!--  </bean>-->
+  <bean id="mainDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+    <property name="driverClassName" value="${jdbc.driver.class}"/>
+    <property name="url" value="${jdbc.url}"/>
+    <property name="username" value="${jdbc.username}"/>
+    <property name="password" value="${jdbc.password}"/>
+    <!-- 配置初始化大小、最小、最大 -->
+    <property name="initialSize" value="5"/>
+    <property name="minIdle" value="5"/>
+    <property name="maxActive" value="300"/>
+    <!-- 配置获取连接等待超时的时间 -->
+    <property name="maxWait" value="60000"/>
+    <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+    <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+    <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+    <property name="minEvictableIdleTimeMillis" value="300000"/>
+    <property name="validationQuery" value="SELECT 'x'"/>
+    <property name="testWhileIdle" value="true"/>
+    <property name="testOnBorrow" value="true"/>
+    <property name="testOnReturn" value="false"/>
+    <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+    <property name="poolPreparedStatements" value="true"/>
+    <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
+    <!-- 配置监控统计拦截的filters -->
+    <property name="filters" value="stat"/>
+  </bean>
+  <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <property name="dataSource" ref="dataSource"/>
+  </bean>
+  <bean id="dataSource" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+    <property name="targetDataSource" ref="mainDataSource"/>
+  </bean>
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <property name="dataSource">
+      <ref bean="dataSource"/>
+    </property>
+    <property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+        <!-- hibernate 3.3以下版本 -->
+        <!--<prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>  -->
+        <!-- hibernate 3.3以上版本 -->
+        <prop key="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.EhCacheRegionFactory</prop>
+        <prop key="hibernate.hbm2ddl.auto">update</prop>
+        <prop key="hibernate.show_sql">${hibernate.showsql}</prop>
+        <prop key="hibernate.format_sql">true</prop>
+        <prop key="hibernate.cache.use_query_cache">false</prop>
+        <prop key="hibernate.generate_statistics">false</prop>
+        <prop key="hibernate.jdbc.batch_size">15</prop>
+      </props>
+    </property>
+    <!--    <property name="collectionCacheStrategies">-->
+    <!--    	<props>-->
+    <!--    	</props>-->
+    <!--    </property>-->
+    <property name="mappingDirectoryLocations">
+      <list>
+        <value>classpath:com/sunnsoft/${project.name}/db/vo/</value>
+      </list>
+    </property>
+    <property name="entityInterceptor" ref="interceptorManager"/>
+  </bean>
+  <bean id="interceptorManager" class="com.sunnsoft.hibernate.interceptor.InterceptorManager"/>
+  <bean id="baseTransactionProxy" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" abstract="true" lazy-init="default" autowire="default">
+    <property name="transactionManager">
+      <ref bean="transactionManager"/>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="find*">PROPAGATION_SUPPORTS,readOnly</prop>
+        <prop key="get*">PROPAGATION_SUPPORTS,readOnly</prop>
+        <prop key="add*">PROPAGATION_REQUIRED</prop>
+        <prop key="update*">PROPAGATION_REQUIRED</prop>
+        <prop key="delete*">PROPAGATION_REQUIRED</prop>
+        <prop key="set*">PROPAGATION_REQUIRED</prop>
+        <prop key="initObject*">PROPAGATION_REQUIRED</prop>
+        <prop key="save*">PROPAGATION_REQUIRED</prop>
+        <prop key="doJob*">PROPAGATION_REQUIRED</prop>
+        <prop key="fetch*">PROPAGATION_REQUIRED</prop>
+        <prop key="exec*">PROPAGATION_REQUIRED</prop>
+        <prop key="create*">PROPAGATION_REQUIRED</prop>
+        <prop key="run*">PROPAGATION_REQUIRED</prop>
+        <prop key="nonTransactional*">PROPAGATION_SUPPORTS</prop>
+        <prop key="*">PROPAGATION_SUPPORTS,readOnly</prop>
+        <!--         生产环境下，下这行去掉   -->
+        <!--       <prop key="_*">PROPAGATION_REQUIRED</prop> -->
+      </props>
+    </property>
+  </bean>
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" lazy-init="default" autowire="default">
+    <property name="sessionFactory">
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>
+  <!-- 作用于特定URL的Interceptor -->
+  <!-- 列出的url在一次 http请求与应答过程中，session都是打开的，不会出现session is closed 异常 -->
+  <bean id="openSessionInViewFilterDelegate" class="com.sunnsoft.servlet.filter.OpenSessionInViewFilterDelegate">
+    <property name="mappings">
+      <list>
+        <value>/**</value>
+      </list>
+    </property>
+  </bean>
+  <bean id="daoHandler" class="com.sunnsoft.sloa.db.handler.DaoHandler" init-method="init" autowire="byName"/>
+  <tx:annotation-driven transaction-manager="transactionManager"/>
   <bean id="commonDAO" class="org.gteam.db.dao.CommonDAO">
     <property name="sessionFactory">
       <ref bean="sessionFactory"/>
