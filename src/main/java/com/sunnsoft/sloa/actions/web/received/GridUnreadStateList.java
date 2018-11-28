@@ -51,7 +51,7 @@ public class GridUnreadStateList extends BaseParameter {
 		this.orderBy = (orderBy == null) ? 2 : orderBy;
 
 		// 给搜索条件设置默认值 默认值为 ""
-		this.likeName = (likeName == null) ? "" : likeName;
+		this.likeName = likeName.equals("") ? null : likeName;
 		this.startTime = (startTime.equals("")) ? null : startTime;
 
 		try {
@@ -65,8 +65,6 @@ public class GridUnreadStateList extends BaseParameter {
 
 
 			helper.ignoreEmptyValueCondiction();
-
-			status = 7;
 
 			if(status == 0){
 				helper.getMailState().Ne(4);

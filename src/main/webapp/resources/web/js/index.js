@@ -25,10 +25,10 @@ layui.use(['element','layer'], function () {
         });
     })
 });
-    
-    
+
+
 // 说明：存放自己收到的传阅，对收到的传阅，你能发表意见或平平并进行确认，也可对收到的传阅新增传阅人员
-    
+
 // 传阅一览
 function readySloa(){
     $.ajax({
@@ -55,12 +55,12 @@ function readySloa(){
                     {
                         title:'未读传阅',
                         value:data.unreadCount, //未读
-                        url:'receive.htm?state=4'
+                        url:'receive.htm?state=5'
                     },
                     {
-                       title:'待办传阅', 
-                       value:data.todoCount, //待办
-                       url:'receive.htm?state=2'
+                        title:'待办传阅',
+                        value:data.todoCount, //待办
+                        url:'receive.htm?state=2'
                     }
                 ]
             },
@@ -164,8 +164,8 @@ function readySloa(){
             html += '    </div>';
             html += '</div>';
             $('.sloa-list').append(html);
-            
+
         }
-        
+
     }
 }

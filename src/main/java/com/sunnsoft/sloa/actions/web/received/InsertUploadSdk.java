@@ -28,7 +28,7 @@ import java.util.UUID;
 /**
  * (PC端)上传附件(上传到联想网盘): 点击添加附件, 可以多个附件上传. 返回数据, 附件的名称, 大小, 状态 在已收传阅 进行新增上传附件.
  * 	新增完后, 需要开启重新确认.
- * 
+ *
  * @author chenjian
  *
  */
@@ -36,7 +36,7 @@ public class InsertUploadSdk extends BaseParameter {
 
 	private static final long serialVersionUID = 1L;
 //	private static final Logger LOGGER = LoggerFactory.getLogger(InsertUploadSdk.class);
-	
+
 	private int status; // 0 表示 上传到个人空间   1 上传到企业空间
 	private long userId; // 上传这个附件的传阅对象的ID
 	private Long mailId; // 传阅ID
@@ -46,7 +46,7 @@ public class InsertUploadSdk extends BaseParameter {
 
 	@Resource
 	private Config config;
-	
+
 	@Action(interceptorRefs = { @InterceptorRef(value = "fileUpload"), @InterceptorRef("extStack") })
 	@Override
 	public String execute() throws Exception {
@@ -72,8 +72,8 @@ public class InsertUploadSdk extends BaseParameter {
 			Mail mail = Services.getMailService().findById(mailId);
 			//获取存在的附件信息
 			List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-			
-			
+
+
 			//根据用户ID查询用户信息
 			UserMssage mssage = Services.getUserMssageService().createHelper().getUserId().Eq((int)userId).uniqueResult();
 
@@ -81,7 +81,7 @@ public class InsertUploadSdk extends BaseParameter {
 			boolean uploadName = false;
 			//遍历
 			for (int i = 0; i < file.length; i++) {
-				
+
 				//获取到要上传的文件名
 				String name = fileFileName[i];
 				//遍历附件集合
@@ -96,14 +96,14 @@ public class InsertUploadSdk extends BaseParameter {
 						break; //如果有相同的, 直接停止循环
 					}
 				}
-				
+
 				//判断
 				if(uploadName) {
 					//设置
 					uploadName = false;
 					continue; //如果有相同文件名, 直接跳过本次循环
 				}
-				
+
 				// 2. 获取上传文件的后缀
 				String typeName = fileFileName[i].substring(fileFileName[i].lastIndexOf(".") + 1).trim();
 
@@ -115,6 +115,11 @@ public class InsertUploadSdk extends BaseParameter {
 
 				// 4.设置上传文件的存储路径
 				String path = config.getBoxUploadUrl() + newName;
+
+				if(mssage != null){
+					System.out.println("拼接上传路径: " + config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + newName);
+					path = config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + newName;
+				}
 
 				// 设置上传文件的标签
 				String tags = typeName + ",网盘," + mssage.getLoginId() + "," + mssage.getFullName();
@@ -128,39 +133,39 @@ public class InsertUploadSdk extends BaseParameter {
 					UploadModel uploadFile = sdk.uploadFile(file[i], path, fileFileName[i], tags, session, PathType.SELF);
 					Long neid = uploadFile.getNeid();
 					String rev = uploadFile.getRev();
-					
-				    attachmentItem = Services.getAttachmentItemService().createHelper().bean().create()
-							.setBulkId(uuidBulkId).setUserId(userId).setCreator(mssage.getLastName()).setCreateTime(new Date())
-							.setFileName(fileFileName[i]).setFileCategory(typeName).setSaveName(newName)
-							.setUrlPath(uploadFile.getPath()).setAttached(false).setState(2).setItemSize(uploadFile.getSize())
-							.setItemNeid(neid).setItemRev(rev).setMail(mail)
-							.setItemDifferentiate(status).insertUnique();
-					
-				}
-				if(status == 1) {
-					UploadModel uploadFile = sdk.uploadFile(file[i], path, fileFileName[i], tags, session, PathType.ENT);
-					
-					Long neid = uploadFile.getNeid();
-					String rev = uploadFile.getRev();
-					
+
 					attachmentItem = Services.getAttachmentItemService().createHelper().bean().create()
 							.setBulkId(uuidBulkId).setUserId(userId).setCreator(mssage.getLastName()).setCreateTime(new Date())
 							.setFileName(fileFileName[i]).setFileCategory(typeName).setSaveName(newName)
 							.setUrlPath(uploadFile.getPath()).setAttached(false).setState(2).setItemSize(uploadFile.getSize())
 							.setItemNeid(neid).setItemRev(rev).setMail(mail)
 							.setItemDifferentiate(status).insertUnique();
-					
+
+				}
+				if(status == 1) {
+					UploadModel uploadFile = sdk.uploadFile(file[i], path, fileFileName[i], tags, session, PathType.ENT);
+
+					Long neid = uploadFile.getNeid();
+					String rev = uploadFile.getRev();
+
+					attachmentItem = Services.getAttachmentItemService().createHelper().bean().create()
+							.setBulkId(uuidBulkId).setUserId(userId).setCreator(mssage.getLastName()).setCreateTime(new Date())
+							.setFileName(fileFileName[i]).setFileCategory(typeName).setSaveName(newName)
+							.setUrlPath(uploadFile.getPath()).setAttached(false).setState(2).setItemSize(uploadFile.getSize())
+							.setItemNeid(neid).setItemRev(rev).setMail(mail)
+							.setItemDifferentiate(status).insertUnique();
+
 				}
 
 				if (attachmentItem != null) {
 					success = true;
 					msg = "再次新增附件成功,请刷新页面..";
 					code = "200";
-					
+
 					//LOGGER.warn("::::::::::: 结束时间: " + endTime);
-					
+
 					//System.out.println("上传100M文件消耗了: " + s + "秒!!!");
-					
+
 					// 如果新增上传附件成功, 开启重新确认
 					// 取出该传阅的联系人
 					List<Receive> receives = mail.getReceives();
@@ -179,7 +184,7 @@ public class InsertUploadSdk extends BaseParameter {
 							msg = msg + "  已经开启重新确认!";
 						}
 					}
-					
+
 					json = "null";
 					return Results.GLOBAL_FORM_JSON;
 				}
@@ -198,9 +203,9 @@ public class InsertUploadSdk extends BaseParameter {
 		code = "205";
 		json = "null";
 		return Results.GLOBAL_FORM_JSON;
-		
+
 	}
-	
+
 	public int getStatus() {
 		return status;
 	}

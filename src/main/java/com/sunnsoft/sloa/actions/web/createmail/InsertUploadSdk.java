@@ -23,7 +23,7 @@ import java.util.*;
 
 /**
  * 新建传阅--上传附件(上传到联想网盘): 点击添加附件, 可以多个附件上传. 返回数据, 附件的名称, 大小, 状态 (默认上传到个人空间)
- * 
+ *
  * @author chenjian
  *
  */
@@ -31,7 +31,7 @@ public class InsertUploadSdk extends BaseParameter {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(InsertUploadSdk.class);
-	
+
 	private int status; // 0 表示 上传到个人空间   1 上传到企业空间
 	private Long userId; // 上传这个附件的传阅对象的ID
 
@@ -40,7 +40,7 @@ public class InsertUploadSdk extends BaseParameter {
 
 	@Resource
 	private Config config;
-	
+
 	@Action(interceptorRefs = { @InterceptorRef(value = "fileUpload"), @InterceptorRef("extStack") })
 	@Override
 	public String execute() throws Exception {
@@ -51,22 +51,22 @@ public class InsertUploadSdk extends BaseParameter {
 
 		//根据上传附件的用户ID, 查询该用户的信息
 		UserMssage mssage = Services.getUserMssageService().createHelper().getUserId().Eq(userId.intValue()).uniqueResult();
-		
+
 		status = 1; //web端 默认上传到企业空间
-		
+
 		LenovoCloudSDK sdk = LenovoCloudSDKUtils.getLenovoCloudSDK(config);
-		
+
 		//使用网盘统一账号 system_OA 进行登录(只限于web端)
 		String session = LenovoCloudSDKUtils.getLenovoCloudSDKSession(sdk,config);
-		
+
 		LOGGER.warn("web端    --->  进行上传附件, session: " + session);
 		// 创建list集合
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		
+
 		// 上传文件
 		// 1. 使用UUID生成附件上传批次ID ,用该批次ID进行管理多个上次附件
 		String uuidBulkId = UUID.randomUUID().toString();
-		
+
 		for (int i = 0; i < file.length; i++) {
 			// 创建map集合, 存放上传完附件后,返回给前端的数据
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -83,6 +83,11 @@ public class InsertUploadSdk extends BaseParameter {
 			// 4.设置存储上传文件的路径
 			String path = config.getBoxUploadUrl() + newName;
 
+			// 按照需求更改上传路径 2018-11-28
+			if(mssage != null){
+				path = config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + newName;
+			}
+
 			// 设置上传文件的标签
 			String tags = typeName + ",网盘," + mssage.getLoginId() + "," + mssage.getFullName();
 
@@ -93,17 +98,17 @@ public class InsertUploadSdk extends BaseParameter {
 			 */
 
 			AttachmentItem attachmentItem = null;
-			
-			if (status == 0) {// 0 表示 个人空间 
+
+			if (status == 0) {// 0 表示 个人空间
 				UploadModel uploadFile = sdk.uploadFile(file[i], path, fileFileName[i], tags, session, PathType.SELF);
 
 				attachmentItem = getItem(uploadFile, list, uuidBulkId, i, map, typeName, newName, mssage);
 			}
-			
+
 			if (status == 1) { //1 表示企业空间
 
 				UploadModel uploadFile = sdk.uploadFile(file[i], path, fileFileName[i], tags, session, PathType.ENT);
-				
+
 				attachmentItem = getItem(uploadFile, list, uuidBulkId, i, map, typeName, newName, mssage);
 			}
 
@@ -117,7 +122,7 @@ public class InsertUploadSdk extends BaseParameter {
 		json = JSONObject.toJSONString(list);
 
 		if (json != null) {
-			
+
 			LOGGER.warn("web端    --->  上传附件成功!::::::::::::::::");
 			return Results.GLOBAL_FORM_JSON;
 		} else {
@@ -129,7 +134,7 @@ public class InsertUploadSdk extends BaseParameter {
 	}
 
 	public AttachmentItem getItem(UploadModel uploadFile, List<Map<String, Object>> list, String uuidBulkId, int i,
-			Map<String, Object> map, String typeName, String newName, UserMssage mssage) {
+								  Map<String, Object> map, String typeName, String newName, UserMssage mssage) {
 		Long neid = uploadFile.getNeid();
 		String rev = uploadFile.getRev();
 		LOGGER.warn("web端    --->  neid: " + neid);
@@ -147,10 +152,10 @@ public class InsertUploadSdk extends BaseParameter {
 		map.put("bulkId", attachmentItem.getBulkId()); // 添加附件上传批次ID
 
 		list.add(map);
-		
+
 		return attachmentItem;
 	}
-	
+
 	public int getStatus() {
 		return status;
 	}

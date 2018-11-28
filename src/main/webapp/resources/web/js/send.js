@@ -1,6 +1,6 @@
 //JavaScript代码区域
 layui.use(['element','laypage','table','form','layer','jquery','laydate'], function(){
-        $(function(){
+    $(function(){
         var element = layui.element;
         var table = layui.table;
         var laypage = layui.laypage;
@@ -9,7 +9,8 @@ layui.use(['element','laypage','table','form','layer','jquery','laydate'], funct
         var laydate = layui.laydate;
         // 删除
         $('.oa-read-delete').on('click',function(){
-            var choice = $('.oa-read-table tbody input[name="choice"]:checked');
+            // var choice = $('.oa-read-table tbody input[name="choice"]:checked');
+            var choice = $('.oa-read-table tbody input[name="choice"]:not([disabled]):checked');
             var choiceArr = [];
             var layer_del;
             for(var i=0;i<choice.length;i++){
@@ -18,11 +19,11 @@ layui.use(['element','laypage','table','form','layer','jquery','laydate'], funct
             // 判断是否有选择删除的，如果没有不提交数据
             if(choiceArr.length>0){
                 layer.confirm(
-                    '删除后将存入到已删除传阅，您确定要删除吗？', 
+                    '删除后将存入到已删除传阅，您确定要删除吗？',
                     {
                         btn: ['是','否'],
                         title:'删除提示'
-                    }, //按钮 
+                    }, //按钮
                     function(index, layero){
                         //按钮【按钮一】的回调
                         $.ajax({
@@ -55,17 +56,17 @@ layui.use(['element','laypage','table','form','layer','jquery','laydate'], funct
                                 layer.msg('网络出错',{time: 2000,icon: 2});
                             }
                         })
-                    }, 
+                    },
                     function(index){
                         //按钮【按钮二】的回调
                     }
                 );
-                
+
             }else{
                 layer.msg('请选择要删除的传阅',{time: 2000});
                 return false;
             }
-            
+
         });
         var urlState;
         // 判断是否从传阅一览进去来的
@@ -93,7 +94,7 @@ layui.use(['element','laypage','table','form','layer','jquery','laydate'], funct
                 pageRows:itemNum,
                 mailStatus:urlState,
                 startTime : startTime,
-                endTime :endTime, 
+                endTime :endTime,
                 likeName:$('#search').val()
             },
             templateTag:'.oa-read-table .layui-table tbody'
@@ -111,7 +112,7 @@ layui.use(['element','laypage','table','form','layer','jquery','laydate'], funct
                     pageRows:itemNum,
                     mailStatus:data.value,
                     startTime : startTime,
-                    endTime :endTime, 
+                    endTime :endTime,
                     likeName:$('#search').val()
                 },
                 templateTag:'.oa-read-table .layui-table tbody'
@@ -130,7 +131,7 @@ layui.use(['element','laypage','table','form','layer','jquery','laydate'], funct
                     pageRows:itemNum,
                     mailStatus:urlState,
                     startTime : startTime,
-                    endTime :endTime, 
+                    endTime :endTime,
                     likeName:$('#search').val()
                 },
                 templateTag:'.oa-read-table .layui-table tbody'
@@ -141,21 +142,21 @@ layui.use(['element','laypage','table','form','layer','jquery','laydate'], funct
         $('#search_btn').on('click',function(){
             // urlState = $('select[name="mailStatus"]').val(5);
             var pages = new Pages({
-            type:'post',
-            url:'/web/homepage/grid-send-in-list.htm',
-            data:{
-                userId:$.session.get('userId'),
-                page:1,
-                pageRows:itemNum,
-                mailStatus:urlState,
-                startTime : startTime,
-                endTime :endTime, 
-                likeName:$('#search').val()
-            },
-            templateTag:'.oa-read-table .layui-table tbody'
+                type:'post',
+                url:'/web/homepage/grid-send-in-list.htm',
+                data:{
+                    userId:$.session.get('userId'),
+                    page:1,
+                    pageRows:itemNum,
+                    mailStatus:urlState,
+                    startTime : startTime,
+                    endTime :endTime,
+                    likeName:$('#search').val()
+                },
+                templateTag:'.oa-read-table .layui-table tbody'
             });
             pages.getData();
-            
+
         });
         laydate.render({
             elem: '#calendar', //指定元素
@@ -170,23 +171,23 @@ layui.use(['element','laypage','table','form','layer','jquery','laydate'], funct
                     startTime = date.year+'-'+date.month+'-'+date.date;
                     endTime = endDate.year+'-'+endDate.month+'-'+endDate.date;
                 }
-            	var pages = new Pages({
-                type:'post',
-                url:'/web/homepage/grid-send-in-list.htm',
-                data:{
-                    userId:$.session.get('userId'),
-                    page:1,
-                    pageRows:itemNum,
-                    startTime : startTime,
-                    endTime :endTime, 
-                    mailStatus:urlState,
-                    likeName:$('#search').val()
-                },
-                templateTag:'.oa-read-table .layui-table tbody'
+                var pages = new Pages({
+                    type:'post',
+                    url:'/web/homepage/grid-send-in-list.htm',
+                    data:{
+                        userId:$.session.get('userId'),
+                        page:1,
+                        pageRows:itemNum,
+                        startTime : startTime,
+                        endTime :endTime,
+                        mailStatus:urlState,
+                        likeName:$('#search').val()
+                    },
+                    templateTag:'.oa-read-table .layui-table tbody'
                 });
                 pages.getData();
             }
-    
+
         });
         $(document).on('click','.oa-read-table .layui-table tbody tr td',function(){
             var value = $(this).parent('tr').children().children('input[name=choice]').val();
@@ -201,4 +202,3 @@ layui.use(['element','laypage','table','form','layer','jquery','laydate'], funct
     })
 });
 
-    
