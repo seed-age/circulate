@@ -12,7 +12,7 @@ import java.util.*;
 
 /**
  * 已发/已收传阅---查看传阅对象: 点击添加联系人, 添加传阅对象
- * 
+ *
  * @author chenjian
  *
  */
@@ -75,8 +75,8 @@ public class InsertMailObject extends BaseParameter {
 				json = "null";
 				return Results.GLOBAL_FORM_JSON;
 			}
-			
-			
+
+			String receiveLastName = "";
 			// 进行迭代
 			Iterator<Long> it = list.iterator();
 			while (it.hasNext()) {
@@ -87,14 +87,16 @@ public class InsertMailObject extends BaseParameter {
 					if (next.equals(receive.getUserId())) {
 						// 如果相同, 就把这个元素删除
 						it.remove();
+						receiveLastName += receive.getLastName() + ", ";
 					}
 				}
 			}
 
 			int size = list.size();
 			if (size == 0) {
+				receiveLastName = receiveLastName.substring(0, receiveLastName.length() - 2);
 				success = true;
-				msg = "该联系人已经是传阅对象了!";
+				msg = "该联系人 " + receiveLastName + " 已经是传阅对象了!";
 				code = "404";
 				json = "null";
 				return Results.GLOBAL_FORM_JSON;
@@ -195,4 +197,5 @@ public class InsertMailObject extends BaseParameter {
 	public void setReceiveUserId(Long[] receiveUserId) {
 		this.receiveUserId = receiveUserId;
 	}
+
 }

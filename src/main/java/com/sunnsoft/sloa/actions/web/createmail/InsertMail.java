@@ -19,7 +19,7 @@ import java.util.*;
 
 /**
  * 新建传阅 --点击发送/保存: 接收人名称, 附件 , 传阅主题, 传阅内容. (删除附件没有实现)
- * 
+ *
  * @author chenjian
  *
  */
@@ -54,11 +54,11 @@ public class InsertMail extends BaseParameter {
 		String result = null ;
 		try {
 			result = (String)Services.getMailService().executeTransactional(new TransactionalCallBack() {
-				
+
 				@Override
 				public Object execute(IService arg0) {
 					System.out.println("开启事物了....");
-						return getInsertMail();
+					return getInsertMail();
 				}
 			});
 		} catch (Exception e) {
@@ -75,7 +75,7 @@ public class InsertMail extends BaseParameter {
 		}
 		return result;
 	}
-	
+
 	public String getInsertMail(){
 
 		// 校验参数
@@ -113,13 +113,13 @@ public class InsertMail extends BaseParameter {
 		List<UserMssage> userMssages = null;
 		String allName = "";
 		if(receiveUserId != null) {
-			
+
 			StringBuilder sb = new StringBuilder();
 			try {
 				// 查询接收人信息
 				userMssages = Services.getUserMssageService().createHelper().getUserId().In(receiveUserId)
 						.list();
-				
+
 				for (UserMssage userMssage : userMssages) {
 					sb.append(userMssage.getLastName()).append(";");
 				}
@@ -131,8 +131,8 @@ public class InsertMail extends BaseParameter {
 				json = "null";
 				return Results.GLOBAL_FORM_JSON;
 			}
-			
-		    allName = sb.toString().substring(0, sb.toString().length() - 1);
+
+			allName = sb.toString().substring(0, sb.toString().length() - 1);
 		}
 
 		boolean hasAttachment = false;
@@ -149,7 +149,7 @@ public class InsertMail extends BaseParameter {
 
 		// 根据当前用户ID 查询该用户的信息
 		UserMssage mssage = Services.getUserMssageService().createHelper().getUserId().Eq((int) userId).uniqueResult();
-		
+
 		if (mssage == null) {
 			msg = "该用户不存在!";
 			success = false;
@@ -157,13 +157,13 @@ public class InsertMail extends BaseParameter {
 			json = "null";
 			return Results.GLOBAL_FORM_JSON;
 		}
-		
+
 		/**
 		 * 如果是true 代表是发送传阅 false 表示保存新建传阅 不是发送
 		 */
 		// 如果是true 表示发送传阅
 		if (transmission) {
-			
+
 			Assert.notNull(receiveUserId, "接收人ID不能为空");
 			Assert.notNull(title, "传阅主题不能为空");
 
@@ -254,7 +254,8 @@ public class InsertMail extends BaseParameter {
 						.setUserId(userMssage.getUserId()).setLastName(userMssage.getLastName()).setLoginId(userMssage.getLoginId())
 						.setReceiveStatus(0).setWorkCode(userMssage.getWorkCode()).setReceiveTime(mail.getSendTime())
 						.setSubcompanyName(userMssage.getFullName()).setDepartmentName(userMssage.getDeptFullname())
-						.setStepStatus(2).setMailState(5).setJoinTime(mail.getCreateTime()).setIfConfirm(false).insertUnique();
+						.setStepStatus(2).setMailState(5).setJoinTime(mail.getCreateTime()).setIfConfirm(false)
+						.setReDifferentiate(userId).insertUnique();
 
 				receiveStr = true;
 			}
@@ -365,7 +366,7 @@ public class InsertMail extends BaseParameter {
 				if(receives.size() > 0 && receives != null) {
 					Services.getReceiveService().deleteList(receives);
 				}
-				
+
 				for (UserMssage userMssage : userMssages) {
 					// 新增收件人记录
 					Services.getReceiveService().createHelper().bean().create().setMail(mail)
@@ -373,11 +374,14 @@ public class InsertMail extends BaseParameter {
 							.setLoginId(userMssage.getLoginId()).setReceiveStatus(0)
 							.setWorkCode(userMssage.getWorkCode()).setReceiveTime(mail.getSendTime())
 							.setSubcompanyName(userMssage.getFullName()).setDepartmentName(userMssage.getDeptFullname())
-							.setStepStatus(0).setMailState(4).setJoinTime(mail.getCreateTime()).setIfConfirm(false).insertUnique();
+							.setStepStatus(0).setMailState(4).setJoinTime(mail.getCreateTime()).setIfConfirm(false)
+							.setReDifferentiate(userId).insertUnique();
 
 					receiveStr = true;
 				}
-				
+
+			}else {
+				receiveStr = true;
 			}
 
 			// 判断
