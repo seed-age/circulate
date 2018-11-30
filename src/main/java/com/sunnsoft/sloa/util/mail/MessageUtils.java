@@ -137,7 +137,6 @@ public class MessageUtils {
 		SimpleDateFormat formatter;
 		formatter = new SimpleDateFormat("yyyy年MM月dd日");
 		String ctime = formatter.format(time);
-
 		return ctime;
 	}
 }
