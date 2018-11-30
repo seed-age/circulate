@@ -27,7 +27,7 @@ import java.util.*;
 
 /**
  * 根据文件ID查询文件信息,并添加文件到本地数据库
- * 
+ *
  * @author chenjian
  *
  */
@@ -35,7 +35,7 @@ public class FindFileName extends BaseParameter {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(FindFileName.class);
-	
+
 	private long mailId; // 传阅ID
 	private Long[] neid; // 文件ID
 	private Long userId; // 用户ID
@@ -48,13 +48,22 @@ public class FindFileName extends BaseParameter {
 		// 校验参数
 		Assert.notNull(userId, "用户ID不能为空!");
 		Assert.notNull(neid, "上传的附件不能为空!");
-		
+
+		Mail mail1 = Services.getMailService().findById(mailId);
+		if(mail1.getStepStatus() == 3){ // 已完成的传阅  不能进行添加文件的操作
+			success = false;
+			msg = "已完成的传阅, 不能进行添加文件的操作";
+			code = "205";
+			json = "null";
+			return Results.GLOBAL_FORM_JSON;
+		}
+
 		// 网盘对象
 		LenovoCloudSDK sdk = LenovoCloudSDKUtils.getLenovoCloudSDK(config);
 		// 根据用户ID查询用户信息
 		UserMssage mssage = Services.getUserMssageService().createHelper().getUserId().Eq(userId.intValue())
 				.uniqueResult();
-		
+
 		String session = null;
 		try {
 			//根据SSO登录获取当前用户的session
@@ -79,7 +88,7 @@ public class FindFileName extends BaseParameter {
 			// 获取session
 			session = login.getXLENOVOSESSID();*/
 		}
-					
+
 		try {
 
 			// 校验文件是否是cad文件
@@ -144,7 +153,7 @@ public class FindFileName extends BaseParameter {
 				String typeName = null;
 				//上传附件后缀
 				String suffix = null;
-				//判断  
+				//判断
 				if (desc.equals("")) {
 					//使用路径中的文件名
 					String path = fileModel.getPath();
@@ -153,7 +162,7 @@ public class FindFileName extends BaseParameter {
 					String[] split = path.split("/");
 					//取最后一个, 得到文件名称
 					fileName = split[split.length - 1];
-					
+
 					// 获取文件后缀
 					typeName = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
 					// 3.1 获取上传附件后缀;
@@ -176,16 +185,16 @@ public class FindFileName extends BaseParameter {
 
 				// 判断, 如果该文件是存在企业空间 返回 1 个人空间 返回 0
 				int status = (pathType.equals("ent")) ? 1 : 0;
-				
+
 				LOGGER.warn("添加的文件归属(企业空间 : 1   个人空间 : 0): " + status);
-				
+
 				Long neidUpload = null;
 				String revUpload = null;
 				String uploadPath = null;
 				String fileSize = null;
 				//只有是从个人空间添加文件才会进来
 				if(status == 0) {
-					
+
 					LOGGER.warn("开始执行添加的文件上传网盘的企业空间 ::::::::::::");
 					//对用户从个人空间添加的文件进行下载, 并且上传到企业空间
 					InputStream downloadFile = sdk.downloadFile(fileModel.getPath(), session, fileModel.getNeid(), fileModel.getRev(), PathType.SELF);
@@ -202,9 +211,9 @@ public class FindFileName extends BaseParameter {
 					// 调用上传文件
 					UploadModel uploadFileWithInputStream = lenovoCloudSDK.uploadFileWithInputStream(downloadFile, path, fileName,
 							tags, systemOAsession, PathType.ENT);
-					
+
 					LOGGER.warn("调用上传方法进行上传后, 返回的对象: " + uploadFileWithInputStream);
-					
+
 					neidUpload = uploadFileWithInputStream.getNeid();
 					revUpload = uploadFileWithInputStream.getRev();
 					uploadPath = uploadFileWithInputStream.getPath();
@@ -216,7 +225,7 @@ public class FindFileName extends BaseParameter {
 					uploadPath = fileModel.getPath();
 					fileSize = fileModel.getSize();
 				}
-				
+
 				//定义标识
 				boolean file = false;
 				// 判断, 如果传阅ID大于0 说明有参数, 就不是在新建传阅中添加附加的
@@ -238,13 +247,13 @@ public class FindFileName extends BaseParameter {
 							break;
 						}
 					}
-					
+
 					//如果为 true
 					if(file) {
 						//直接跳过本次循环
 						continue;
 					}
-					
+
 					// 把文件信息保存到数据库
 					/*AttachmentItem attachmentItem = Services.getAttachmentItemService().createHelper().bean().create()
 							.setMail(mail).setBulkId(uuId).setUserId(userId).setCreator(mssage.getLastName())
@@ -252,14 +261,14 @@ public class FindFileName extends BaseParameter {
 							.setSaveName(newName).setUrlPath(fileModel.getPath()).setAttached(false).setState(0)
 							.setItemSize(fileModel.getSize()).setItemNeid(fileModel.getNeid())
 							.setItemRev(fileModel.getRev()).setItemDifferentiate(status).insertUnique();*/
-					
+
 					AttachmentItem attachmentItem = Services.getAttachmentItemService().createHelper().bean().create()
 							.setMail(mail).setBulkId(uuId).setUserId(userId).setCreator(mssage.getLastName())
 							.setCreateTime(new Date()).setFileName(fileName).setFileCategory(typeName)
 							.setSaveName(newName).setUrlPath(uploadPath).setAttached(false).setState(0)
 							.setItemSize(fileSize).setItemNeid(neidUpload)
 							.setItemRev(revUpload).setItemDifferentiate(status).insertUnique();
-					
+
 					if (mssage != null && attachmentItem != null) {
 						//获取接收人对象集合
 						List<Receive> receives = mail.getReceives();
@@ -295,7 +304,7 @@ public class FindFileName extends BaseParameter {
 					//直接跳过本次循环
 					continue;
 				}
-				
+
 				// 把文件信息保存到数据库
 				/*AttachmentItem attachmentItem = Services.getAttachmentItemService().createHelper().bean().create()
 						.setBulkId(uuId).setUserId(userId).setCreator(mssage.getLastName()).setCreateTime(new Date())

@@ -1,7 +1,7 @@
 .oa-receive{
     position: relative;
     overflow: hidden;
-    
+
 }
 .oa-receive-right{
     padding-top: 73px;
@@ -72,7 +72,7 @@
     color:#22262a;
     font-size: 14px;
     float:left;
-} 
+}
 .interacts-list .user span{
     font-size: 12px;
     color:#ccc;
@@ -183,7 +183,7 @@
 }
 .oa-receive-table .title-obj{
     background-image: url(../images/icon-obj.png);
-    
+
 }
 .oa-receive-table .title-right{
     float:right;
@@ -196,10 +196,14 @@
     font-size: 16px;
     cursor: pointer;
     margin-left:30px;
-    
+
 }
 .oa-receive-table .title-right .annex-up{
-    background-image: url(../images/icon-up.png);
+    padding-right: 0;
+}
+.oa-receive-table .title-right .annex-up .webuploader-pick{
+    background: url(../images/icon-up.png) no-repeat right center;
+    padding-right: 24px;
 }
 .oa-receive-table .title-right .annex-down{
     background-image: url(../images/icon-down.png);
@@ -300,7 +304,7 @@
 .oa-receive-table .layui-table tbody tr:hover{
     background-color:#f0f8fd;
 }
-.oa-receive-table .layui-table td, 
+.oa-receive-table .layui-table td,
 .oa-receive-table .layui-table th{
     padding:11px 8px;
     border-top:1px solid #e6e6ed;

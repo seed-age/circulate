@@ -21,15 +21,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.UUID;
 
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-
 /**
  * 已发传阅--传阅详情页面--附件列表---点击下载附件--从网盘上下载附件.
- * 
+ *
  * @author chenjian
  *
  */
@@ -37,13 +35,13 @@ public class SendDownloadFile extends BaseParameter {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(SendDownloadFile.class);
-	
+	private static int itemSum = 0;
 	private Long itemId; // 附件ID
 	private Integer userId; //用户ID
 
 	@Resource
 	private Config config;
-	
+
 	@Resource
 	private FileStore generalFileStore;
 
@@ -75,21 +73,28 @@ public class SendDownloadFile extends BaseParameter {
 
 		String fileName = attachmentItem.getLocalhostUrlPath() != null ? attachmentItem.getLocalhostUrlPath() : attachmentItem.getSaveName();
 		File file = generalFileStore.getFile(fileName);
-		if(file.exists()) {
-			LOGGER.warn("存在。。。。......." + fileName);
-			
-			json = FastJSONUtils.getJsonHelper().toJSONString(
-					"/file/" + fileName);
-			
-			LOGGER.warn("已经下载的文件，预览路径：            /file/" + fileName);
-			
-			success = true;
-			code = "200";
-			msg = "下载附件成功!";
-			return Results.GLOBAL_FORM_JSON;
-		}else {
-			LOGGER.warn("不存在。。。。" + fileName + "  需要重新下载 ");
-		}
+
+		String fileName1 = attachmentItem.getFileName();
+		// 其他浏览器, 需要进行二次编码
+		fileName1 = URLEncoder.encode(fileName1, "UTF-8");
+		fileName1 = URLEncoder.encode(fileName1, "UTF-8");
+
+		// 因为APP端安卓的下载不了的问题. 去掉这段代码
+//		if(file.exists()) {
+//			LOGGER.warn("存在。。。。......." + fileName);
+//
+//			json = FastJSONUtils.getJsonHelper().toJSONString(
+//					"/file/" + fileName + "?download=true&rename=" + fileName1);
+//			LOGGER.warn("返回给APP端的下载文件的大小： " + itemSum);
+//			LOGGER.warn("已经下载的文件，预览路径：            /file/" + fileName + "?download=true&rename=" + fileName1 +  "&itemSum=" + itemSum);
+//			itemSum = 0; // 初始化
+//			success = true;
+//			code = "200";
+//			msg = "下载附件成功!";
+//			return Results.GLOBAL_FORM_JSON;
+//		}else {
+//			LOGGER.warn("不存在。。。。" + fileName + "  需要重新下载 ");
+//		}
 		// 获取附件上传的URL
 		String urlPath = attachmentItem.getUrlPath();
 
@@ -98,14 +103,14 @@ public class SendDownloadFile extends BaseParameter {
 
 		// 获取文件上传到网盘的版本
 		String rev = attachmentItem.getItemRev();
-		
+
 		//网盘对象
 		LenovoCloudSDK sdk = LenovoCloudSDKUtils.getLenovoCloudSDK(config);
 		//返回system_OA用户登录网盘的session
 		String session = LenovoCloudSDKUtils.getLenovoCloudSDKSession(sdk, config);
-		
+
 		LOGGER.warn("system_OA用户登录网盘的session: " + session);
-		
+
 		// 判断
 		//Integer differentiate = attachmentItem.getItemDifferentiate();
 		boolean status = false;
@@ -131,13 +136,15 @@ public class SendDownloadFile extends BaseParameter {
 		//LOGGER.warn("本地文件预览的路径: " + path);
 		// 对中文进行编码
 		if (status || item) {
-			json = FastJSONUtils.getJsonHelper().toJSONString(path);
-			
-			LOGGER.warn("返回给APP端的访问路径： " + "/file/" + storeFile.getName());
+
+			LOGGER.warn("返回给APP端的访问路径： " + "/file/" + storeFile.getName() + "?download=true&rename=" + fileName1);
+			LOGGER.warn("返回给APP端的下载文件的大小： " + itemSum);
+			json = FastJSONUtils.getJsonHelper().toJSONString(path + "?download=true&rename=" + fileName1 + "&itemSum=" + itemSum);
+
 			attachmentItem.setLocalhostUrlPath(storeFile.getName());
 			attachmentItem.setUpdateTime(new Date());
 			Services.getAttachmentItemService().update(attachmentItem);
-			
+			itemSum = 0; // 初始化
 			success = true;
 			code = "200";
 			msg = "下载附件成功!";
@@ -163,8 +170,10 @@ public class SendDownloadFile extends BaseParameter {
 			OutputStream os = new FileOutputStream(file);
 			int bytesRead = 0;
 			byte[] buffer = new byte[8192];
+
 			while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
 				os.write(buffer, 0, bytesRead);
+				itemSum += bytesRead;
 				if (bytesRead > -1) {
 					status = true;
 				}

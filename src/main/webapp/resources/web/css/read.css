@@ -25,6 +25,10 @@
     /* border-right:0; */
     vertical-align: middle;
 }
+.oa-read-form .oa-form-input input#calendar{
+    width: 250px;
+    text-align: center;
+}
 .oa-read-form .oa-form-search input{
     border-right:0;
     height: 28px;

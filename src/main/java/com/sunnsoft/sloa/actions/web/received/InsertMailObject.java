@@ -56,6 +56,14 @@ public class InsertMailObject extends BaseParameter {
 				return Results.GLOBAL_FORM_JSON;
 			}
 
+			if(mail.getStepStatus() == 3){ // 已完成的传阅 不能进行添传阅对象操作
+				success = false;
+				msg = "已完成的传阅不能新增传阅对象";
+				code = "206";
+				json = "null";
+				return Results.GLOBAL_FORM_JSON;
+			}
+
 			// 创建list集合, 用于存储userId.
 			List<Long> list = new ArrayList<Long>(receiveUserId.length);
 			// 把数组中的数据添加到集合中

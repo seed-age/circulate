@@ -70,6 +70,13 @@ public class InsertUploadSdk extends BaseParameter {
 		try {
 			//通过传阅ID获取该传阅的数据
 			Mail mail = Services.getMailService().findById(mailId);
+			if(mail.getStepStatus() == 3){ // 已完成的传阅  不能进行添加文件的操作
+				success = false;
+				msg = "已完成的传阅, 不能进行添加文件的操作";
+				code = "404";
+				json = "null";
+				return Results.GLOBAL_FORM_JSON;
+			}
 			//获取存在的附件信息
 			List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
 

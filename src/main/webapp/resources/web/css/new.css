@@ -136,7 +136,7 @@
     font-size:16px;
     margin-bottom:20px;
 }
-.uploader-accessory #filePicker{
+.uploader-accessory #filePicker .webuploader-pick{
     background: url(../images/accessory-icon01.png) no-repeat left center;
     padding-left:20px;
     color:#008cd6;
@@ -259,7 +259,7 @@
 }
 .layui-all-btn{
     padding-left: 56px;
-    margin-top: 50px;    
+    margin-top: 50px;
 }
 .layui-all-btn .layui-btn{
     height: 34px;
@@ -316,7 +316,7 @@
 .rightArea .layui-tab-content .layui-tab-item{
     overflow-y: auto;
     height: 100%;
-    
+
 }
 .lfettArea .ueditor{
     padding-left:56px;

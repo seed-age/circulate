@@ -12,7 +12,7 @@ import java.util.*;
 
 /**
  * 已收传阅---查看传阅对象: 点击添加联系人, 添加传阅对象
- * 
+ *
  * @author chenjian
  *
  */
@@ -26,7 +26,7 @@ public class InsertMailObject extends BaseParameter {
 	/** 该参数接收从前端页面传过来的接收人参数 */
 	private Long[] receiveUserId; // 收件人id
 
-	
+
 	@Override
 	public String execute() throws Exception {
 
@@ -58,6 +58,14 @@ public class InsertMailObject extends BaseParameter {
 				return Results.GLOBAL_FORM_JSON;
 			}
 
+			if(mail.getStepStatus() == 3){
+				success = false;
+				msg = "已完成的传阅不能新增传阅对象";
+				code = "206";
+				json = "null";
+				return Results.GLOBAL_FORM_JSON;
+			}
+
 			// 创建list集合, 用于存储userId.
 			List<Long> list = new ArrayList<Long>(receiveUserId.length);
 			// 把数组中的数据添加到集合中
@@ -77,7 +85,7 @@ public class InsertMailObject extends BaseParameter {
 				json = "null";
 				return Results.GLOBAL_FORM_JSON;
 			}
-			
+
 			// 进行迭代
 			Iterator<Long> it = list.iterator();
 			while (it.hasNext()) {

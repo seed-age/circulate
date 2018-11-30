@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * 新建传阅--删除附件: 点击删除, 去网盘上查询该附件的信息, 并删除该附件(本地删除, 网盘上的不做删除).
- * 
+ *
  * @author chenjian
  *
  */
@@ -33,7 +33,7 @@ public class DeleteUpload extends BaseParameter {
 
 	@Resource
 	private Config config;
-	
+
 	@Override
 	public String execute() throws Exception {
 		String result = null;
@@ -85,12 +85,6 @@ public class DeleteUpload extends BaseParameter {
 
 		Assert.notNull(mailId, "传阅ID不能为空!");
 
-		//网盘
-		LenovoCloudSDK sdk = LenovoCloudSDKUtils.getLenovoCloudSDK(config);
-		
-		//使用网盘统一账号 system_OA 进行登录(只限于web端)
-		String session = LenovoCloudSDKUtils.getLenovoCloudSDKSession(sdk, config);
-				
 		// 根据传阅ID查询传阅数据
 		Mail mail = Services.getMailService().findById(mailId);
 
@@ -98,71 +92,28 @@ public class DeleteUpload extends BaseParameter {
 		AttachmentItem attachmentItem = Services.getAttachmentItemService().createHelper().getItemId().Eq(itemId)
 				.uniqueResult();
 
-		// 获取附件上传的URL
-		String urlPath = attachmentItem.getUrlPath();
+		// 进行校验, 判断该用户是否用权限删除这个附件
+		// 如果该附件是当前用户上传的, 或是 当前用户是发件人. 就进来
+		if (attachmentItem.getUserId().equals(userId) || mail.getUserId() == userId.longValue()) {
+			// 执行删除
+			Services.getAttachmentItemService().delete(attachmentItem);
 
-		// 获取文件存放的位置
-		Integer differentiate = attachmentItem.getItemDifferentiate();
-
-		FileGetIdModel getIdByPath = null;
-
-		if (differentiate == 0) { // 0 表示 个人空间
-
-			// 调用查询文件的方法, 查询文件
-			getIdByPath = sdk.fileGetIdByPath(urlPath, session, PathType.SELF);
-		}
-		if (differentiate == 1) { // 1 表示 企业空间
-
-			// 调用查询文件的方法, 查询文件
-			getIdByPath = sdk.fileGetIdByPath(urlPath, session, PathType.ENT);
-		}
-
-		// 获取文件的ID
-		Long fileId = 0L;
-		try {
-			fileId = getIdByPath.getId();
-		} catch (Exception e) {
-			e.printStackTrace();
-			success = false;
-			code = "4000";
-			msg = "删除附件失败!";
+			List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
+			if (attachmentItems.size() == 1 || attachmentItems.size() == 0) {
+				mail.setHasAttachment(false);// 设置
+			}
+			// 更新
+			Services.getMailService().update(mail);
+			success = true;
+			code = "200";
+			msg = "删除附件成功!";
 			json = "null";
 			return Results.GLOBAL_FORM_JSON;
-		}
-
-		// 判断附件在本地存储的网盘ID 和 去网盘上查询得到的文件ID 是否相同
-		if (attachmentItem.getItemNeid().equals(fileId)) {
-
-			// 进行校验, 判断该用户是否用权限删除这个附件
-			// 如果该附件是当前用户上传的, 或是 当前用户是发件人. 就进来
-			if (attachmentItem.getUserId().equals(userId) || mail.getUserId() == userId.longValue()) {
-				// 执行删除
-				Services.getAttachmentItemService().delete(attachmentItem);
-
-				List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-				if (attachmentItems.size() == 0) {
-					mail.setHasAttachment(false);// 设置
-				}
-				// 更新
-				Services.getMailService().update(mail);
-				success = true;
-				code = "200";
-				msg = "删除附件成功!";
-				json = "null";
-				return Results.GLOBAL_FORM_JSON;
-			} else {
-
-				success = false;
-				code = "205";
-				msg = "你没有权限删除该附件!";
-				json = "null";
-				return Results.GLOBAL_FORM_JSON;
-			}
-
 		} else {
+
 			success = false;
-			code = "4000";
-			msg = "删除附件失败!";
+			code = "205";
+			msg = "你没有权限删除该附件!";
 			json = "null";
 			return Results.GLOBAL_FORM_JSON;
 		}

@@ -125,10 +125,10 @@ $(document).ready(function(){
                     '	<strong>接 收 人：</strong>'+
                     '	<p>'+data.allReceiveName+'</p>'+
                     '</li> '+
-                    '<li>'+
-                    '	<strong>传阅规则：</strong>'+
-                    '	<p>'+data.ruleName+'</p>'+
-                    '</li>  '+
+                    // '<li>'+
+                    // '	<strong>传阅规则：</strong>'+
+                    // '	<p>'+data.ruleName+'</p>'+
+                    // '</li>  '+
                     '<li>'+
                     '	<strong>'+(data.attachmentItemss.length===0?'':'附      件：')+'</strong>'+
                     '	<p>'+(data.attachmentItemss.length === 0?'':data.attachmentItemss.length)+'</p>'+

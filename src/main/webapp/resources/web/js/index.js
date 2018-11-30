@@ -21,7 +21,7 @@ layui.use(['element','layer'], function () {
             });
         });
         $(document).on('mouseleave','.sub-title .tips',function(){
-            layer.closeAll('tips'); //关闭所有的tips层   
+            layer.closeAll('tips'); //关闭所有的tips层
         });
     })
 });
@@ -51,37 +51,60 @@ function readySloa(){
         var solaData = [
             {
                 title:"收到传阅",
+                count:Number(data.receiveAwaitCount)+Number(data.receiveUnreadCount)+Number(data.receiveReadCount)+Number(data.receiveHalfwayCount)+Number(data.receiveCompleteCount),
                 list:[
                     {
+                        title:'待办传阅',
+                        value:data.receiveAwaitCount, //待办
+                        url:'receive.htm?state=2'
+                    },
+                    {
                         title:'未读传阅',
-                        value:data.unreadCount, //未读
+                        value:data.receiveUnreadCount, //未读
                         url:'receive.htm?state=5'
                     },
                     {
-                        title:'待办传阅',
-                        value:data.todoCount, //待办
-                        url:'receive.htm?state=2'
+                        title:'已读传阅',
+                        value:data.receiveReadCount, //已读
+                        url:'receive.htm?state=6'
+                    },
+                    {
+                        title:'传阅中',
+                        value:data.receiveHalfwayCount, //传阅中
+                        url:'receive.htm?state=1'
+                    },
+                    {
+                        title:'已完成',
+                        value:data.receiveCompleteCount, //已完成
+                        url:'receive.htm?state=3'
                     }
+
                 ]
             },
             {
-                title:"已发传阅",
+                title:"发送传阅",
+                count:Number(data.sendWaitCount)+Number(data.sendCount)+Number(data.sendHalfwayCount)+Number(data.sendCompleteCount)+Number(data.deleteCount),
                 list:[
                     {
+                        title:'待发传阅',
+                        value:data.sendWaitCount, //待发传阅
+                        url:'await.htm'
+                    },
+                    {
+                        title:'已发送',
+                        value:data.sendCount, //已发送
+                        url:'send.htm'
+                    },
+                    {
                         title:'传阅中',
-                        value:data.sendInCount, //传阅中
+                        value:data.sendHalfwayCount, //传阅中
                         url:'send.htm?state=1'
                     },
                     {
                         title:'已完成',
-                        value:data.completeCount, //已完成
+                        value:data.sendCompleteCount, //已完成
                         url:'send.htm?state=3'
-                    }
-                ]
-            },
-            {
-                title:"已删除",
-                list:[
+                    },
                     {
                         title:'已删除',
                         value:data.deleteCount, //已删除
@@ -89,77 +112,95 @@ function readySloa(){
                     }
                 ]
             },
-            {
-                title:"传阅中",
-                list:[
-                    {
-                        title:'发送传阅',
-                        value:data.sendInCount, //发送传阅
-                        url:'send.htm?state=1'
-                    },
-                    {
-                        title:'收到传阅',
-                        value:data.receiveInCount, //收到传阅
-                        url:'receive.htm?state=1'
-                    }
-                ]
-            },
-            {
-                title:"传阅完成",
-                list:[
-                    {
-                        title:'发送传阅',
-                        value:data.completeCount, //发送传阅
-                        url:'send.htm?state=3'
-                    },
-                    {
-                        title:'收到传阅',
-                        value:data.ceceiveCompleteCount, //收到传阅
-                        url:'receive.htm?state=3'
-                    }
-                ]
-            },
-            {
-                title:"待发传阅",
-                list:[
-                    {
-                        title:'待发传阅',
-                        value:data.waitSendCount, //待发传阅
-                        url:'await.htm'
-                    }
-                ]
-            }
+            // {
+            //     title:"已删除",
+            //     list:[
+            //         {
+            //             title:'已删除',
+            //             value:data.deleteCount, //已删除
+            //             url:'delete.htm'
+            //         }
+            //     ]
+            // },
+            // {
+            //     title:"传阅中",
+            //     list:[
+            //         {
+            //             title:'发送传阅',
+            //             value:data.sendInCount, //发送传阅
+            //             url:'send.htm?state=1'
+            //         },
+            //         {
+            //             title:'收到传阅',
+            //             value:data.receiveInCount, //收到传阅
+            //             url:'receive.htm?state=1'
+            //         }
+            //     ]
+            // },
+            // {
+            //     title:"传阅完成",
+            //     list:[
+            //         {
+            //             title:'发送传阅',
+            //             value:data.completeCount, //发送传阅
+            //             url:'send.htm?state=3'
+            //         },
+            //         {
+            //             title:'收到传阅',
+            //             value:data.ceceiveCompleteCount, //收到传阅
+            //             url:'receive.htm?state=3'
+            //         }
+            //     ]
+            // },
+            // {
+            //     title:"待发传阅",
+            //     list:[
+            //         {
+            //             title:'待发传阅',
+            //             value:data.waitSendCount, //待发传阅
+            //             url:'await.htm'
+            //         }
+            //     ]
+            // }
         ];
         for(var i=0;i<solaData.length;i++){
             var html ='';
             // debugger
-            html += '<div class="layui-col-sm4 sloa-box">';
+            html += '<div class="layui-col-sm12 sloa-box">';
             html += '    <div class="sub-title">';
-            html += '        <h2>'+solaData[i].title+'</h2>';
+            html += '        <h2>'+solaData[i].title+'（'+solaData[i].count+'）</h2>';
             html += '        <div class="tips">';
             html += '           <img src="/resources/web/images/question-icon.png"/>';
             html += '        </div>';
             html += '    </div>';
             html += '    <div class="content-box">';
             html += '        <div class="layui-row">';
-            if(solaData[i].list.length > 1){
-                html += '            <div class="layui-col-sm6 content-item">';
-                html += '                <p class="txt">'+solaData[i].list[0].title+'</p>';
-                html += '                <h3>'+solaData[i].list[0].value+'</h3>';
-                html += '                <a class="watch" href="'+solaData[i].list[0].url+'">查看</a>';
-                html += '            </div>';
-                html += '            <div class="layui-col-sm6 content-item">';
-                html += '                <p class="txt">'+solaData[i].list[1].title+'</p>';
-                html += '                <h3>'+solaData[i].list[1].value+'</h3>';
-                html += '                <a class="watch" href="'+solaData[i].list[1].url+'">查看</a>';
-                html += '            </div>';
-            }else{
-                html += '            <div class="layui-col-sm12 content-item">';
-                html += '                <p class="txt">'+solaData[i].list[0].title+'</p>';
-                html += '                <h3>'+solaData[i].list[0].value+'</h3>';
-                html += '                <a class="watch" href="'+solaData[i].list[0].url+'">查看</a>';
+
+            for(var j=0;j<solaData[i].list.length;j++){
+                html += '            <div class="layui-col-sm3 content-item">';
+                html += '                <p class="txt">'+solaData[i].list[j].title+'</p>';
+                html += '                <h3>'+solaData[i].list[j].value+'</h3>';
+                html += '                <a class="watch" href="'+solaData[i].list[j].url+'">查看</a>';
                 html += '            </div>';
             }
+            // if(solaData[i].list.length > 1){
+            //     html += '            <div class="layui-col-sm3 content-item">';
+            //     html += '                <p class="txt">'+solaData[i].list[0].title+'</p>';
+            //     html += '                <h3>'+solaData[i].list[0].value+'</h3>';
+            //     html += '                <a class="watch" href="'+solaData[i].list[0].url+'">查看</a>';
+            //     html += '            </div>';
+            //     html += '            <div class="layui-col-sm3 content-item">';
+            //     html += '                <p class="txt">'+solaData[i].list[1].title+'</p>';
+            //     html += '                <h3>'+solaData[i].list[1].value+'</h3>';
+            //     html += '                <a class="watch" href="'+solaData[i].list[1].url+'">查看</a>';
+            //     html += '            </div>';
+            // }else{
+            //     html += '            <div class="layui-col-sm12 content-item">';
+            //     html += '                <p class="txt">'+solaData[i].list[0].title+'</p>';
+            //     html += '                <h3>'+solaData[i].list[0].value+'</h3>';
+            //     html += '                <a class="watch" href="'+solaData[i].list[0].url+'">查看</a>';
+            //     html += '            </div>';
+            // }
             html += '        </div>';
             html += '    </div>';
             html += '</div>';

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <title>收到传阅</title>
+    <title>收到的传阅</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -41,12 +41,12 @@
     <div id="content" class="layui-body side-bar-right">
         <div id="e8rightContentDiv" >
             <div class="content-body">
-                <h1 class="title">收到传阅</h1>
+                <h1 class="title">收到的传阅</h1>
                 <div class="read">
                     <div class="layui-form oa-read-form" action="">
                         <div class="oa-form-input">
                             <select name="process" lay-filter="process">
-                                <option value="0">全部</option>
+                                <option value="0">状态</option>
                                 <option value="1">传阅中</option>
                                 <option value="2">待办传阅</option>
                                 <option value="3">已完成</option>
@@ -54,7 +54,7 @@
                         </div>
                         <div class="oa-form-input">
                             <select name="filtrate" lay-filter="filtrate">
-                                <option value="0">传阅筛选</option>
+                                <option value="0">是否已读</option>
                                 <option value="5">未读</option>
                                 <option value="6">已读</option>
                                 <option value="7">我的关注</option>
@@ -67,7 +67,7 @@
                         <div class="oa-form-input">
                             <input type="text" class="layui-input" id="calendar" placeholder="请选择时间">
                         </div>
-                        <button type="button" class="layui-btn layui-btn-primary oa-read-skip">跳过</button>
+                        <button type="button" class="layui-btn layui-btn-primary oa-read-skip" title="勾选传阅后一键批量确认">批量确认</button>
                     </div>
                     <div class="oa-read-table layui-form">
                         <input type="hidden" name="currPage">

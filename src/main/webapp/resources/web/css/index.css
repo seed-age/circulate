@@ -8,7 +8,7 @@
     vertical-align: middle;
 }
 .sloa-box .sloa-box{
-    // max-width: 450px;
+// max-width: 450px;
 }
 .layui-container {
     margin: 0 -20px;
@@ -16,6 +16,9 @@
 
 .layui-row .sub-title {
     background: #f5f6f7;
+}
+.layui-row .content-box .content-item{
+    width:20%;
 }
 .sub-title .tips{
     display: inline-block;
