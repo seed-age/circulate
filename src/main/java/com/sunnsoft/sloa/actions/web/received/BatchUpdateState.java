@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * 收到传阅(PC端/APP端)--点击 跳过/ 点击编辑--选择跳过 : 批量快捷处理未读传阅，把未读传阅改为已读，同时并确认.
- * 
+ *
  * @author chenjian
  *
  */
@@ -36,7 +36,7 @@ public class BatchUpdateState extends BaseParameter {
 
 		// 定义一个统计这次标记传阅为已读状态的变量
 		int mailCount = 0;
-		
+
 		// 遍历传阅ID
 		for (long l : mailId) {
 
@@ -55,8 +55,8 @@ public class BatchUpdateState extends BaseParameter {
 			String lastName = "";
 			for (Receive receive : receives) {
 				//用于消息推送
-			    lastName = receive.getLastName();
-			    
+				lastName = receive.getLastName();
+
 				// 一旦接收人确认了传阅, 那么发件人的传阅流程状态就改变了, 变成 1(传阅中)
 				// 如果,该传阅已经有一个或是多个接收人对该传阅进行了确认, 所以该传阅的流程状态是 1(传阅中)
 				// 进行判断, 如果其余的接收人 都已经确认传阅的话, 就进来
@@ -123,7 +123,7 @@ public class BatchUpdateState extends BaseParameter {
 				}
 			}
 			if(mail.getIfRead() || mail.getIfRemind()) {
-				
+
 				// 推送消息 --> (app)
 				MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId());
 				// 推送消息 --> (web)
@@ -133,15 +133,15 @@ public class BatchUpdateState extends BaseParameter {
 
 		// 进行判断. 如果相等, 表示这次修改成功
 		if (mailCount > 0) {
-			
+
 			if (mailCount == mailId.length) {
-				msg = "标识传阅为已读状态成功, " + msg;
+				msg = "标识传阅为已读状态成功.";
 				code = "200";
 				json = "null";
 				return Results.GLOBAL_FORM_JSON;
 
 			}
-			
+
 			msg = "标识传阅为已读状态成功!";
 			success = true;
 			code = "200";
@@ -162,7 +162,7 @@ public class BatchUpdateState extends BaseParameter {
 	/**
 	 * 将java.util.Date 格式转换为字符串格式'yyyy-MM-dd HH:mm:ss'(24小时制) 如Sat May 11 17:24:21
 	 * CST 2002 to '2002-05-11 17:24:21'
-	 * 
+	 *
 	 * @param time
 	 *            Date 日期
 	 * @return String 字符串

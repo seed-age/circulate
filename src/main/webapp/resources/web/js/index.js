@@ -51,7 +51,7 @@ function readySloa(){
         var solaData = [
             {
                 title:"收到传阅",
-                count:Number(data.receiveAwaitCount)+Number(data.receiveUnreadCount)+Number(data.receiveReadCount)+Number(data.receiveHalfwayCount)+Number(data.receiveCompleteCount),
+                count:Number(data.receiveUnreadCount)+Number(data.receiveReadCount),
                 list:[
                     {
                         title:'待办传阅',
@@ -83,7 +83,7 @@ function readySloa(){
             },
             {
                 title:"发送传阅",
-                count:Number(data.sendWaitCount)+Number(data.sendCount)+Number(data.sendHalfwayCount)+Number(data.sendCompleteCount)+Number(data.deleteCount),
+                count:Number(data.sendWaitCount)+Number(data.sendCount)+Number(data.deleteCount),
                 list:[
                     {
                         title:'待发传阅',

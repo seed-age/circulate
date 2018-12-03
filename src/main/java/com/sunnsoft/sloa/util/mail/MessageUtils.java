@@ -50,14 +50,14 @@ public class MessageUtils {
 				break;
 			case 2:
 //			message = "一封传阅被确认，请及时查看。";  张三-传阅标题-2018年11月29日被xxx确认
-				UserMssage userMssage1 = Services.getUserMssageService().findById(Long.valueOf(LoginIds));
+				UserMssage userMssage1 = Services.getUserMssageService().createHelper().getLoginId().Eq(LoginIds).uniqueResult();
 				String confirmDate = getDate(LoginIds, mail);
 				message = mail.getLastName() + "-" + mail.getTitle() + confirmDate + "被" + userMssage1.getLastName() + "确认";
 				status = 1;
 				break;
 			case 3:
 //			message = "一封传阅被开封并确认，请及时查看。";
-				UserMssage userMssage = Services.getUserMssageService().findById(Long.valueOf(LoginIds));
+				UserMssage userMssage = Services.getUserMssageService().createHelper().getLoginId().Eq(LoginIds).uniqueResult();
 				String openDate = getDate(LoginIds, mail);
 				message = mail.getLastName() + "-" + mail.getTitle() + openDate + "被" + userMssage.getLastName() + "开封";
 				status = 1;
@@ -137,6 +137,7 @@ public class MessageUtils {
 		SimpleDateFormat formatter;
 		formatter = new SimpleDateFormat("yyyy年MM月dd日");
 		String ctime = formatter.format(time);
+
 		return ctime;
 	}
 }

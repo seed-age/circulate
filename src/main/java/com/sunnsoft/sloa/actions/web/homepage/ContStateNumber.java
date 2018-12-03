@@ -49,13 +49,13 @@ public class ContStateNumber extends BaseParameter {
 	public String execute() throws Exception {
 
 		this.json = cache.getIfPresent("ContStateNumber" + userId);
-//		if (json != null && !json.equals("0")) {
-//			msg = "根据条件查询, 对传阅的状态进行统计!";
-//			success = true;
-//			code = "200";
-//			return Results.GLOBAL_FORM_JSON;
-//
-//		}
+		if (json != null && !json.equals("0")) {
+			msg = "根据条件查询, 对传阅的状态进行统计!";
+			success = true;
+			code = "200";
+			return Results.GLOBAL_FORM_JSON;
+
+		}
 		// 校验参数
 		Assert.notNull(userId, "用户ID不能为空!");
 
@@ -107,6 +107,8 @@ public class ContStateNumber extends BaseParameter {
 		int receiveHalfwayCount = 0;
 		// 已收传阅 -- 已完成
 		int receiveCompleteCount = 0;
+		// 已收传阅 -- 待办传阅
+		int receiveAwaitCount = 0;
 
 		List<Receive> receiveList = Services.getReceiveService().createHelper().getUserId().Eq(userId).list();
 		for(Receive receive : receiveList){
@@ -114,12 +116,10 @@ public class ContStateNumber extends BaseParameter {
 			Integer stepStatus = receive.getStepStatus();
 			if(stepStatus == 1){ // 1 发阅中 2 待办传阅 3 已完成
 				receiveHalfwayCount++;
-//					continue;
-//				}else if(stepStatus == 2){
-//                    receiveAwaitCount++;
+			}else if(stepStatus == 2){
+				receiveAwaitCount++;
 			}else if(stepStatus == 3){
 				receiveCompleteCount++;
-//					continue;
 			}
 
 			if(receive.getMailState() == 5){ // 5 未读 6 已读
@@ -131,34 +131,6 @@ public class ContStateNumber extends BaseParameter {
 			}
 
 		}
-//		for(Mail mail : mailList){
-//			List<Receive> receives = mail.getReceives();
-//
-//			for (Receive receive : receives){
-//
-//				Integer stepStatus = receive.getStepStatus();
-//				if(stepStatus == 1){ // 1 发阅中 2 待办传阅 3 已完成
-//					receiveHalfwayCount++;
-//					continue;
-////				}else if(stepStatus == 2){
-////                    receiveAwaitCount++;
-//				}else if(stepStatus == 3){
-//					receiveCompleteCount++;
-//					continue;
-//				}
-//
-//				if(receive.getMailState() == 5){ // 5 未读 6 已读
-//                    receiveUnreadCount++;
-//					continue;
-//				}else {
-//                    receiveReadCount++;
-//					continue;
-//				}
-//			}
-//		}
-
-		// 已收传阅 -- 待办传阅
-		int receiveAwaitCount = receiveUnreadCount + receiveReadCount;
 
 		JSONObject jsonObject = new JSONObject();
 		// 已发传阅
