@@ -42,7 +42,7 @@
 	<div id="content" class="layui-body side-bar-right">
 		<div id="e8rightContentDiv" >
 			<div class="content-body">
-				<h1 class="title">收到传阅</h1>
+				<h1 class="title"></h1>
 				<div class="oa-receive">
 					<div class="oa-receive-right">
 						<div class="dialog-group">

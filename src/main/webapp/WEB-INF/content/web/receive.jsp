@@ -78,6 +78,7 @@
                                 <col>
                                 <col width="120">
                                 <col>
+                                <col width="120">
                                 <col width="150">
                                 <col width="50">
                             </colgroup>
@@ -91,7 +92,8 @@
                                 <th>传阅主题</th>
                                 <th>发起人</th>
                                 <th>接收人</th>
-                                <th>时间</th>
+                                <th>状态</th>
+                                <th>发起时间</th>
                                 <th style="text-align:right;">关注</th>
                             </tr>
                             </thead>

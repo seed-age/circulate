@@ -38,7 +38,7 @@ public class FindLatelyHrm extends BaseParameter {
 //		String SQL = "SELECT r.user_id FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.last_name";
 //		List<Map<String, Object>> mapList = jdbcTemplate.queryForList(SQL);
 
-		String SQL1 = "SELECT DISTINCT r.user_id userId, r.department_name departmentName, r.subcompany_name fullName, r.last_name lastName FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.receive_time DESC;";
+		String SQL1 = "SELECT DISTINCT r.user_id userId, r.department_name departmentName, r.subcompany_name fullName, r.last_name lastName FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.user_id ORDER BY r.receive_time DESC;";
 		List<Map<String, Object>> mapList1 = jdbcTemplate.queryForList(SQL1);
 //		System.out.println(JSONObject.toJSONString(mapList1));
 //

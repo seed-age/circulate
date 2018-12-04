@@ -68,6 +68,7 @@ $(document).ready(function(){
             function getArticle(data){
                 var attention;
                 stepStatus = data.stepStatus;
+                var statusName = '';
                 switch(storageData.mailStatus){
                     case '3':
                         if(data.ifConfirmss === true){
@@ -79,7 +80,7 @@ $(document).ready(function(){
                         }else{
                             $('.btn-all').html('<button type="button" class="layui-btn layui-btn-primary affirm-btn" data-confirm="true">确认</button><button type="button" class="layui-btn layui-btn-primary goback-btn" onclick="javascript:history.go(-1);">返回</button>');
                         }
-                        $('.layui-body .content-body h1').html('收到传阅');
+                        $('.layui-body .content-body h1').html('收到的传阅');
                         sendUrl = '/web/received/insert-discuss.htm';
                         attention = data.receiveAttention;
                         break;
@@ -106,10 +107,18 @@ $(document).ready(function(){
                     $('.oa-receive-table .title-right .annex-up').remove();
                 };
                 // 判断是已完成状态
-                if(stepStatus === 3){
+                if(stepStatus == 1){
+                    statusName='传阅中';
+                }else if(stepStatus == 2){
+                    statusName='待办传阅';
+                }else if(stepStatus == 3){
                     $('.oa-receive-table .title-right .annex-up').remove();
                     $('.object-tab .title-right').empty();
                     $('.btn-all .anew-btn').remove();
+                    statusName='已完成';
+                }
+                if(storageData.mailStatus == 2){
+                    statusName='已删除';
                 }
                 // 传阅主题
                 var liHTML = '<li>'+
@@ -125,6 +134,10 @@ $(document).ready(function(){
                     '	<strong>接 收 人：</strong>'+
                     '	<p>'+data.allReceiveName+'</p>'+
                     '</li> '+
+                    '<li>'+
+                    '	<strong>接 收 人：</strong>'+
+                    '	<p>'+data.allReceiveName+'</p>'+
+                    '</li> '+
                     // '<li>'+
                     // '	<strong>传阅规则：</strong>'+
                     // '	<p>'+data.ruleName+'</p>'+
@@ -133,6 +146,10 @@ $(document).ready(function(){
                     '	<strong>'+(data.attachmentItemss.length===0?'':'附      件：')+'</strong>'+
                     '	<p>'+(data.attachmentItemss.length === 0?'':data.attachmentItemss.length)+'</p>'+
                     '</li>  '+
+                    '<li>'+
+                    '	<strong>传阅状态：</strong>'+
+                    '	<p>'+statusName+'</p>'+
+                    '</li>'+
                     '<li>'+
                     '	<strong>传阅时间：</strong>'+
                     '	<p>'+(storageData.mailStatus==3?data.receiveTime:data.sendTime)+'</p>'+

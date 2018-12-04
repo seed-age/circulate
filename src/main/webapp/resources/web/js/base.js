@@ -280,10 +280,11 @@ Pages.prototype = {
             var form = layui.form;
             this.templateTag.html('');//清空上次内容
             var string = '';
+            var status = $.session.get('attentionStatus');
             if(data.length>0){
                 for(var i=0;i<data.length;i++){
                     string += '<tr>';
-                    if(data[i].stepStatus == 3 && $.session.get('attentionStatus') == 1){
+                    if(data[i].stepStatus == 3 && status == 1){
                         string += '    <td><input disabled value="'+data[i].mailId+'" type="checkbox" name="choice" lay-filter="choice" lay-skin="primary"></td>';
                     }else{
                         string += '    <td><input value="'+data[i].mailId+'" type="checkbox" name="choice" lay-filter="choice" lay-skin="primary"></td>';
@@ -302,6 +303,19 @@ Pages.prototype = {
                     string += '    <td>'+data[i].title+'</td>';
                     string += '    <td>'+data[i].lastName+'</td>';
                     string += '    <td>'+data[i].allReceiveName+'</td>';
+                    if(status == 3 || status == 1){
+                        string += '    <td>';
+                        if(data[i].stepStatus == 1){
+                            string +='     传阅中';
+                        }else if(data[i].stepStatus == 2){
+                            string += '    待办传阅'
+                        }else if(data[i].stepStatus == 3){
+                            string += '    已完成'
+                        }else{
+                            string += '    '
+                        }
+                        string += '    </td>';
+                    }
                     if(data[0].hasOwnProperty('receiveAttention')){
                         string += '    <td>'+data[i].receiveTime+'</td>';
                         string += '    <td style="text-align:right;"><button class="star '+(data[i].receiveAttention?'active':'')+'" data-edition="receive"></button></td>';

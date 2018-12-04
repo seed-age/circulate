@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * 已收传阅--在传阅详情页面中-->点击确认: 确认该传阅 .和 重新确认
- * 
+ *
  * @author chenjian
  *
  */
@@ -131,7 +131,16 @@ public class InsertConfirm extends BaseParameter {
 			// 拼接id
 			String ids = "";
 			String userIds = "";
+			int count = 0;
 			for (Receive receive : receives) {
+				// 一旦该传阅的全部接收人对该传阅进行了确认, 那么该传阅的流程状态是 3 (已完成)
+				// 进行判断, 如果其余的接收人 都已经确认传阅的话, 就进来
+				if (receive.getIfConfirm() == true) {
+					// 再次判断, 如果 确认/标识 为 null, 证明传阅没有确认
+					if (receive.getConfirmRecord() != null) {
+						count++; // 表示已经确认传阅的接收人 +1
+					}
+				}
 
 				// 通过userId(页面传过来的当前用户ID)和查找到的收件人ID进行比较, 如果相等 和 是否开启重新确认为 true,就修改该收件人数据
 				if (receive.getUserId() == userId && receive.getAfreshConfim() == true) {
@@ -161,6 +170,30 @@ public class InsertConfirm extends BaseParameter {
 					ids += receive.getLoginId() + ",";
 					userIds += receive.getUserId() + ",";
 				}
+			}
+
+			// 再判断, 如果count相等于收件人集合的数量那么就是该传阅已经全部确认了
+			if (count == receives.size()) {
+				// 如果是true, 那么就修改该传阅的流程状态
+				mail.setStepStatus(3); // 表示 该传阅已完成
+				Services.getMailService().update(mail);
+
+				// 那么, 收件人这边也要修改对应的流程状态, 修改为 已完成
+				// 根据传阅ID获取传阅信息.
+				Mail newMail = Services.getMailService().findById(mailId);
+				// 获取最新的接收人信息
+				List<Receive> newReceives = newMail.getReceives();
+				// 遍历
+				for (Receive receive : newReceives) {
+					// 修改
+					receive.setStepStatus(3); // 修改为 已完成
+					// 更新
+					Services.getReceiveService().update(receive);
+				}
+
+				msg = " 该传阅已完成";
+			} else {
+				msg = "该传阅还有其他收件人没有确认!";
 			}
 
 			// 调用消息推送接口
@@ -200,7 +233,7 @@ public class InsertConfirm extends BaseParameter {
 	/**
 	 * 将java.util.Date 格式转换为字符串格式'yyyy-MM-dd HH:mm:ss'(24小时制) 如Sat May 11 17:24:21
 	 * CST 2002 to '2002-05-11 17:24:21'
-	 * 
+	 *
 	 * @param time
 	 *            Date 日期
 	 * @return String 字符串
