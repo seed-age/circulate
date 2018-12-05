@@ -34,20 +34,10 @@ public class FindUserMssage extends BaseParameter {
 		// 参数校验
 		Assert.notNull(userId, "用户ID不能为空!");
 
-//		String SQL = "SELECT * FROM user_mssage_tbl u WHERE u.user_id IN(SELECT r.user_id FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.last_name)";
+		String SQL = "SELECT DISTINCT r.user_id userId, r.department_name departmentName, r.subcompany_name fullName, r.last_name lastName FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.user_id ORDER BY r.receive_time DESC;";
+		List<Map<String, Object>> mapList1 = jdbcTemplate.queryForList(SQL);
 
-		String SQL = "SELECT r.user_id FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.last_name";
-		List<Map<String, Object>> mapList = jdbcTemplate.queryForList(SQL);
-
-		// 存储联系人对象
-		List<UserMssage> listHrm = new ArrayList<UserMssage>();
-		for(Map<String, Object> map : mapList){
-			Long user_id = (Long)map.get("user_id");
-			UserMssage mssage = Services.getUserMssageService().createHelper().getUserId().Eq(user_id.intValue()).uniqueResult();
-			listHrm.add(mssage);
-		}
-
-		json = JSONObject.toJSONString(listHrm);
+		json = JSONObject.toJSONString(mapList1);
 		success = true;
 		code = "200";
 		msg = "获取最近联系人成功!";

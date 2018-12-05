@@ -44,8 +44,8 @@ public class MessageUtils {
 
 		switch (type) {
 			case 1:
-				message = "收到一封新的传阅，请及时查看。";
-//			message = mail.getLastName() + "-" + mail.getTitle() + "-" + dateToString(mail.getSendTime()) + "";
+//			message = "收到一封新的传阅，请及时查看。"; 张三-传阅标题-2018年11月29日
+				message = mail.getLastName() + "-" + mail.getTitle() + "-" + dateToString(mail.getSendTime()) + "";
 				status = 3;
 				break;
 			case 2:

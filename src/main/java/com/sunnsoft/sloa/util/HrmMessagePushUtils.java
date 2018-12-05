@@ -1,6 +1,10 @@
 package com.sunnsoft.sloa.util;
 
 import com.sunnsoft.ThirdPartyConfiguration;
+import com.sunnsoft.sloa.db.handler.Services;
+import com.sunnsoft.sloa.db.vo.Mail;
+import com.sunnsoft.sloa.db.vo.Receive;
+import com.sunnsoft.sloa.db.vo.UserMssage;
 import net.sf.json.JSONObject;
 import org.apache.struts2.ServletActionContext;
 
@@ -11,10 +15,13 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 调用消息推送
- * 
+ *
  * @author chenjian
  *
  */
@@ -22,10 +29,10 @@ public class HrmMessagePushUtils {
 
 	public static final String ADD_URL = ThirdPartyConfiguration.getOaHrmPushUrl();//"http://oa-test.seedland.cc/social/PushRemindWebService.jsp";
 	//public static final String ADD_URL = "https://oa.seedland.cc/social/PushRemindWebService.jsp";
-	
+
 	/**
 	 * 消息推送! --> 确认时提醒所有人
-	 * 
+	 *
 	 * @param userName
 	 *            消息推送人的名字
 	 * @param requesttitle
@@ -42,7 +49,7 @@ public class HrmMessagePushUtils {
 	 *            如果是提醒所有 设置为true
 	 */
 	public static void getSendPush(String userName, Integer requesttitle, String receiverIds, Long userId,
-			Integer mailStatus, Long mailId, boolean remindAll) {
+								   Integer mailStatus, Long mailId, boolean remindAll) {
 		HttpServletRequest request = ServletActionContext.getRequest();
 		String serverName = request.getServerName();
 		System.out.println("域名: " + serverName);
@@ -124,7 +131,7 @@ public class HrmMessagePushUtils {
 
 	/**
 	 * 消息推送!
-	 * 
+	 *
 	 * @param userName
 	 *            消息推送人的名字
 	 * @param requesttitle
@@ -139,18 +146,21 @@ public class HrmMessagePushUtils {
 	 *            传阅ID
 	 */
 	public static void getSendPush(String userName, Integer requesttitle, String receiverIds, Long userId,
-			Integer mailStatus, Long mailId) {
+								   Integer mailStatus, Long mailId) {
 
-		
+
 		HttpServletRequest request = ServletActionContext.getRequest();
 		String serverName = request.getServerName();
 
 		System.out.println("域名: " + serverName);
 
 		Integer send = 1;
-		
+
+		Mail mail = Services.getMailService().findById(mailId);
+
 		if(requesttitle == send) {
-			String message = "收到一封新的传阅，请及时查看。"; // 推送消息标题
+//			String message = "收到一封新的传阅，请及时查看。";   张三-传阅标题-2018年11月29日 web
+			String message = mail.getLastName() + "-" + mail.getTitle() + "-" + dateToString(mail.getSendTime()) + "";; // 推送消息标题
 			int type = 3; // 标识
 			String[] ids = receiverIds.split(",");
 			for (int i = 0; i < ids.length; i++) {
@@ -214,32 +224,39 @@ public class HrmMessagePushUtils {
 			}
 			return;
 		}
-		
+
 		JSONObject obj = new JSONObject();
 
 		String message = null; // 推送消息标题
 		int type = 0; // 标识
 		switch (requesttitle) {
-		case 1:
-			message = "收到一封新的传阅，请及时查看。";
-			type = 3;
-			break;
-		case 2:
-			message = "一封传阅被确认，请及时查看。";
-			type = 1;
-			break;
-		case 3:
-			message = "一封传阅被开封并确认，请及时查看。";
-			type = 1;
-			break;
-		default:
-			System.out.println("default");
-			break;
+			case 1:
+//			message = "收到一封新的传阅，请及时查看。";
+				message = mail.getLastName() + "-" + mail.getTitle() + "-" + dateToString(mail.getSendTime()) + "";
+				type = 3;
+				break;
+			case 2:
+//			message = "一封传阅被确认，请及时查看。";
+				UserMssage userMssage1 = Services.getUserMssageService().createHelper().getUserId().Eq(userId.intValue()).uniqueResult();
+				String confirmDate = getDate(userMssage1.getLoginId(), mail);
+				message = mail.getLastName() + "-" + mail.getTitle() + confirmDate + "被" + userMssage1.getLastName() + "确认";
+				type = 1;
+				break;
+			case 3:
+//			message = "一封传阅被开封并确认，请及时查看。";
+				UserMssage userMssage = Services.getUserMssageService().createHelper().getUserId().Eq(userId.intValue()).uniqueResult();
+				String openDate = getDate(userMssage.getLoginId(), mail);
+				message = mail.getLastName() + "-" + mail.getTitle() + openDate + "被" + userMssage.getLastName() + "开封";
+				type = 1;
+				break;
+			default:
+				System.out.println("default");
+				break;
 		}
-		
+
 		/**
 		 * 外部（自定义）消息推送
-		 * 
+		 *
 		 * @param title
 		 *            窗口标题
 		 * @param requesttitle
@@ -308,6 +325,33 @@ public class HrmMessagePushUtils {
 			System.out.println("发送外部推送成功! " + result + "==" + obj.toString());
 		}
 
+	}
+
+	private static String getDate(String LoginIds, Mail mail) {
+		List<Receive> receives = mail.getReceives();
+		for (Receive receive : receives) {
+			if (receive.getLoginId().equals(LoginIds)) {
+				return dateToString(receive.getOpenTime());
+			}
+		}
+		return dateToString(receives.get(0).getReceiveTime());
+	}
+
+
+	/**
+	 * 将java.util.Date 格式转换为字符串格式'yyyy-MM-dd HH:mm:ss'(24小时制) 如Sat May 11 17:24:21
+	 * CST 2002 to '2002-05-11 17:24:21'
+	 *
+	 * @param time
+	 *            Date 日期
+	 * @return String 字符串
+	 */
+	public static String dateToString(Date time) {
+		SimpleDateFormat formatter;
+		formatter = new SimpleDateFormat("yyyy年MM月dd日");
+		String ctime = formatter.format(time);
+
+		return ctime;
 	}
 
 }
