@@ -26,7 +26,7 @@ public class MessageUtils {
 	 * @param type
 	 *            1：收到传阅提醒	2:确认时提醒	3：开封时提醒
 	 */
-	public static void pushEmobile(String LoginIds, Integer type, Long mailId) {
+	public static void pushEmobile(String LoginIds, Integer type, Long mailId, Integer userId) {
 
 		String basePushUrl = ThirdPartyConfiguration.getOaEmobileUrl();//"http://oa-test.seedland.cc:89/pushMessage.do";
 		//String basePushUrl = "https://moa.seedland.cc:8443/pushMessage.do";
@@ -50,15 +50,15 @@ public class MessageUtils {
 				break;
 			case 2:
 //			message = "一封传阅被确认，请及时查看。";  张三-传阅标题-2018年11月29日被xxx确认
-				UserMssage userMssage1 = Services.getUserMssageService().createHelper().getLoginId().Eq(LoginIds).uniqueResult();
-				String confirmDate = getDate(LoginIds, mail);
+				UserMssage userMssage1 = Services.getUserMssageService().createHelper().getUserId().Eq(userId).uniqueResult();
+				String confirmDate = getDate(userId, mail);
 				message = mail.getLastName() + "-" + mail.getTitle() + confirmDate + "被" + userMssage1.getLastName() + "确认";
 				status = 1;
 				break;
 			case 3:
 //			message = "一封传阅被开封并确认，请及时查看。";
-				UserMssage userMssage = Services.getUserMssageService().createHelper().getLoginId().Eq(LoginIds).uniqueResult();
-				String openDate = getDate(LoginIds, mail);
+				UserMssage userMssage = Services.getUserMssageService().createHelper().getUserId().Eq(userId).uniqueResult();
+				String openDate = getDate(userId, mail);
 				message = mail.getLastName() + "-" + mail.getTitle() + openDate + "被" + userMssage.getLastName() + "开封";
 				status = 1;
 				break;
@@ -115,10 +115,10 @@ public class MessageUtils {
 
 	}
 
-	private static String getDate(String LoginIds, Mail mail) {
+	private static String getDate(Integer userId, Mail mail) {
 		List<Receive> receives = mail.getReceives();
 		for (Receive receive : receives) {
-			if (receive.getLoginId().equals(LoginIds)) {
+			if (receive.getUserId() == userId) {
 				return dateToString(receive.getOpenTime() == null ? new Date() : receive.getOpenTime());
 			}
 		}

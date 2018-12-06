@@ -46,6 +46,14 @@ public class InsertMailObject extends BaseParameter {
 				return Results.GLOBAL_FORM_JSON;
 			}
 
+			if(mail.getStatus() == 7 || mail.getReceives().size() == 0){
+				success = false;
+				msg = "您打开的传阅已过期～";
+				code = "403";
+				json = "null";
+				return Results.GLOBAL_FORM_JSON;
+			}
+
 			// 判断该传阅是否有权限再次添加新的传阅对象
 			Boolean ifAdd = mail.getIfAdd();
 			if (!ifAdd) {

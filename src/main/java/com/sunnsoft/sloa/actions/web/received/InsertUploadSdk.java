@@ -70,6 +70,14 @@ public class InsertUploadSdk extends BaseParameter {
 		try {
 			//通过传阅ID获取该传阅的数据
 			Mail mail = Services.getMailService().findById(mailId);
+			if(mail.getStatus() == 7 || mail.getReceives().size() == 0){
+				success = false;
+				msg = "您打开的传阅已过期～";
+				code = "403";
+				json = "null";
+				return Results.GLOBAL_FORM_JSON;
+			}
+
 			if(mail.getStepStatus() == 3){ // 已完成的传阅  不能进行添加文件的操作
 				success = false;
 				msg = "已完成的传阅, 不能进行添加文件的操作";

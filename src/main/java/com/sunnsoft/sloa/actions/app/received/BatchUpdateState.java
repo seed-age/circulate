@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * 收到传阅(PC端/APP端)--点击 跳过/ 点击编辑--选择跳过 : 批量快捷处理未读传阅，把未读传阅改为已读，同时并确认.
- * 
+ *
  * @author chenjian
  *
  */
@@ -23,8 +23,8 @@ public class BatchUpdateState extends BaseParameter {
 
 	private static final long serialVersionUID = 1L;
 
-	private long[] mailId; // 前端页面传递过来的传阅ID
-	private long userId; // 前端页面传递过来的收件人ID(也就是当前用户)
+	private Long[] mailId; // 前端页面传递过来的传阅ID
+	private Long userId; // 前端页面传递过来的收件人ID(也就是当前用户)
 
 	private boolean success = false;
 
@@ -50,13 +50,13 @@ public class BatchUpdateState extends BaseParameter {
 			int count = 0;
 			// 定义一个标记, 表示当前收件人已经确认传阅了
 			boolean re = false;
-			
+
 			// 遍历收件人集合
 			String lastName ="";
 			long receiveUserId = 0;
 			for (Receive receive : receives) {
 				//用于消息接口
-			    lastName = receive.getLastName();
+				lastName = receive.getLastName();
 				// 一旦接收人确认了传阅, 那么发件人的传阅流程状态就改变了, 变成 1(传阅中)
 				// 如果,该传阅已经有一个或是多个接收人对该传阅进行了确认, 所以该传阅的流程状态是 1(传阅中)
 				// 进行判断, 如果其余的接收人 都已经确认传阅的话, 就进来
@@ -69,7 +69,7 @@ public class BatchUpdateState extends BaseParameter {
 				}
 				// 通过userId(页面传过来的当前用户ID)和查找到的收件人ID进行比较, 如果相等 和 是否确认为 false,就修改该收件人数据
 				if (receive.getUserId() == userId && receive.getIfConfirm() == false) {
-					
+
 					receiveUserId = receive.getUserId();
 					// 如果相等, 证明就是该用户的收到传阅的记录. 进行修改收到传阅记录
 					// 修改收件人的传阅状态, 进行修改该传阅的状态 修改为 6 (表示已读) 以及进行确认传阅
@@ -125,14 +125,14 @@ public class BatchUpdateState extends BaseParameter {
 				}
 			}
 			// 推送消息 --> (app)
-			MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId());
+			MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue());
 			// 推送消息 --> (web)
 			HrmMessagePushUtils.getSendPush(lastName, 2, mail.getUserId()+"", receiveUserId, 3, mail.getMailId());
 		}
 
 		// 进行判断. 如果相等, 表示这次修改成功
 		if (mailCount > 0) {
-			
+
 			if (mailCount == mailId.length) {
 				msg = "标识传阅为已读状态成功";
 				code = "200";
@@ -140,7 +140,7 @@ public class BatchUpdateState extends BaseParameter {
 				return Results.GLOBAL_FORM_JSON;
 
 			}
-			
+
 			msg = "标识传阅为已读状态成功!";
 			success = true;
 			code = "200";
@@ -161,7 +161,7 @@ public class BatchUpdateState extends BaseParameter {
 	/**
 	 * 将java.util.Date 格式转换为字符串格式'yyyy-MM-dd HH:mm:ss'(24小时制) 如Sat May 11 17:24:21
 	 * CST 2002 to '2002-05-11 17:24:21'
-	 * 
+	 *
 	 * @param time
 	 *            Date 日期
 	 * @return String 字符串
@@ -174,19 +174,19 @@ public class BatchUpdateState extends BaseParameter {
 		return ctime;
 	}
 
-	public long[] getMailId() {
+	public Long[] getMailId() {
 		return mailId;
 	}
 
-	public void setMailId(long[] mailId) {
+	public void setMailId(Long[] mailId) {
 		this.mailId = mailId;
 	}
 
-	public long getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

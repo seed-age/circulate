@@ -23,8 +23,8 @@ public class BatchUpdateState extends BaseParameter {
 
 	private static final long serialVersionUID = 1L;
 
-	private long[] mailId; // 前端页面传递过来的传阅ID
-	private long userId; // 前端页面传递过来的收件人ID(也就是当前用户)
+	private Long[] mailId; // 前端页面传递过来的传阅ID
+	private Long userId; // 前端页面传递过来的收件人ID(也就是当前用户)
 
 	private boolean success = false;
 
@@ -125,7 +125,7 @@ public class BatchUpdateState extends BaseParameter {
 			if(mail.getIfRead() || mail.getIfRemind()) {
 
 				// 推送消息 --> (app)
-				MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId());
+				MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue());
 				// 推送消息 --> (web)
 				HrmMessagePushUtils.getSendPush(lastName, 2, mail.getUserId()+"", mail.getUserId(), 3, mail.getMailId());
 			}
@@ -175,19 +175,19 @@ public class BatchUpdateState extends BaseParameter {
 		return ctime;
 	}
 
-	public long[] getMailId() {
+	public Long[] getMailId() {
 		return mailId;
 	}
 
-	public void setMailId(long[] mailId) {
+	public void setMailId(Long[] mailId) {
 		this.mailId = mailId;
 	}
 
-	public long getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

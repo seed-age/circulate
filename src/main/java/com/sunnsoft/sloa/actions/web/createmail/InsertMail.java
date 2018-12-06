@@ -275,7 +275,7 @@ public class InsertMail extends BaseParameter {
 				HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, mail.getUserId(),1 , mail.getMailId());
 
 				// 推送消息 --> (APP)
-				MessageUtils.pushEmobile(ids, 1, mail.getMailId());
+				MessageUtils.pushEmobile(ids, 1, mail.getMailId(), null);
 
 				msg = "发送新建传阅成功!";
 				success = true;

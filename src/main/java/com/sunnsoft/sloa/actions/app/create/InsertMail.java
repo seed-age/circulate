@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * 新建传阅(APP端): 添加收件人(多个) , 添加附件(多个) , 传阅主题 , 传阅内容 APP端是没有选项的, 但是 要默认选中 PC端
  * 的五个默认的选项
- * 
+ *
  * @author chenjian
  *
  */
@@ -50,11 +50,11 @@ public class InsertMail extends BaseParameter {
 		String result = null ;
 		try {
 			result = (String)Services.getMailService().executeTransactional(new TransactionalCallBack() {
-				
+
 				@Override
 				public Object execute(IService arg0) {
 					System.out.println("开启事物了....");
-						return getInsertMail();
+					return getInsertMail();
 				}
 			});
 		} catch (Exception e) {
@@ -75,7 +75,7 @@ public class InsertMail extends BaseParameter {
 		}
 		return result;
 	}
-	
+
 	public String getInsertMail(){
 
 		// 校验参数
@@ -160,7 +160,7 @@ public class InsertMail extends BaseParameter {
 
 					// 更新
 					Services.getMailService().update(mail);
-				
+
 					// 更新接收人数据
 					List<Receive> receives = mail.getReceives();
 					//删除所有旧的联系人呢
@@ -222,12 +222,12 @@ public class InsertMail extends BaseParameter {
 
 					receiveStr = true;
 
-					
+
 				}
 
 				// 判断
 				if (mail != null && receiveStr == true) {
-					
+
 					String loginIds = LoginIds.substring(0, LoginIds.length() - 1);
 					String ids = userIds.substring(0, userIds.length() - 1);
 
@@ -238,7 +238,7 @@ public class InsertMail extends BaseParameter {
 					map.put("transmission", true);
 
 					// 推送消息 --> (APP)
-					MessageUtils.pushEmobile(loginIds, 1, mail.getMailId());
+					MessageUtils.pushEmobile(loginIds, 1, mail.getMailId(), null);
 
 					// 调用消息推送的方法 --> (web)
 					HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, receiveuserId, 1, mail.getMailId());

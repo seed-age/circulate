@@ -370,7 +370,7 @@ public class FindMailParticulars extends BaseParameter {
 							msg = "该传阅是开封已阅确认!";
 
 							// 推送消息 --> (app)
-							MessageUtils.pushEmobile(mail.getLoginId(), 3, mail.getMailId());
+							MessageUtils.pushEmobile(mail.getLoginId(), 3, mail.getMailId(), userId.intValue());
 							// 推送消息 --> (web)
 							HrmMessagePushUtils.getSendPush(receive.getLastName(), 3, mail.getUserId() + "",
 									mail.getUserId(), 3, mail.getMailId());
