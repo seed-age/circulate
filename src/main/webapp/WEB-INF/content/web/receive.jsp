@@ -329,7 +329,7 @@
                                 layer.msg(res.msg,{time: 2000,icon: 1});
                             },200)
                         }else{
-                            layer.msg('所勾选的传阅，已是已读传阅',{time: 2000,icon: 2});
+                            layer.msg('所勾选的传阅，已是已确认传阅',{time: 2000,icon: 2});
                         }
                     },
                     error:function(){

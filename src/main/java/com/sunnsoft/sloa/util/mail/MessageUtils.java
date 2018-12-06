@@ -119,7 +119,7 @@ public class MessageUtils {
 		List<Receive> receives = mail.getReceives();
 		for (Receive receive : receives) {
 			if (receive.getLoginId().equals(LoginIds)) {
-				return dateToString(receive.getOpenTime());
+				return dateToString(receive.getOpenTime() == null ? new Date() : receive.getOpenTime());
 			}
 		}
 		return dateToString(receives.get(0).getReceiveTime());

@@ -135,9 +135,6 @@ $(document).ready(function(){
                     '	<p>'+data.allReceiveName+'</p>'+
                     '</li> '+
                     '<li>'+
-                    '	<strong>接 收 人：</strong>'+
-                    '	<p>'+data.allReceiveName+'</p>'+
-                    '</li> '+
                     // '<li>'+
                     // '	<strong>传阅规则：</strong>'+
                     // '	<p>'+data.ruleName+'</p>'+

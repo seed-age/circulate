@@ -127,10 +127,7 @@ public class InsertConfirm extends BaseParameter {
 		} else { // false 表示 第二次确认
 
 			// 遍历收件人集合
-			String lastName = "";
 			// 拼接id
-			String ids = "";
-			String userIds = "";
 			int count = 0;
 			for (Receive receive : receives) {
 				// 一旦该传阅的全部接收人对该传阅进行了确认, 那么该传阅的流程状态是 3 (已完成)
@@ -144,8 +141,6 @@ public class InsertConfirm extends BaseParameter {
 
 				// 通过userId(页面传过来的当前用户ID)和查找到的收件人ID进行比较, 如果相等 和 是否开启重新确认为 true,就修改该收件人数据
 				if (receive.getUserId() == userId && receive.getAfreshConfim() == true) {
-					// 用于消息推送
-					lastName = receive.getLastName();
 
 					// 如果相等, 证明就是该用户的收到传阅的记录. 进行修改收到传阅记录
 					receive.setAfreshConfim(false);
@@ -164,11 +159,6 @@ public class InsertConfirm extends BaseParameter {
 					// 更新数据
 					Services.getReceiveService().update(receive);
 					code = "200";
-				} else {
-
-					// 拼接
-					ids += receive.getLoginId() + ",";
-					userIds += receive.getUserId() + ",";
 				}
 			}
 
@@ -195,9 +185,6 @@ public class InsertConfirm extends BaseParameter {
 			} else {
 				msg = "该传阅还有其他收件人没有确认!";
 			}
-
-			// 调用消息推送接口
-			getPush(mail, lastName, ids, userIds);
 
 			success = true;
 			msg = "重新确认传阅成功! ";
