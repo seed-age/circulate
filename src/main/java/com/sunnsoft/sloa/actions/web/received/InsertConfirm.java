@@ -42,6 +42,14 @@ public class InsertConfirm extends BaseParameter {
 		// 获取传阅对应的收件人数据
 		List<Receive> receives = mail.getReceives();
 
+		if(mail.getStatus() == 7 || receives.size() == 0){
+			success = false;
+			msg = "您正在确认的传阅已过期或被删除～";
+			code = "403";
+			json = "null";
+			return Results.GLOBAL_FORM_JSON;
+		}
+
 		if (statusConfirm) { // true 表示第一次确认
 
 			// 定义一个标记, 统计有多少个接收人确认了传阅

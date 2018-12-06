@@ -264,12 +264,18 @@ $(document).ready(function(){
                     },
                     success:function(res){
                         layer.closeAll();
-                        getLoading();
-                        articleObjext.getData();
-                        layer.msg('确认成功',{time: 2000,icon: 1});
+                        if(res.code == 200){
+                            getLoading();
+                            articleObjext.getData();
+                            layer.msg('确认成功',{time: 2000,icon: 1});
+                        }else{
+                            layer.msg(res.msg,{time: 2000,icon: 2});
+                        }
+
                     },
-                    error:function(){
+                    error:function(error){
                         layer.closeAll('dialog')
+                        debugger
                         layer.msg('网络出错',{time: 2000,icon: 2});
                     }
                 })
