@@ -27,7 +27,7 @@ import java.util.UUID;
 
 /**
  * 已发传阅--传阅详情页面--附件列表---点击下载附件--从网盘上下载附件. 批量下载,  已压缩包的形式
- * 
+ *
  * @author chenjian
  *
  */
@@ -36,10 +36,10 @@ public class SendDownloadFile extends BaseParameter {
 	private static final long serialVersionUID = 1L;
 
 	private Long[] itemId; // 附件ID
-	
+
 	@Resource
 	private Config config;
-	
+
 	@Resource
 	private FileStore generalFileStore;
 
@@ -53,7 +53,7 @@ public class SendDownloadFile extends BaseParameter {
 
 		// 联系网盘(正式环境地址)
 		LenovoCloudSDK sdk = LenovoCloudSDKUtils.getLenovoCloudSDK(config);
-		
+
 		//使用网盘统一账号 system_OA 进行登录(只限于web端)
 		String session = LenovoCloudSDKUtils.getLenovoCloudSDKSession(sdk, config);
 
@@ -67,7 +67,7 @@ public class SendDownloadFile extends BaseParameter {
 			//用于重新命名压缩包
 			Mail mail = attachmentItem.getMail();
 			fileName = mail.getTitle();
-			
+
 			// 获取附件上传的URL
 			String urlPath = attachmentItem.getUrlPath();
 
@@ -79,8 +79,9 @@ public class SendDownloadFile extends BaseParameter {
 
 		String path = sb.toString().substring(0, sb.toString().length() - 1);
 
+		path = URLEncoder.encode(path, "UTF-8");
 		InputStream fileArchivesDownload = null;
-		
+
 		// 判断是   个人空间  还是  企业空间
 		if (differentiate == 0) {
 			// 返回一个流
@@ -103,7 +104,7 @@ public class SendDownloadFile extends BaseParameter {
 		//进行编码
 		HttpServletRequest request = ServletActionContext.getRequest();
 		if(request.getHeader("User-Agent").toLowerCase().indexOf("firefox") > 0) {
-			fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1"); // firefox浏览器 
+			fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1"); // firefox浏览器
 			fileName = URLEncoder.encode(fileName, "UTF-8");
 			//System.out.println("火狐浏览器");
 		}else {
@@ -112,9 +113,9 @@ public class SendDownloadFile extends BaseParameter {
 			fileName = URLEncoder.encode(fileName, "UTF-8");
 			//System.out.println("其他浏览器");
 		}
-		
+
 		json = FastJSONUtils.getJsonHelper().toJSONString("/file/" + storeFile.getName() + "?download=true&rename=" + fileName + "." + "zip");
-		
+
 		// 判断
 		if (json != null) {
 			success = true;

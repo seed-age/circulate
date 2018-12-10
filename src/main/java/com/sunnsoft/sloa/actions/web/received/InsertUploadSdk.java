@@ -98,7 +98,8 @@ public class InsertUploadSdk extends BaseParameter {
 			for (int i = 0; i < file.length; i++) {
 
 				//获取到要上传的文件名
-				String name = fileFileName[i];
+				String name = fileFileName[i].replaceAll(" ", "");
+
 				//遍历附件集合
 				for (AttachmentItem attachmentItem : attachmentItems) {
 					//取出已存在的附件名字
@@ -120,20 +121,21 @@ public class InsertUploadSdk extends BaseParameter {
 				}
 
 				// 2. 获取上传文件的后缀
-				String typeName = fileFileName[i].substring(fileFileName[i].lastIndexOf(".") + 1).trim();
+				String typeName = name.substring(name.lastIndexOf(".") + 1).trim();
 
 				// 3. 获取由UUID+图片后缀生成的图片名字
 				// 3.1 获取上传附件后缀;
-				String suffix = fileFileName[i].substring(fileFileName[i].lastIndexOf("."));
+//				String suffix = fileFileName[i].substring(fileFileName[i].lastIndexOf("."));
 				// 3.2 重新生成上传之后的附件名称;
-				String newName = UUID.randomUUID().toString() + suffix;
+//				String newName = UUID.randomUUID().toString() + suffix;
 
 				// 4.设置上传文件的存储路径
-				String path = config.getBoxUploadUrl() + newName;
+//				String path = config.getBoxUploadUrl() + newName;
+				String path = config.getBoxUploadUrl();
 
 				if(mssage != null){
-					System.out.println("拼接上传路径: " + config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + newName);
-					path = config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + newName;
+					System.out.println("拼接上传路径: " + config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + name);
+					path = config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + name;
 				}
 
 				// 设置上传文件的标签
@@ -145,27 +147,27 @@ public class InsertUploadSdk extends BaseParameter {
 				 */
 				AttachmentItem attachmentItem = null;
 				if(status == 0) {
-					UploadModel uploadFile = sdk.uploadFile(file[i], path, fileFileName[i], tags, session, PathType.SELF);
+					UploadModel uploadFile = sdk.uploadFile(file[i], path, name, tags, session, PathType.SELF);
 					Long neid = uploadFile.getNeid();
 					String rev = uploadFile.getRev();
 
 					attachmentItem = Services.getAttachmentItemService().createHelper().bean().create()
 							.setBulkId(uuidBulkId).setUserId(userId).setCreator(mssage.getLastName()).setCreateTime(new Date())
-							.setFileName(fileFileName[i]).setFileCategory(typeName).setSaveName(newName)
+							.setFileName(name).setFileCategory(typeName).setSaveName(name)
 							.setUrlPath(uploadFile.getPath()).setAttached(false).setState(2).setItemSize(uploadFile.getSize())
 							.setItemNeid(neid).setItemRev(rev).setMail(mail)
 							.setItemDifferentiate(status).insertUnique();
 
 				}
 				if(status == 1) {
-					UploadModel uploadFile = sdk.uploadFile(file[i], path, fileFileName[i], tags, session, PathType.ENT);
+					UploadModel uploadFile = sdk.uploadFile(file[i], path, name, tags, session, PathType.ENT);
 
 					Long neid = uploadFile.getNeid();
 					String rev = uploadFile.getRev();
 
 					attachmentItem = Services.getAttachmentItemService().createHelper().bean().create()
 							.setBulkId(uuidBulkId).setUserId(userId).setCreator(mssage.getLastName()).setCreateTime(new Date())
-							.setFileName(fileFileName[i]).setFileCategory(typeName).setSaveName(newName)
+							.setFileName(name).setFileCategory(typeName).setSaveName(name)
 							.setUrlPath(uploadFile.getPath()).setAttached(false).setState(2).setItemSize(uploadFile.getSize())
 							.setItemNeid(neid).setItemRev(rev).setMail(mail)
 							.setItemDifferentiate(status).insertUnique();

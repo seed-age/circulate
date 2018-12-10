@@ -71,21 +71,24 @@ public class InsertUploadSdk extends BaseParameter {
 			// 创建map集合, 存放上传完附件后,返回给前端的数据
 			Map<String, Object> map = new HashMap<String, Object>();
 
+			String fileName = fileFileName[i].replaceAll(" ", "");
+
 			// 2. 获取上传文件的后缀
-			String typeName = fileFileName[i].substring(fileFileName[i].lastIndexOf(".") + 1).trim();
+			String typeName = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
 
 			// 3. 获取由UUID+图片后缀生成的图片名字
 			// 3.1 获取上传附件后缀;
-			String suffix = fileFileName[i].substring(fileFileName[i].lastIndexOf("."));
+//			String suffix = fileFileName[i].substring(fileFileName[i].lastIndexOf("."));
 			// 3.2 重新生成上传之后的附件名称;
-			String newName = UUID.randomUUID().toString() + suffix;
+//			String newName = UUID.randomUUID().toString() + suffix;
 
 			// 4.设置存储上传文件的路径
-			String path = config.getBoxUploadUrl() + newName;
+//			String path = config.getBoxUploadUrl() + newName;
+			String path = config.getBoxUploadUrl();
 
 			// 按照需求更改上传路径 2018-11-28
 			if(mssage != null){
-				path = config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + newName;
+				path = config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + fileName;
 			}
 
 			// 设置上传文件的标签
@@ -100,16 +103,16 @@ public class InsertUploadSdk extends BaseParameter {
 			AttachmentItem attachmentItem = null;
 
 			if (status == 0) {// 0 表示 个人空间
-				UploadModel uploadFile = sdk.uploadFile(file[i], path, fileFileName[i], tags, session, PathType.SELF);
+				UploadModel uploadFile = sdk.uploadFile(file[i], path, fileName, tags, session, PathType.SELF);
 
-				attachmentItem = getItem(uploadFile, list, uuidBulkId, i, map, typeName, newName, mssage);
+				attachmentItem = getItem(uploadFile, list, uuidBulkId, i, map, typeName, fileName, mssage);
 			}
 
 			if (status == 1) { //1 表示企业空间
 
-				UploadModel uploadFile = sdk.uploadFile(file[i], path, fileFileName[i], tags, session, PathType.ENT);
+				UploadModel uploadFile = sdk.uploadFile(file[i], path, fileName, tags, session, PathType.ENT);
 
-				attachmentItem = getItem(uploadFile, list, uuidBulkId, i, map, typeName, newName, mssage);
+				attachmentItem = getItem(uploadFile, list, uuidBulkId, i, map, typeName, fileName, mssage);
 			}
 
 			if (attachmentItem != null) {
@@ -141,7 +144,7 @@ public class InsertUploadSdk extends BaseParameter {
 		LOGGER.warn("web端    --->  rev: " + rev);
 		AttachmentItem attachmentItem = Services.getAttachmentItemService().createHelper().bean().create()
 				.setBulkId(uuidBulkId).setUserId(userId).setCreator(mssage.getLastName()).setCreateTime(new Date())
-				.setFileName(fileFileName[i]).setFileCategory(typeName).setSaveName(newName)
+				.setFileName(newName).setFileCategory(typeName).setSaveName(newName)
 				.setUrlPath(uploadFile.getPath()).setAttached(false).setState(0).setItemSize(uploadFile.getSize())
 				.setItemNeid(neid).setItemRev(rev).setItemDifferentiate(status).insertUnique();
 
@@ -187,4 +190,5 @@ public class InsertUploadSdk extends BaseParameter {
 	public void setFileFileName(String[] fileFileName) {
 		this.fileFileName = fileFileName;
 	}
+
 }

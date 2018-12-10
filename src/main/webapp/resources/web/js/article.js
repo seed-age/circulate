@@ -275,7 +275,7 @@ $(document).ready(function(){
                     },
                     error:function(error){
                         layer.closeAll('dialog')
-                        debugger
+                        // debugger
                         layer.msg('网络出错',{time: 2000,icon: 2});
                     }
                 })
