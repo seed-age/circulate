@@ -47,6 +47,15 @@ public class DeleteMail extends BaseParameter {
 			// 判断
 			if (mail.getUserId() == userId && mail.getStepStatus() != 3) { // 只有ID相同 和 传阅状态不为 已完成的 传阅才可以被删除
 
+				// 更改需求: 一封传阅中  只要有一个传阅对象确认传阅后  就不可以删除.  那发起人也是不可以对这封传阅进行删除操作.
+				List<Receive> receiveList = mail.getReceives();
+				for (Receive receive : receiveList) {
+					if(receive.getIfConfirm()){
+						success = false;
+						msg = "有确认过的传阅不可删除";
+						return Results.GLOBAL_FAILURE_JSON;
+					}
+				}
 				// 修改状态
 				mail.setStatus(7); // 7 表示已删除
 				//设置删除时间

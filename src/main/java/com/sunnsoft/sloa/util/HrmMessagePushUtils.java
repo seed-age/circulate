@@ -237,15 +237,29 @@ public class HrmMessagePushUtils {
 				break;
 			case 2:
 //			message = "一封传阅被确认，请及时查看。";
-				UserMssage userMssage1 = Services.getUserMssageService().createHelper().getUserId().Eq(userId.intValue()).uniqueResult();
-				String confirmDate = getDate(userMssage1.getLoginId(), mail);
+				UserMssage userMssage1 = null;
+				String confirmDate = null;
+				try {
+					userMssage1 = Services.getUserMssageService().createHelper().getUserId().Eq(userId.intValue()).uniqueResult();
+					confirmDate = getDate(userMssage1.getLoginId(), mail);
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("=========== web 消息推送失败============");
+				}
 				message = mail.getLastName() + "-" + mail.getTitle() + confirmDate + "被" + userMssage1.getLastName() + "确认";
 				type = 1;
 				break;
 			case 3:
 //			message = "一封传阅被开封并确认，请及时查看。";
-				UserMssage userMssage = Services.getUserMssageService().createHelper().getUserId().Eq(userId.intValue()).uniqueResult();
-				String openDate = getDate(userMssage.getLoginId(), mail);
+				UserMssage userMssage = null;
+				String openDate = null;
+				try {
+					userMssage = Services.getUserMssageService().createHelper().getUserId().Eq(userId.intValue()).uniqueResult();
+					openDate = getDate(userMssage.getLoginId(), mail);
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("=========== web 消息推送失败============");
+				}
 				message = mail.getLastName() + "-" + mail.getTitle() + openDate + "被" + userMssage.getLastName() + "开封";
 				type = 1;
 				break;

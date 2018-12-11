@@ -46,6 +46,9 @@ layui.use(['element','laypage','table','form','layer','jquery','laydate'], funct
                                 layer.close(layer_del)
                                 var page = $('input[name="currPage"]').val();
                                 var currPage = page === ''?1:page;
+                                if(res.success === false){
+                                    layer.msg(res.msg,{time: 2000,icon: 2});
+                                };
                                 if(res.code === '200'){
                                     layer.msg('删除成功',{time: 2000,icon: 1});
                                     pages.getData(parseInt(currPage));

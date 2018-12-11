@@ -53,7 +53,9 @@ public class BatchUpdateState extends BaseParameter {
 
 			// 遍历收件人集合
 			String lastName ="";
-			long receiveUserId = 0;
+			Long receiveUserId = null;
+			// 统计该传阅是否已经确认.
+			int confirmCount = 0;
 			for (Receive receive : receives) {
 				//用于消息接口
 				lastName = receive.getLastName();
@@ -70,7 +72,7 @@ public class BatchUpdateState extends BaseParameter {
 				// 通过userId(页面传过来的当前用户ID)和查找到的收件人ID进行比较, 如果相等 和 是否确认为 false,就修改该收件人数据
 				if (receive.getUserId() == userId && receive.getIfConfirm() == false) {
 
-					receiveUserId = receive.getUserId();
+					receiveUserId = Long.valueOf(receive.getUserId());
 					// 如果相等, 证明就是该用户的收到传阅的记录. 进行修改收到传阅记录
 					// 修改收件人的传阅状态, 进行修改该传阅的状态 修改为 6 (表示已读) 以及进行确认传阅
 					receive.setReceiveStatus(1); // 1 表示 已开封
@@ -88,6 +90,11 @@ public class BatchUpdateState extends BaseParameter {
 					Services.getReceiveService().update(receive);
 					re = true;
 					success = true;
+				}else {
+
+					if(receive.getUserId() == userId && receive.getIfConfirm()){
+						confirmCount++;
+					}
 				}
 
 				// 如果为true 进来
@@ -123,11 +130,21 @@ public class BatchUpdateState extends BaseParameter {
 
 					msg = "该传阅已完成!";
 				}
+
+				if (confirmCount == 0){
+					try {
+						// 推送消息 --> (app)
+						MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue());
+						// 推送消息 --> (web)
+						HrmMessagePushUtils.getSendPush(lastName, 2, mail.getUserId()+"", receiveUserId, 3, mail.getMailId());
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println("=========== web 消息推送失败============");
+					}
+				}
+
 			}
-			// 推送消息 --> (app)
-			MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue());
-			// 推送消息 --> (web)
-			HrmMessagePushUtils.getSendPush(lastName, 2, mail.getUserId()+"", receiveUserId, 3, mail.getMailId());
+
 		}
 
 		// 进行判断. 如果相等, 表示这次修改成功
