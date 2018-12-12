@@ -582,7 +582,7 @@ $(document).ready(function(){
             url:'/web/received/find-mail-object.htm',
             dataType:'json',
             data:{
-                userId:$.session.get('userId'),
+                userId:storageData.userId,
                 mailId:storageData.article
             },
             templateTag:'.object-tab .layui-table-body table'

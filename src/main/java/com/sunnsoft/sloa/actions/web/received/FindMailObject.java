@@ -66,13 +66,16 @@ public class FindMailObject extends BaseParameter {
 				map.put("sendTime",mail.getSendTime());
 
 				//删除传阅对象, 有两种情况 :  一. 是发件人可以删除所有的传阅对象  ,  二是 谁添加该传阅对象  谁才有权限删除
-				Long reDifferentiate = receive.getReDifferentiate();
-				if(reDifferentiate.equals(userId) || mail.getUserId() == userId) {
-					map.put("authority", Boolean.TRUE);
+				if(receive.getReDifferentiate() != null){
+					Long reDifferentiate = receive.getReDifferentiate();
+					if(reDifferentiate.equals(userId) || mail.getUserId() == userId) {
+						map.put("authority", Boolean.TRUE);
+					}else {
+						map.put("authority", Boolean.FALSE);
+					}
 				}else {
 					map.put("authority", Boolean.FALSE);
 				}
-
 			}
 		});
 

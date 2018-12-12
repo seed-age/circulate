@@ -38,7 +38,12 @@ public class HrmUserSchedule {
 	@PostConstruct
 	private void init() {
 		System.out.println("初始化OA联系人!");
-		this.doJob();
+		try {
+			this.doJob();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("================初始化OA联系人失败=====================");
+		}
 	}
 
 	@Scheduled(cron = "0/10 * * * * ?")
