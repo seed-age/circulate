@@ -51,7 +51,7 @@
     border: 1px solid #e6e6e6;
     border-radius: 2px;
     background-color: #fff;
-    padding-left: 38px;
+    /*padding-left: 38px;*/
     max-height: 162px;
     overflow: auto;
     /* background:#fff url(../images/search-icon.png) no-repeat left center;  */
@@ -60,7 +60,7 @@
     width: 36px;
     height: 36px;
     position: absolute;
-    left:57px;
+    right:1px;
     top:1px;
     /* padding: 4px 17px; */
     cursor:pointer;
@@ -321,4 +321,7 @@
 .lfettArea .ueditor{
     padding-left:56px;
     margin-bottom: 20px;
+}
+.simditor .simditor-popover .settings-field .link-target{
+    display:inline-block;
 }

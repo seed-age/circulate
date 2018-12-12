@@ -356,7 +356,7 @@
 			<div class="contacts-box-r">
 				<div class="oa-form-input">
 					<input class="form-control" id="have-search" placeholder="请输入关键字搜索" type="text">
-					<div class="input-addon" id="have-search-btn">查询</div>
+					<%--<div class="input-addon" id="have-search-btn">查询</div>--%>
 				</div>
 				<div class="contacts-context">
 					<div class="contacts-table-outer">

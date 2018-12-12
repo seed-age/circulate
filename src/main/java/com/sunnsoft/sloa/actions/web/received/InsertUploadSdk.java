@@ -18,6 +18,7 @@ import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -134,8 +135,13 @@ public class InsertUploadSdk extends BaseParameter {
 				String path = config.getBoxUploadUrl();
 
 				if(mssage != null){
-					System.out.println("拼接上传路径: " + config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + name);
-					path = config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + name;
+//					System.out.println("拼接上传路径: " + config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + name);
+//					path = config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + name;
+					Calendar cal = Calendar.getInstance();
+					int year = cal.get(Calendar.YEAR);
+					int month = cal.get(Calendar.MONTH )+1;
+					System.out.println(year + " 年 " + month + " 月");
+					path = config.getBoxUploadUrl() + year + "/" + month + "/" + mssage.getUserId() + "/" + name;
 				}
 
 				// 设置上传文件的标签

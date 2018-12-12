@@ -87,8 +87,14 @@ public class InsertUploadSdk extends BaseParameter {
 			String path = config.getBoxUploadUrl();
 
 			// 按照需求更改上传路径 2018-11-28
+			// 更改时间: 2018-12-12  再次按照需求更改上传路径, 格式 :  年/月/传阅id/文件名
 			if(mssage != null){
-				path = config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + fileName;
+//				path = config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + fileName;
+				Calendar cal = Calendar.getInstance();
+				int year = cal.get(Calendar.YEAR);
+				int month = cal.get(Calendar.MONTH )+1;
+				System.out.println(year + " 年 " + month + " 月");
+				path = config.getBoxUploadUrl() + year + "/" + month + "/" + mssage.getUserId() + "/" + fileName;
 			}
 
 			// 设置上传文件的标签
@@ -191,4 +197,11 @@ public class InsertUploadSdk extends BaseParameter {
 		this.fileFileName = fileFileName;
 	}
 
+	public static void main(String[] args){
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH )+1;
+
+		System.out.println(year + " 年 " + month + " 月");
+	}
 }

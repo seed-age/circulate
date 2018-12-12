@@ -61,13 +61,13 @@
                             </select>
                         </div>
                         <div class="oa-form-input oa-form-search">
-                            <input type="text" class="form-control" id="search" placeholder="请输入...">
+                            <input type="text" class="form-control" id="search" placeholder="请输入关键字搜索">
                             <div class="input-addon" id="search_btn">查询</div>
                         </div>
                         <div class="oa-form-input">
-                            <input type="text" class="layui-input" id="calendar" placeholder="请选择时间">
+                            <input type="text" class="layui-input" id="calendar" placeholder="发起时间">
                         </div>
-                        <button type="button" class="layui-btn layui-btn-primary oa-read-skip" title="勾选传阅后一键批量确认">批量确认</button>
+                        <button type="button" class="layui-btn oa-read-skip layui-btn-disabled layui-btn-action" disabled title="勾选传阅后一键批量确认">批量确认</button>
                     </div>
                     <div class="oa-read-table layui-form">
                         <input type="hidden" name="currPage">
@@ -292,6 +292,27 @@
             pages.getData();
             // $('select[name="process"]').val(0);
             // $('select[name="filtrate"]').val(0);
+        });
+        // 查询数据加载
+        $('#search').on('keydown',function(e){
+            if(e.keyCode === 13){
+                pages = new Pages({
+                    type:'post',
+                    url:'/web/received/grid-unread-state-list.htm',
+                    data:{
+                        userId:$.session.get('userId'),
+                        page:1,
+                        likeName:$('#search').val(),
+                        receiveStatus:receiveStatus,
+                        status:status,
+                        startTime:startTime,
+                        endTime:endTime,
+                        pageRows:itemNum
+                    },
+                    templateTag:'.oa-read-table .layui-table tbody'
+                });
+                pages.getData();
+            }
         });
         // 跳过
         $('.oa-read-skip').on('click',function(){

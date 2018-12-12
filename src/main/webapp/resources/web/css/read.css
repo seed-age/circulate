@@ -49,11 +49,11 @@
 }
 .oa-read-skip{
     font-size: 12px;
-    color:#666;
+    /*color:#666;*/
     float:right;
 }
 .oa-read-skip:hover{
-    border-color:#008cd6;;
+    /*border-color:#008cd6;;*/
 }
 .oa-read-form .layui-form-select dl dd.layui-this{
     background-color: #1e90ff;
@@ -115,13 +115,13 @@
     background-image: url(../images/star-icon02.png)
 }
 .oa-read-delete{
-    color:#ff1515;
-    border-color:#ff1515;
+    /*color:#ff1515;*/
+    /*border-color:#ff1515;*/
     float:right;
 }
 .oa-read-delete:hover{
-    border-color:#ff1515;
-    color:#ff1515;
+    /*border-color:#ff1515;*/
+    /*color:#ff1515;*/
 }
 .oa-read-table .layui-laypage .layui-laypage-curr .layui-laypage-em{
     background: #008cd6;

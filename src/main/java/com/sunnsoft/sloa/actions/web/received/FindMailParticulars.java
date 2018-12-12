@@ -328,9 +328,6 @@ public class FindMailParticulars extends BaseParameter {
 						// 根据传阅ID查询传阅信息
 						Mail mail = Services.getMailService().createHelper().getMailId().Eq(mailId).uniqueResult();
 
-						// 用于消息推送接口
-						String ids = mail.getUserId() + ",";
-
 						// 根据用户ID和传阅对象查询到接收人信息
 						Receive receive = Services.getReceiveService().createHelper().getUserId().Eq(userId).getMail()
 								.Eq(mail).uniqueResult();
@@ -370,11 +367,32 @@ public class FindMailParticulars extends BaseParameter {
 							count++; // 表示 该传阅已经有一个人确认了.
 							msg = "该传阅是开封已阅确认!";
 
-							// 推送消息 --> (app)
-							MessageUtils.pushEmobile(mail.getLoginId(), 3, mail.getMailId(), userId.intValue());
-							// 推送消息 --> (web)
-							HrmMessagePushUtils.getSendPush(receive.getLastName(), 3, mail.getUserId() + "",
-									mail.getUserId(), 3, mail.getMailId());
+							// 只有勾选了 确认时提醒 ,  确认时提醒所有传阅对象 才进行消息推送
+							if (mail.getIfRemind() || mail.getIfRemindAll()) {
+								try {
+
+									// 获取消息推送人的名称
+									String lastName = receive.getLastName();
+									// 拼接, 接收消息的Id
+									String ids = "";
+									String userIds = "";
+									List<Receive> receives = mail.getReceives();
+									for (Receive r : receives) {
+										// 不需要当前用户的ID
+										if(r.getUserId() != userId){
+											// 拼接
+											ids += r.getLoginId() + ",";
+											userIds += r.getUserId() + ",";
+										}
+									}
+
+									// 调用消息推送接口
+									getPush(mail, lastName, ids, userIds);
+								} catch (Exception e) {
+									e.printStackTrace();
+									System.out.println("===============传阅开封已阅确认的时候:     消息推送失败============");
+								}
+							}
 
 							ifReadStatus = false;
 
@@ -391,9 +409,6 @@ public class FindMailParticulars extends BaseParameter {
 							List<Receive> receives = newMail.getReceives();
 							// 遍历
 							for (Receive newReceive : receives) {
-								// 用于消息推送接口
-								ids += newReceive.getLoginId() + ",";
-
 								Boolean ifConfirm = newReceive.getIfConfirm();
 								String remark = newReceive.getRemark();
 								// 判断, 如果为true 并且 不为空
@@ -539,77 +554,28 @@ public class FindMailParticulars extends BaseParameter {
 
 			}
 		});
-//		json = Services.getMailService().createHelper().getMailId().Eq(mailId).json()
-//				.uniqueJson(new EachEntity2Map<Mail>() {
-//
-//					@Override
-//					public void each(Mail mail, Map<String, Object> map) {
-//
-//						List<AttachmentItem> itemList = new ArrayList<>();
-//						List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-//						for (AttachmentItem attachmentItem : attachmentItems) {
-//							// 创建附件对象
-//							AttachmentItem item = new AttachmentItem();
-//							// 设置需要的值
-//							item.setItemId(attachmentItem.getItemId()); // 附件ID
-//							item.setBulkId(attachmentItem.getBulkId()); // 附近批次ID
-//							item.setUserId(attachmentItem.getUserId()); // 创建人ID
-//							item.setCreator(attachmentItem.getCreator()); // 上传附件的传阅对象
-//							item.setCreateTime(attachmentItem.getCreateTime()); // 上传附件的时间
-//							item.setFileName(attachmentItem.getFileName()); // 附件原名
-//							item.setFileCategory(attachmentItem.getFileCategory()); // 附件后缀
-//							item.setSaveName(attachmentItem.getSaveName()); // 附件保存名
-//							item.setUrlPath(attachmentItem.getUrlPath()); // url
-//							item.setState(attachmentItem.getState()); // 附件状态
-//							item.setItemSize(attachmentItem.getItemSize()); // 附件大小
-//							item.setItemNeid(attachmentItem.getItemNeid()); // 附件的网盘ID
-//							item.setItemRev(attachmentItem.getItemRev()); // 附件的网盘版本
-//							item.setItemDifferentiate(attachmentItem.getItemDifferentiate()); // 区别
-//							itemList.add(item);
-//
-//						}
-//						map.put("attachmentItemss", itemList);
-//
-//						List<Receive> receives = mail.getReceives();
-//						List<Receive> receivesList = new ArrayList<>();
-//						for (Receive receive : receives) {
-//							// 创建接收人对象
-//							Receive receivess = new Receive();
-//							receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-//							receivess.setUserId(receive.getUserId()); // 接收人ID
-//							receivess.setWorkCode(receive.getWorkCode()); // 接收人工作编号
-//							receivess.setLastName(receive.getLastName()); // 接收人姓名
-//							receivess.setLoginId(receive.getLoginId()); // 接收人登录名
-//							receivess.setSubcompanyName(receive.getSubcompanyName()); // 分部全称
-//							receivess.setDepartmentName(receivess.getDepartmentName()); // 部门全称
-//							receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间(PS: 和传阅的发送时间一样)
-//							receivess.setJoinTime(receive.getJoinTime());
-//							receivess.setReceiveStatus(receive.getReceiveStatus());
-//							receivess.setMailState(receive.getMailState());
-//							receivess.setStepStatus(receive.getStepStatus());
-//							receivess.setOpenTime(receive.getOpenTime());
-//							receivess.setIfConfirm(receive.getIfConfirm());
-//							receivess.setAffirmTime(receive.getAffirmTime());
-//							receivess.setRemark(receive.getRemark());
-//							receivess.setConfirmRecord(receive.getConfirmRecord());
-//							receivess.setSerialNum(receive.getSerialNum());
-//							receivess.setAfreshConfim(receive.getAfreshConfim());
-//							receivess.setAcRecord(receive.getAcRecord());
-//							receivess.setMhTime(receive.getMhTime());
-//							receivess.setReceiveAttention(receive.getReceiveAttention());
-//							receivess.setReDifferentiate(receive.getReDifferentiate());
-//							receivesList.add(receivess);
-//							// 判断
-//							if (receive.getUserId() == userId) {
-//								map.put("ifConfirmss", receive.getIfConfirm());
-//								map.put("afreshConfimss", receive.getAfreshConfim());
-//								map.put("receiveAttention", receive.getReceiveAttention());
-//							}
-//						}
-//						map.put("receivess", receivesList);
-//
-//					}
-//				});
+	}
+
+	private void getPush(Mail mail, String lastName, String ids, String userIds) {
+		if (mail.getIfRemindAll()) {
+
+			ids += mail.getLoginId() + "";
+			userIds += mail.getUserId() + "";
+
+			// 推送消息 --> (app)
+			MessageUtils.pushEmobile(ids, 2, mail.getMailId(), userId.intValue());
+			// 推送消息 --> (web)
+			HrmMessagePushUtils.getSendPush(lastName, 4, userIds, userId, 4, mailId, true);
+
+			return;
+		}
+
+		if (mail.getIfRemind()) {
+			// 推送消息 --> (app)
+			MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue());
+			// 推送消息 --> (web)
+			HrmMessagePushUtils.getSendPush(lastName, 2, mail.getUserId() + "", mail.getUserId(), 3, mail.getMailId());
+		}
 	}
 
 	/**

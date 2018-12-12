@@ -61,11 +61,11 @@
                             <option value="3">未读</option>
                         </select> -->
                         <div class="oa-form-input oa-form-search">
-                            <input type="text" class="form-control" id="search" placeholder="请输入...">
+                            <input type="text" class="form-control" id="search" placeholder="请输入关键字搜索">
                             <div class="input-addon" id="search_btn">查询</div>
                         </div>
                         <div class="oa-form-input">
-                            <input type="text" class="layui-input" id="calendar" placeholder="请选择时间">
+                            <input type="text" class="layui-input" id="calendar" placeholder="删除时间">
                         </div>
                     </div>
                     <div class="oa-read-table layui-form">
@@ -179,6 +179,25 @@
                 templateTag:'.oa-read-table .layui-table tbody'
             });
             pages.getData();
+        });
+        // 查询数据加载
+        $('#search').on('keydown',function(e){
+            if(e.keyCode === 13){
+                var pages = new Pages({
+                    type:'post',
+                    url:'/web/alreadydelete/find-like-delete.htm',
+                    data:{
+                        userId:$.session.get('userId'),
+                        page:1,
+                        startTime:startTime,
+                        endTime:endTime,
+                        pageRows:itemNum,
+                        likeName:$('#search').val()
+                    },
+                    templateTag:'.oa-read-table .layui-table tbody'
+                });
+                pages.getData();
+            }
         });
         // 每页显示几条
         form.on('select(item-num)', function(data){

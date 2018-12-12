@@ -35,15 +35,22 @@ layui.use(['element','laypage','table','form','layer','jquery'], function(){
         if(data.elem.checked === true){
             $(data.elem).parents('thead').siblings('tbody').find('.layui-unselect').addClass('layui-form-checked');
             $(data.elem).parents('thead').siblings('tbody').find('input[name="choice"]').prop('checked',true);
+            $('.layui-btn-action').removeClass('layui-btn-disabled').addClass('layui-btn-normal').attr("disabled",false)
         }else{
             $(data.elem).parents('thead').siblings('tbody').find('.layui-unselect').removeClass('layui-form-checked');
             $(data.elem).parents('thead').siblings('tbody').find('input[name="choice"]').prop('checked',false);
+            $('.layui-btn-action').removeClass('layui-btn-normal').addClass('layui-btn-disabled').attr("disabled",true)
         }
     });
     // 单选按钮阻止冒泡
     form.on('checkbox(choice)', function(data){
         $('.oa-read-table thead .layui-unselect').removeClass('layui-form-checked');
         $('.oa-read-table thead input[name="all-checked"]').prop('checked',false);
+        if($(this).parents('tbody').find('input[name="choice"]:checked').length>0){
+            $('.layui-btn-action').removeClass('layui-btn-disabled').addClass('layui-btn-normal').attr("disabled",false)
+        }else{
+            $('.layui-btn-action').removeClass('layui-btn-normal').addClass('layui-btn-disabled').attr("disabled",true)
+        }
         var oEvent = event || ev;
         oEvent.stopPropagation();
 
@@ -528,8 +535,8 @@ jQuery.extend({
         // });
 
         // 右边按钮搜索
-        $('#have-search-btn').on('click',function(){
-            var val = $(this).siblings().val();
+        $('#have-search').on('keyup',function(e){
+            var val = $(this).val();
             var rightTr = $('.contacts-box-r .contacts-table-outer table tr').find('input[name="contacts-choice"]');
             var reg = new RegExp(val, "ig");
             for(var i=0;i<rightTr.length;i++){
@@ -618,7 +625,7 @@ jQuery.extend({
         });
         $('.dialog-contacts .contacts-nav li').first().trigger('click');
         // 搜索按钮
-        $('#contacts_search_btn').on('click',function(){
+        $('#contacts_search_btn').on('click',function(e){
             var likeName = $(this).siblings().val();
             var layer_msg;
             contactsData({
@@ -635,6 +642,27 @@ jQuery.extend({
             firstNum = null;
             $('.dialog-contacts .contacts-box-c .entire-l').css('display','inline-block');
             leftArrow();
+        });
+        // 搜索按钮
+        $('#contacts_search').on('keydown',function(e){
+            if(e.keyCode === 13){
+                var likeName = $(this).val();
+                var layer_msg;
+                contactsData({
+                    url:'/web/createmail/find-like-hrm.htm',
+                    params:{
+                        likeName:likeName,
+                        pageRows:200
+                    },
+                    render:function(data){
+                        contactsHTML(data);
+                    }
+                });
+                $('.dialog-contacts .contacts-nav li').removeClass('active');
+                firstNum = null;
+                $('.dialog-contacts .contacts-box-c .entire-l').css('display','inline-block');
+                leftArrow();
+            }
         });
         // 部门按钮
         $(document).off('click','.dialog-contacts .org-branch-three').on('click','.dialog-contacts .org-branch-three',function(){

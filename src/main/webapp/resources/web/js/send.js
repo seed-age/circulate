@@ -161,6 +161,26 @@ layui.use(['element','laypage','table','form','layer','jquery','laydate'], funct
             pages.getData();
 
         });
+        // 查询数据加载
+        $('#search').on('keydown',function(e){
+            if(e.keyCode === 13){
+                var pages = new Pages({
+                    type:'post',
+                    url:'/web/homepage/grid-send-in-list.htm',
+                    data:{
+                        userId:$.session.get('userId'),
+                        page:1,
+                        pageRows:itemNum,
+                        mailStatus:urlState,
+                        startTime : startTime,
+                        endTime :endTime,
+                        likeName:$('#search').val()
+                    },
+                    templateTag:'.oa-read-table .layui-table tbody'
+                });
+                pages.getData();
+            }
+        });
         laydate.render({
             elem: '#calendar', //指定元素
             type:'date',

@@ -38,7 +38,7 @@ public class HrmUserSchedule {
 	@PostConstruct
 	private void init() {
 		System.out.println("初始化OA联系人!");
-		//this.doJob();
+		this.doJob();
 	}
 
 	@Scheduled(cron = "0/10 * * * * ?")

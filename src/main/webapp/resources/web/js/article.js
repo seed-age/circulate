@@ -344,7 +344,7 @@ $(document).ready(function(){
                     }
                 },
                 error:function(){
-                    layer.msg('网络出错',{time: 2000});
+                    layer.msg('网络异常',{time: 2000});
                 }
             })
         };
@@ -582,7 +582,7 @@ $(document).ready(function(){
             url:'/web/received/find-mail-object.htm',
             dataType:'json',
             data:{
-                // userId:$.session.get('userId'),
+                userId:$.session.get('userId'),
                 mailId:storageData.article
             },
             templateTag:'.object-tab .layui-table-body table'
@@ -834,7 +834,7 @@ $(document).ready(function(){
 
                 }else{
                     setTimeout(function(){
-                        layer.msg('网络出错',{time: 2000});
+                        layer.msg(data.msg,{time: 2000});
                     },100)
                 }
 

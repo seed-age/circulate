@@ -125,12 +125,15 @@ public class InsertConfirm extends BaseParameter {
                 msg = "该传阅还有其他收件人没有确认!";
             }
 
-            try {
-                // 调用消息推送接口
-                getPush(mail, lastName, ids, userIds);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("===============传阅确认的时候:     消息推送失败============");
+            // 只有勾选了 确认时提醒 ,  确认时提醒所有传阅对象 才进行消息推送
+            if (mail.getIfRemind() || mail.getIfRemindAll()) {
+                try {
+                    // 调用消息推送接口
+                    getPush(mail, lastName, ids, userIds);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("===============传阅确认的时候:     消息推送失败============");
+                }
             }
 
             success = true;

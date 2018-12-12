@@ -185,7 +185,7 @@ html,body{
     border: 1px solid #e6e6e6;
     display: table-cell;
     border-radius: 2px 0 0 2px;
-    border-right: 0;
+    /*border-right: 0;*/
     width: 150px;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -271,6 +271,10 @@ html,body{
     width: 42%;
     float:left;
     height: 100%;
+}
+.dialog-contacts .contacts-box-r .oa-form-input input{
+    background: #fff url(../images/search-icon.png) no-repeat 10px center;
+    padding-left:38px;
 }
 .dialog-contacts .layui-layer-btn a{
     height: 34px;

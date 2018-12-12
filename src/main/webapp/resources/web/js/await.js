@@ -17,7 +17,7 @@ layui.use(['element','form','table','jquery','laydate'], function(){
                 userId:$.session.get('userId'),
                 page:1,
                 startTime : startTime,
-                endTime :endTime, 
+                endTime :endTime,
                 likeName:$('#search').val(),
                 pageRows:itemNum
             },
@@ -46,14 +46,14 @@ layui.use(['element','form','table','jquery','laydate'], function(){
                         string += '    <td>'+data[i].createTime+'</td>';
                         // string += '    <td style="text-align:right;"><span class="star '+(data[i].attention?'active':'')+'"></span></td>';
                         string += '</tr>';
-                    }  
+                    }
                 }else{
                     string += '<tr>';
                     string += '    <td colspan="6" style="text-align: center;">';
                     string += '       没有结果！';
                     string += '    </td>';
                     string += '</tr>';
-                }      
+                }
                 this.templateTag.append(string);
                 form.render();
             }.bind(that));
@@ -68,7 +68,7 @@ layui.use(['element','form','table','jquery','laydate'], function(){
                     userId:$.session.get('userId'),
                     page:1,
                     startTime : startTime,
-                    endTime :endTime, 
+                    endTime :endTime,
                     likeName:$('#search').val(),
                     pageRows:itemNum
                 },
@@ -77,7 +77,7 @@ layui.use(['element','form','table','jquery','laydate'], function(){
             awaitPages = new AwaitPages();
             awaitPages.getData();
         });
-        
+
         // 查询数据加载
         $('#search_btn').on('click',function(){
             AwaitPages.prototype = new Pages({
@@ -87,7 +87,7 @@ layui.use(['element','form','table','jquery','laydate'], function(){
                     userId:$.session.get('userId'),
                     page:1,
                     startTime : startTime,
-                    endTime :endTime, 
+                    endTime :endTime,
                     likeName:$('#search').val(),
                     pageRows:itemNum
                 },
@@ -95,6 +95,26 @@ layui.use(['element','form','table','jquery','laydate'], function(){
             });
             awaitPages = new AwaitPages();
             awaitPages.getData();
+        });
+        // 查询数据加载
+        $('#search').on('keydown',function(e){
+            if(e.keyCode === 13){
+                AwaitPages.prototype = new Pages({
+                    type:'post',
+                    url:'/web/waitsend/find-like-wait-send.htm',
+                    data:{
+                        userId:$.session.get('userId'),
+                        page:1,
+                        startTime : startTime,
+                        endTime :endTime,
+                        likeName:$('#search').val(),
+                        pageRows:itemNum
+                    },
+                    templateTag:'.oa-read-table .layui-table tbody'
+                });
+                awaitPages = new AwaitPages();
+                awaitPages.getData();
+            }
         });
         laydate.render({
             elem: '#calendar', //指定元素
@@ -116,7 +136,7 @@ layui.use(['element','form','table','jquery','laydate'], function(){
                         userId:$.session.get('userId'),
                         page:1,
                         startTime : startTime,
-                        endTime :endTime, 
+                        endTime :endTime,
                         likeName:$('#search').val(),
                         pageRows:itemNum
                     },
@@ -125,7 +145,7 @@ layui.use(['element','form','table','jquery','laydate'], function(){
                 awaitPages = new AwaitPages();
                 awaitPages.getData();
             }
-    
+
         });
         // 删除
         $('.oa-read-delete').on('click',function(){
@@ -138,11 +158,11 @@ layui.use(['element','form','table','jquery','laydate'], function(){
             // 判断是否有选择删除的，如果没有不提交数据
             if(choiceArr.length>0){
                 layer.confirm(
-                    '删除后将无法恢复，您确定要删除吗？', 
+                    '删除后将无法恢复，您确定要删除吗？',
                     {
                         btn: ['是','否'],
                         title:'删除提示'
-                    }, //按钮 
+                    }, //按钮
                     function(index, layero){
                         //按钮【按钮一】的回调
                         $.ajax({
@@ -170,7 +190,7 @@ layui.use(['element','form','table','jquery','laydate'], function(){
                                     setTimeout(function(){
                                         layer.msg('删除成功',{time: 1000,icon: 1});
                                     },200)
-                                    
+
                                 };
                             },
                             error:function(xhr){
@@ -178,12 +198,12 @@ layui.use(['element','form','table','jquery','laydate'], function(){
                                 layer.msg('网络出错',{time: 2000,icon: 2});
                             }
                         })
-                    }, 
+                    },
                     function(index){
                         //按钮【按钮二】的回调
                     }
                 );
-                
+
             }else{
                 layer.msg('请选择要删除的传阅',{time: 2000});
                 return false;

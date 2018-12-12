@@ -59,13 +59,13 @@
                             <option value="3">未读</option>
                         </select> -->
                         <div class="oa-form-input oa-form-search">
-                            <input type="text" class="form-control" id="search" placeholder="请输入...">
+                            <input type="text" class="form-control" id="search" placeholder="请输入关键字搜索">
                             <div class="input-addon" id="search_btn">查询</div>
                         </div>
                         <div class="oa-form-input">
-                            <input type="text" class="layui-input" id="calendar" placeholder="请选择时间">
+                            <input type="text" class="layui-input" id="calendar" placeholder="发起时间">
                         </div>
-                        <button type="button" class="layui-btn layui-btn-primary oa-read-delete">删除</button>
+                        <button type="button" class="layui-btn oa-read-delete layui-btn-disabled layui-btn-action" disabled>删除</button>
                     </div>
                     <div class="oa-read-table layui-form">
                         <input type="hidden" name="currPage">
