@@ -34,6 +34,7 @@ public class InsertUploadSdk extends BaseParameter {
 
 	private int status; // 0 表示 上传到个人空间   1 上传到企业空间
 	private Long userId; // 上传这个附件的传阅对象的ID
+	private String bulkId; // 唯一标识
 
 	private File file[]; // 上传的文件
 	private String fileFileName[]; // 上传的文件名
@@ -49,6 +50,14 @@ public class InsertUploadSdk extends BaseParameter {
 		Assert.notNull(userId, "用户ID不能为空!");
 		Assert.notNull(file, "上传的附件不能为空!");
 
+		// 1. 使用UUID生成附件上传批次ID ,用该批次ID进行管理多个上次附件
+		String uuidBulkId = null;
+
+		if(!bulkId.equals("null") && bulkId != null){
+			uuidBulkId = bulkId;
+		}else {
+			uuidBulkId = UUID.randomUUID().toString();
+		}
 		//根据上传附件的用户ID, 查询该用户的信息
 		UserMssage mssage = Services.getUserMssageService().createHelper().getUserId().Eq(userId.intValue()).uniqueResult();
 
@@ -64,9 +73,6 @@ public class InsertUploadSdk extends BaseParameter {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
 		// 上传文件
-		// 1. 使用UUID生成附件上传批次ID ,用该批次ID进行管理多个上次附件
-		String uuidBulkId = UUID.randomUUID().toString();
-
 		for (int i = 0; i < file.length; i++) {
 			// 创建map集合, 存放上传完附件后,返回给前端的数据
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -88,13 +94,14 @@ public class InsertUploadSdk extends BaseParameter {
 
 			// 按照需求更改上传路径 2018-11-28
 			// 更改时间: 2018-12-12  再次按照需求更改上传路径, 格式 :  年/月/传阅id/文件名
+			// 更改时间: 2018-12-12  再次按照需求更改上传路径, 格式 :  年/月/UUID/文件名
 			if(mssage != null){
 //				path = config.getBoxUploadUrl() + mssage.getDeptFullname() + "/" + mssage.getFullName() + "/" + mssage.getLastName() + "/" + fileName;
 				Calendar cal = Calendar.getInstance();
 				int year = cal.get(Calendar.YEAR);
 				int month = cal.get(Calendar.MONTH )+1;
 				System.out.println(year + " 年 " + month + " 月");
-				path = config.getBoxUploadUrl() + year + "/" + month + "/" + mssage.getUserId() + "/" + fileName;
+				path = config.getBoxUploadUrl() + year + "/" + month + "/" + uuidBulkId + "/" + fileName;
 			}
 
 			// 设置上传文件的标签
@@ -195,6 +202,14 @@ public class InsertUploadSdk extends BaseParameter {
 
 	public void setFileFileName(String[] fileFileName) {
 		this.fileFileName = fileFileName;
+	}
+
+	public String getBulkId() {
+		return bulkId;
+	}
+
+	public void setBulkId(String bulkId) {
+		this.bulkId = bulkId;
 	}
 
 	public static void main(String[] args){

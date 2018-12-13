@@ -446,9 +446,12 @@ jQuery.extend({
             tableHTML += '	</tbody>';
             tableHTML += '</table>';
             $('.contacts-box-l .contacts-table-outer').html(tableHTML);
+            $('.contacts-table-outer table tr:first').trigger('click');
             repetition('left');
-            allLeftArrow();
             alreadyDialog();
+            allLeftArrow();
+            leftArrow();
+            rightArrow();
 
         };
         // 右箭头点击
@@ -468,9 +471,9 @@ jQuery.extend({
             tree.length!=0?treeUniq('left'):repetition('left');
             leftArrow();
             rightArrow();
-            allLeftArrow();
             allrightArrow();
             trItemSize();
+            allLeftArrow();
         });
 
         // 左箭头点击

@@ -72,10 +72,10 @@ $(document).ready(function(){
                 switch(storageData.mailStatus){
                     case '3':
                         if(data.ifConfirmss === true){
-                            if(data.afreshConfimss){
+                            if(data.afreshConfimss === true){
                                 $('.btn-all').html('<button type="button" class="layui-btn layui-btn-primary anew-btn" data-confirm="false">重新确认</button><button type="button" class="layui-btn layui-btn-primary goback-btn" onclick="javascript:history.go(-1);">返回</button>');
                             }else{
-                                $('.btn-all').html('<button type="button" class="layui-btn layui-btn-primary anew-btn layui-btn-disabled" disabled data-confirm="false">重新确认</button><button type="button" class="layui-btn layui-btn-primary goback-btn" onclick="javascript:history.go(-1);">返回</button>');
+                                $('.btn-all').html('<button type="button" class="layui-btn layui-btn-primary goback-btn" onclick="javascript:history.go(-1);">返回</button>');
                             };
                         }else{
                             $('.btn-all').html('<button type="button" class="layui-btn layui-btn-primary affirm-btn" data-confirm="true">确认</button><button type="button" class="layui-btn layui-btn-primary goback-btn" onclick="javascript:history.go(-1);">返回</button>');
@@ -517,10 +517,13 @@ $(document).ready(function(){
                             string += '	<td>确认</td>';
                         }
                         string += '	<td style="text-align:right;">';
-                        if(storageData.mailStatus==='2' || stepStatus===3){
-                            string += '		<button title="删除" class="tab-icon tab-dele layui-disabled" disabled ><img src="/resources/web/images/handle04.png" alt=""></button>';
-                        }else{
-                            string += '		<button title="删除" class="tab-icon tab-dele "><img src="/resources/web/images/handle04.png" alt=""></button>';
+                        if(data[i].authority === true){
+                            if(storageData.mailStatus==='2' || stepStatus===3){
+
+                                string += '		<button title="删除" class="tab-icon tab-dele layui-disabled" disabled ><img src="/resources/web/images/handle04.png" alt=""></button>';
+                            }else{
+                                string += '		<button title="删除" class="tab-icon tab-dele "><img src="/resources/web/images/handle04.png" alt=""></button>';
+                            }
                         }
                         string += '	</td>';
                         string += '</tr>';

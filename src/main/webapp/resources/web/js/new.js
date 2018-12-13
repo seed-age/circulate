@@ -1,6 +1,7 @@
 var loaduUrl = window.location.search.substr(1);//链接
 var urlReg = /listId/;//正则
 var editor;
+var fileBulkId = null;
 //JavaScript代码区域
 $(document).ready(function(){
     layui.use(['element','form','layer'], function(){
@@ -227,7 +228,8 @@ function uploaderFile(){
         server: '/web/createmail/insert-upload-sdk.htm',
         // server: 'http://resource.duapp.com/resource_not_found.html',
         formData:{
-            userId:$.session.get('userId')//用户id
+            userId:$.session.get('userId'),//用户id
+            bulkId:null
             // fullname:'武当派',//分部
             // loginid:'一代宗师',//用户登录名
             // lastname:'张三丰'//当前用户姓名
@@ -325,7 +327,7 @@ function uploaderFile(){
     });
     // 当文件上传成功时触发。
     uploader.on( 'uploadSuccess', function( file,data ) {
-        // $( '#'+file.id ).find('.state').html(data.msg);
+        uploader.options.formData.bulkId = data.data[0].bulkId;
         $( '#'+file.id ).append($('<span class="dele">删除</span>'));
         $( '#'+file.id ).find('input[name=upload_file]').attr({
             'data-bulkId':data.data[0].bulkId,

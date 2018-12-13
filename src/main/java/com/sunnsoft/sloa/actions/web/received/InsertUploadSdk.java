@@ -65,7 +65,7 @@ public class InsertUploadSdk extends BaseParameter {
 
 		// 上传文件
 		// 1. 使用UUID生成附件上传批次ID ,用该批次ID进行管理多个上次附件
-		String uuidBulkId = UUID.randomUUID().toString();
+//		String uuidBulkId = UUID.randomUUID().toString();
 
 		String nameFile = "";
 		try {
@@ -89,6 +89,12 @@ public class InsertUploadSdk extends BaseParameter {
 			//获取存在的附件信息
 			List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
 
+			String uuidBulkId = null;
+			if(attachmentItems.size() > 0){
+				uuidBulkId = attachmentItems.get(0).getBulkId();
+			}else {
+				uuidBulkId = UUID.randomUUID().toString();
+			}
 
 			//根据用户ID查询用户信息
 			UserMssage mssage = Services.getUserMssageService().createHelper().getUserId().Eq((int)userId).uniqueResult();
@@ -141,7 +147,7 @@ public class InsertUploadSdk extends BaseParameter {
 					int year = cal.get(Calendar.YEAR);
 					int month = cal.get(Calendar.MONTH )+1;
 					System.out.println(year + " 年 " + month + " 月");
-					path = config.getBoxUploadUrl() + year + "/" + month + "/" + mssage.getUserId() + "/" + name;
+					path = config.getBoxUploadUrl() + year + "/" + month + "/" + uuidBulkId + "/" + name;
 				}
 
 				// 设置上传文件的标签
