@@ -4482,6 +4482,11 @@
             this.editor.uploader.on('uploadprogress', uploadProgress);
             this.editor.uploader.on('uploadsuccess', (function(_this) {
                 return function(e, file, result) {
+                    var json = eval('(' + result + ')');
+                    result = {
+                        file_path:json.data,
+                        success:json.success
+                    }
                     var $img, img_path, msg;
                     if (!file.inline) {
                         return;

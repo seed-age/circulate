@@ -124,8 +124,8 @@ $(document).ready(function(){
                 var liHTML = '<li>'+
                     '	<strong>传阅主题：</strong>'+
                     '	<p>'+data.title+'</p>'+
-                    '	<button id="'+storageData.article+'" class="star '+(attention?'active':'')+' '+(storageData.mailStatus==='2'?'layui-disabled':'')+'" '+(storageData.mailStatus==='2'?'disabled':'')+'></button>'+
-                    '</>'+
+                    '	<button type="button" id="'+storageData.article+'" class="star '+(attention?'active':'')+' '+(storageData.mailStatus==='2'?'layui-disabled':'')+'" '+(storageData.mailStatus==='2'?'disabled':'')+'></button>'+
+                    '</li>'+
                     '<li>'+
                     '	<strong>发 件 人：</strong>'+
                     '	<p>'+data.lastName+'</p>'+
@@ -199,15 +199,15 @@ $(document).ready(function(){
                         attachmentTHML += '	<td style="text-align:right;">';
                         attachmentTHML += '		<!--<button class="tab-icon tab-preview" data-bulk="'+attachmentItemss[j].bulkId+'" title="预览" ><img src="/resources/web/images/handle01.png" alt=""></button>-->';
                         if(storageData.mailStatus==='2'||data.ifUpdate===false ||stepStatus===3){
-                            attachmentTHML += '		<button class="tab-icon tab-redact layui-disabled" disabled title="编辑"><img src="/resources/web/images/handle02.png" alt=""></button>';
+                            attachmentTHML += '		<button type="button" class="tab-icon tab-redact layui-disabled" disabled title="编辑"><img src="/resources/web/images/handle02.png" alt=""></button>';
                         }else{
-                            attachmentTHML += '		<button class="tab-icon tab-redact" title="编辑"><img src="/resources/web/images/handle02.png" alt=""></button>';
+                            attachmentTHML += '		<button type="button" class="tab-icon tab-redact" title="编辑"><img src="/resources/web/images/handle02.png" alt=""></button>';
                         }
-                        attachmentTHML += '		<button class="tab-icon tab-down" title="下载"><img src="/resources/web/images/handle03.png" alt=""></button>';
+                        attachmentTHML += '		<button type="button" class="tab-icon tab-down" title="下载"><img src="/resources/web/images/handle03.png" alt=""></button>';
                         if(storageData.mailStatus==='2'||stepStatus===3){
-                            attachmentTHML += '		<button class="tab-icon tab-dele layui-disabled" disabled title="删除"><img src="/resources/web/images/handle04.png" alt=""></button>';
+                            attachmentTHML += '		<button type="button" class="tab-icon tab-dele layui-disabled" disabled title="删除"><img src="/resources/web/images/handle04.png" alt=""></button>';
                         }else{
-                            attachmentTHML += '		<button class="tab-icon tab-dele" title="删除"><img src="/resources/web/images/handle04.png" alt=""></button>';
+                            attachmentTHML += '		<button type="button" class="tab-icon tab-dele" title="删除"><img src="/resources/web/images/handle04.png" alt=""></button>';
                         }
                         attachmentTHML += '	</td>';
                         attachmentTHML += '</tr>';
@@ -520,9 +520,9 @@ $(document).ready(function(){
                         if(data[i].authority === true){
                             if(storageData.mailStatus==='2' || stepStatus===3){
 
-                                string += '		<button title="删除" class="tab-icon tab-dele layui-disabled" disabled ><img src="/resources/web/images/handle04.png" alt=""></button>';
+                                string += '		<button type="button" title="删除" class="tab-icon tab-dele layui-disabled" disabled ><img src="/resources/web/images/handle04.png" alt=""></button>';
                             }else{
-                                string += '		<button title="删除" class="tab-icon tab-dele "><img src="/resources/web/images/handle04.png" alt=""></button>';
+                                string += '		<button type="button" title="删除" class="tab-icon tab-dele "><img src="/resources/web/images/handle04.png" alt=""></button>';
                             }
                         }
                         string += '	</td>';

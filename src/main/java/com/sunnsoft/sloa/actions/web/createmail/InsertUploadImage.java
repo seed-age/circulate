@@ -1,17 +1,22 @@
 package com.sunnsoft.sloa.actions.web.createmail;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
+import com.sunnsoft.util.FileStore;
+import com.sunnsoft.util.ImageUtils;
+import com.sunnsoft.util.struts2.Results;
 import org.apache.commons.io.FileUtils;
-import org.apache.struts2.ServletActionContext;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
+import org.gteam.util.FastJSONUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.annotation.Resource;
 import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.*;
+
 /**
  * 新建传阅--富文本上传图片
  * @author chenjian
@@ -20,67 +25,56 @@ import java.io.PrintWriter;
 public class InsertUploadImage extends BaseParameter {
 
 	private static final long serialVersionUID = 1L;
+	private static final Logger LOGGER = LoggerFactory.getLogger(InsertUploadSdk.class);
 
-	private String err = ""; //默认为空字符串
-	private String msg; // 返回信息
-	private File fileData; // 上传文件
-	private String fileDataFileName; // 文件名
-	
-	@Action(interceptorRefs = { @InterceptorRef(value = "fileUpload"), @InterceptorRef("extStack") })
+	private File fileData; // 二进制图片对象
+	private String fileDataFileName; // 图片名称;
+
+	@Resource
+	private FileStore generalFileStore;
+
 	@Override
+	@Action(interceptorRefs = {
+			@InterceptorRef(value = "fileUpload", params = { "maximumSize", "504800000" }),
+			@InterceptorRef("extStack") })
 	public String execute() throws Exception {
 
-		// 获取response、request对象
-		ActionContext ac = ActionContext.getContext();
-		HttpServletResponse response = (HttpServletResponse) ac.get(ServletActionContext.HTTP_RESPONSE);
-		HttpServletRequest request = (HttpServletRequest) ac.get(ServletActionContext.HTTP_REQUEST);
+		// 校验参数
+		Assert.notNull(fileData, "上传的附件不能为空!");
 
-		response.setContentType("text/html;charset=gbk");
+		// 参数校验;
+		if (StringUtils.isBlank(fileDataFileName) || fileDataFileName.lastIndexOf(".") == -1) {
+			msg = "不支持的图片类型或非法的图片后缀!!!";
 
-		PrintWriter out = null;
-		try {
-			out = response.getWriter();
-		} catch (IOException e1) {
-			e1.printStackTrace();
+			return Results.GLOBAL_FAILURE_JSON;
 		}
 
-		String saveRealFilePath = ServletActionContext.getServletContext().getRealPath("/web/images/upload");
-		File fileDir = new File(saveRealFilePath);
-		if (!fileDir.exists()) { // 如果不存在 则创建
-			fileDir.mkdirs();
+		// 校验上传文件是否为图片;
+		if (!ImageUtils.isImage(fileData)) {
+			msg = "不支持的图片类型或非法的图片后缀!!!";
+
+			return Results.GLOBAL_FAILURE_JSON;
 		}
-		File savefile;
-		savefile = new File(saveRealFilePath + "/" + fileDataFileName);
-		try {
-			FileUtils.copyFile(fileData, savefile);
-		} catch (IOException e) {
-			err = "错误" + e.getMessage();
-			e.printStackTrace();
+
+		// 获取上传图片后缀;
+		String suffix = fileDataFileName.substring(fileDataFileName.lastIndexOf("."));
+
+		// 重新生成上传之后的图片名称;
+		String newImageName = UUID.randomUUID().toString() + suffix;
+		File storeFile = new File(generalFileStore.getRootFile(), newImageName);
+		if (storeFile.exists()) {
+			msg = "图片名称冲突,请稍后再试!!!";
+
+			return Results.GLOBAL_FAILURE_JSON;
 		}
-		String file_Name = request.getContextPath() + "/web/images/upload/" + fileDataFileName;
+		// 复制文件
+		FileUtils.copyFile(fileData, storeFile);
 
-		msg = "{\"success\":\"" + true + "\",\"file_path\":\"" + file_Name + "\"}";
-		out.print(msg); // 返回msg信息
-		
-		
-		
-		return null;
-	}
+		success = true;
+		msg = "图片上传成功";
+		json = FastJSONUtils.getJsonHelper().toJSONString("/file/" + storeFile.getName());
 
-	public String getErr() {
-		return err;
-	}
-
-	public void setErr(String err) {
-		this.err = err;
-	}
-
-	public String getMsg() {
-		return msg;
-	}
-
-	public void setMsg(String msg) {
-		this.msg = msg;
+		return Results.GLOBAL_FORM_JSON;
 	}
 
 	public File getFileData() {
@@ -98,5 +92,4 @@ public class InsertUploadImage extends BaseParameter {
 	public void setFileDataFileName(String fileDataFileName) {
 		this.fileDataFileName = fileDataFileName;
 	}
-
 }

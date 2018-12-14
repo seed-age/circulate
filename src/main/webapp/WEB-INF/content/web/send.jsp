@@ -63,7 +63,7 @@
                             <div class="input-addon" id="search_btn">查询</div>
                         </div>
                         <div class="oa-form-input">
-                            <input type="text" class="layui-input" id="calendar" placeholder="发起时间">
+                            <input type="text" class="layui-input" id="calendar" placeholder="请选择发起时间">
                         </div>
                         <button type="button" class="layui-btn oa-read-delete layui-btn-disabled layui-btn-action" disabled>删除</button>
                     </div>

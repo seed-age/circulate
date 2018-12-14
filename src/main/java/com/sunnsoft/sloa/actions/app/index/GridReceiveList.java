@@ -563,7 +563,10 @@ public class GridReceiveList extends BaseParameter {
 			if (orderBy == 2) { // 2 表示降序
 				// 分页查询数据
 				json = Services.getMailService().createHelper().ignoreEmptyValueCondiction().enterReceives().getUserId()
-						.Eq(userId).startOr().getStepStatus().Eq(1).getStepStatus().Eq(3).stopOr().back2Mail().getSendTime().Desc().json()
+						.Eq(userId)
+						.getStepStatus().Eq(1)
+//						.startOr().getStepStatus().Eq(1).getStepStatus().Eq(3).stopOr()
+						.back2Mail().getSendTime().Desc().json()
 						.listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
 	
 							@Override

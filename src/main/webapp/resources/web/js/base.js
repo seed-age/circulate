@@ -325,11 +325,11 @@ Pages.prototype = {
                     }
                     if(data[0].hasOwnProperty('receiveAttention')){
                         string += '    <td>'+data[i].receiveTime+'</td>';
-                        string += '    <td style="text-align:right;"><button class="star '+(data[i].receiveAttention?'active':'')+'" data-edition="receive"></button></td>';
+                        string += '    <td style="text-align:right;"><button type="button" class="star '+(data[i].receiveAttention?'active':'')+'" data-edition="receive"></button></td>';
                     }else{
                         var attentionStatus = $.session.get('attentionStatus') === '2';
                         string += '    <td>'+(attentionStatus?data[i].deleteTime:data[i].sendTime)+'</td>';
-                        string += '    <td style="text-align:right;"><button class="'+(attentionStatus?'layui-disabled':'')+' star '+(data[i].attention?'active':'')+'" '+(attentionStatus?'disabled':'')+'></button></td>';
+                        string += '    <td style="text-align:right;"><button type="button" class="'+(attentionStatus?'layui-disabled':'')+' star '+(data[i].attention?'active':'')+'" '+(attentionStatus?'disabled':'')+'></button></td>';
 
                     };
                     string += '</tr>';
@@ -434,7 +434,7 @@ jQuery.extend({
                     tableHTML += '				'+data[i].lastName+'';
                     tableHTML += '			</td>';
                     tableHTML += '			<td  style="color:#999;">';
-                    tableHTML += '				-';
+                    tableHTML += '				';
                     tableHTML += '			</td>';
                     tableHTML += '		</tr>';
                 };
@@ -850,7 +850,7 @@ function addRightTr(data,tag){
         rightTrHTML += '				'+($(data[j]).data('receivelastname') ||$(data[j]).data('lastname'))+'';
         rightTrHTML += '			</td>';
         rightTrHTML += '			<td  style="color:#999;">';
-        rightTrHTML += '				-';
+        rightTrHTML += '				';
         rightTrHTML += '			</td>';
         rightTrHTML += '		</tr>';
     };

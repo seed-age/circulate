@@ -439,6 +439,9 @@ public class FindMailParticulars extends BaseParameter {
 
 						receivedStatus = false;
 					}
+
+
+
 					success = true;
 					code = "200";
 					msg = "查询已收传阅详情成功!" + msg;
@@ -455,9 +458,20 @@ public class FindMailParticulars extends BaseParameter {
 			code = "500";
 			msg = "网络繁忙,请返回主页面!";
 			json = "null";
+
+			// 对静态变量恢复初始值.
+			status = false; // 判断该传阅是否 是未读状态
+			receivedStatus = false; // 判断该传阅是否 是已读状态
+			ifReadStatus = false; // 判断该传阅是否 勾选了 开封已阅确认 这个选项.
+
 			e.printStackTrace();
 			return Results.GLOBAL_FORM_JSON;
 		}
+
+		// 对静态变量恢复初始值.
+		status = false; // 判断该传阅是否 是未读状态
+		receivedStatus = false; // 判断该传阅是否 是已读状态
+		ifReadStatus = false; // 判断该传阅是否 勾选了 开封已阅确认 这个选项.
 
 		if (json != null) {
 			return Results.GLOBAL_FORM_JSON;
@@ -536,21 +550,6 @@ public class FindMailParticulars extends BaseParameter {
 
 				}
 				map.put("attachmentItemss", itemList);
-
-				// 判断如果是未读
-				if (receive.getMailState() == 5) {
-					receivedStatus = true;
-					status = true;
-				}
-
-				/*
-				 * 进行判断, 如果发送人在发送传阅的时候勾选了 开封已阅确认 这个选项; 那么在接收人接收到传阅,并且点击该传阅进入到传阅详情的时候;
-				 * 该传阅就已经是确认状态了!
-				 */
-				if (mail.getIfRead()) { // 如果为 true 就进来
-					ifReadStatus = true;
-					status = false; // 设置为false， 不走普通的判断
-				}
 
 			}
 		});
