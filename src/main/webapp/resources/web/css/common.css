@@ -141,10 +141,22 @@ html,body{
     box-sizing: border-box;
 }
 .dialog-contacts .layui-layer-content h5{
-    font-size: 16px;
+    font-size: 18px;
     color:#22262a;
     font-weight: bold;
     height: 7%;
+}
+.dialog-contacts .layui-layer-content h5 p{
+    display: inline-block;
+    font-size: 14px;
+    font-weight: normal;
+    margin-left: 10px;
+    color: #ff3838;
+    vertical-align: bottom;
+}
+.dialog-contacts .layui-layer-content h5 p i{
+    font-size: 14px;
+    margin-right: 3px;
 }
 .dialog-contacts .layer{
     border:1px solid #e6e6ed;

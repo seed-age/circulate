@@ -35,11 +35,14 @@ public class HrmUserSchedule {
 	@Value("${schedule.on}")
 	private boolean scheduleOn;
 
+	@Resource
+	private SpringUtils springUtils;
+
 	@PostConstruct
 	private void init() {
 		System.out.println("初始化OA联系人!");
 		try {
-			this.doJob();
+//			this.doJob();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("================初始化OA联系人失败=====================");
@@ -63,8 +66,10 @@ public class HrmUserSchedule {
 		//String ip = "192.168.4.183"; // 测试环境
 		//String ip = "https://oa-uat.seedland.cc:8443/services/HrmService"; // 测试环境
 		//String ip = "oa-uat.seedland.cc:8443"; // 生产环境
-		String ip = ThirdPartyConfiguration.getOaHrmSchedulerUrl();//"oa.seedland.cc"; // 生产环境
-		
+//		String ip = ThirdPartyConfiguration.getOaHrmSchedulerUrl();//"oa.seedland.cc"; // 生产环境
+//		String ip = "oa.seedland.cc";// 生产环境
+		String ip = "192.168.64.40";// 测试环境
+
 		HrmService client = new HrmService();
 		HrmServicePortType service = client.getHrmServiceHttpPort();
 		

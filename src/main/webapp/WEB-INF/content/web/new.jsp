@@ -199,7 +199,7 @@
     <textarea name="notes" class="layui-layer-textarea" placeholder="请输入传阅的确认信息备注"></textarea>
 </div> -->
 <div class="contacts-content" style="display:none;">
-	<h5>人员</h5>
+	<h5>人员 <p><i class="layui-icon layui-icon-tips"></i>不显示已选人员</p></h5>
 	<div class="layer">
 		<ul class="contacts-nav">
 			<li data-group="最近" class="active">最近</li>

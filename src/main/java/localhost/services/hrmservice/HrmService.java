@@ -28,7 +28,9 @@ public class HrmService extends Service {
     static {
         URL url = null;
         try {
-            url = new URL(ThirdPartyConfiguration.getOaHrmWsUrl());
+//            url = new URL(ThirdPartyConfiguration.getOaHrmWsUrl());
+//            url = new URL("https://oa.seedland.cc//services/HrmService?wsdl"); // 生产
+            url = new URL("http://oa-test.seedland.cc/services/HrmService?wsdl"); // 测试
         } catch (MalformedURLException e) {
             java.util.logging.Logger.getLogger(HrmService.class.getName())
                 .log(java.util.logging.Level.INFO, 
