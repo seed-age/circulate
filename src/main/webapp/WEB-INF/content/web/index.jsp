@@ -40,7 +40,7 @@
 
 
 <div id="contentcontainer" class="clearfix main">
-    
+
     <div id="content" class="layui-body side-bar-right">
         <div id="e8rightContentDiv">
             <div class="content-body">
@@ -105,7 +105,7 @@
                         </div>
                     </div>
                                     </div>
-                    
+
                                     <div class="layui-row layui-col-space30">
                     传阅完成
                     <div class="layui-col-sm4 sloa-box">
@@ -175,62 +175,62 @@
 </html>
 <script>
     //一般直接写在一个js文件中
-    
-</script> 
+
+</script>
 <script>
-// {
-//     ceceiveCompleteCount  传阅完成,收到传阅
-//     completeCount   已发传阅,已完成
-//     deleteCount   已删除
-//     receiveInCount   传阅中:,收到传阅
-//     sendInCount   已发传阅: 传阅中
-//     todoCount   收到传阅,待办
-//     unreadCount  收到传阅,为读
-//     waitSendCount    待发传阅
-// }
-// var solaData = [
-//     {
-//         title:"收到传阅",
-//         list:[
-//             unreadCount, //未读
-//             todoCount //待办
-//         ]
-//     },
-//     {
-//         title:"已发传阅",
-//         list:[
-//             sendInCount //传阅中
-//             completeCount, //已完成
-//         ]
-        
-//     },
-//     {
-//         title:"已删除",
-//         list:[
-//             deleteCount //已删除
-//         ]
-        
-//     },
-//     {
-//         title:"传阅完成",
-//         list:[
-//             completeCount, //发送传阅
-//             ceceiveCompleteCount, //收到传阅
-//         ]
-//     },
-//     {
-//         title:"传阅中",
-//         list:[
-//             sendInCount, //发送传阅
-//             receiveInCount, //收到传阅
-//         ]
-//     },
-//     {
-//         title:"待发传阅",
-//         list:[
-//             waitSendCount //待发传阅
-//         ]
-//     }
-// ]
+    // {
+    //     ceceiveCompleteCount  传阅完成,收到传阅
+    //     completeCount   已发传阅,已完成
+    //     deleteCount   已删除
+    //     receiveInCount   传阅中:,收到传阅
+    //     sendInCount   已发传阅: 传阅中
+    //     todoCount   收到传阅,待办
+    //     unreadCount  收到传阅,为读
+    //     waitSendCount    待发传阅
+    // }
+    // var solaData = [
+    //     {
+    //         title:"收到传阅",
+    //         list:[
+    //             unreadCount, //未读
+    //             todoCount //待办
+    //         ]
+    //     },
+    //     {
+    //         title:"已发传阅",
+    //         list:[
+    //             sendInCount //传阅中
+    //             completeCount, //已完成
+    //         ]
+
+    //     },
+    //     {
+    //         title:"已删除",
+    //         list:[
+    //             deleteCount //已删除
+    //         ]
+
+    //     },
+    //     {
+    //         title:"传阅完成",
+    //         list:[
+    //             completeCount, //发送传阅
+    //             ceceiveCompleteCount, //收到传阅
+    //         ]
+    //     },
+    //     {
+    //         title:"传阅中",
+    //         list:[
+    //             sendInCount, //发送传阅
+    //             receiveInCount, //收到传阅
+    //         ]
+    //     },
+    //     {
+    //         title:"待发传阅",
+    //         list:[
+    //             waitSendCount //待发传阅
+    //         ]
+    //     }
+    // ]
 
 </script>

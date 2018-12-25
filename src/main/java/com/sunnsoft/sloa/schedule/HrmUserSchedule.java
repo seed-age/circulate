@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * 每天凌晨 1点 定时更新 联系人 信息
- * 
+ *
  * @author chenjian
  *
  */
@@ -35,14 +35,11 @@ public class HrmUserSchedule {
 	@Value("${schedule.on}")
 	private boolean scheduleOn;
 
-	@Resource
-	private SpringUtils springUtils;
-
 	@PostConstruct
 	private void init() {
 		System.out.println("初始化OA联系人!");
 		try {
-//			this.doJob();
+			this.doJob();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("================初始化OA联系人失败=====================");
@@ -54,25 +51,22 @@ public class HrmUserSchedule {
 		//System.out.println("thirdPartyConfiguration: " + SpringUtils.getBean(ThirdPartyConfiguration.class));
 		logger.debug("thirdPartyConfiguration:" + SpringUtils.getBean(ThirdPartyConfiguration.Configuration.class));
 	}
-	
+
 	@Scheduled(cron = "0 30 2 * * ?")
 	public void doJob() {
 		if (!scheduleOn) {// 开关没打开则不跑定时任务。
 			return;
 		}
 		System.out.println("定时任务被调用了!!");
-		
 		// ip地址
 		//String ip = "192.168.4.183"; // 测试环境
 		//String ip = "https://oa-uat.seedland.cc:8443/services/HrmService"; // 测试环境
 		//String ip = "oa-uat.seedland.cc:8443"; // 生产环境
-//		String ip = ThirdPartyConfiguration.getOaHrmSchedulerUrl();//"oa.seedland.cc"; // 生产环境
-//		String ip = "oa.seedland.cc";// 生产环境
-		String ip = "192.168.64.40";// 测试环境
+		String ip = ThirdPartyConfiguration.getOaHrmSchedulerUrl();//"oa.seedland.cc"; // 生产环境
 
 		HrmService client = new HrmService();
 		HrmServicePortType service = client.getHrmServiceHttpPort();
-		
+
 		//分部信息
 		List<SubCompanyBean> subCompanyBean = service.getHrmSubcompanyInfo(ip).getSubCompanyBean();
 		if(subCompanyBean != null && subCompanyBean.size() > 0){
@@ -86,14 +80,15 @@ public class HrmUserSchedule {
 				showorderInt = Integer.valueOf(showorder);
 			}
 			Services.hrmsubcompanyHelper().bean().create()
-			.setSubcompanyname(subCompany.getShortname().getValue())
-			.setShoworder(showorderInt)
-			.setId(Integer.valueOf(subCompany.getSubcompanyid().getValue()))
-			.setSupsubcomid(Integer.valueOf(subCompany.getSupsubcompanyid().getValue()))
-			.insertUnique();
-			
+					.setSubcompanyname(subCompany.getShortname().getValue())
+					.setShoworder(showorderInt)
+					.setId(Integer.valueOf(subCompany.getSubcompanyid().getValue()))
+					.setSupsubcomid(Integer.valueOf(subCompany.getSupsubcompanyid().getValue()))
+					.setCanceled(subCompany.getCanceled().getValue().toCharArray()[0])
+					.insertUnique();
+
 		}
-		
+
 		//部门信息
 		List<DepartmentBean> departmentBeans = service.getHrmDepartmentInfo(null, null).getDepartmentBean();
 		if(departmentBeans != null && departmentBeans.size() > 0){
@@ -107,14 +102,15 @@ public class HrmUserSchedule {
 				showorderInt = Integer.valueOf(showorder);
 			}
 			Services.hrmdepartmentHelper().bean().create()
-			.setDepartmentname(departmentBean.getShortname().getValue())
-			.setShoworder(showorderInt)
-			.setId(Integer.valueOf(departmentBean.getDepartmentid().getValue()))
-			.setSupdepid(Integer.valueOf(departmentBean.getSupdepartmentid().getValue()))
-			.setSubcompanyid1(Integer.valueOf(departmentBean.getSubcompanyid().getValue()))
-			.insertUnique();
+					.setDepartmentname(departmentBean.getShortname().getValue())
+					.setShoworder(showorderInt)
+					.setId(Integer.valueOf(departmentBean.getDepartmentid().getValue()))
+					.setSupdepid(Integer.valueOf(departmentBean.getSupdepartmentid().getValue()))
+					.setSubcompanyid1(Integer.valueOf(departmentBean.getSubcompanyid().getValue()))
+					.setCanceled(departmentBean.getCanceled().getValue().toCharArray()[0])
+					.insertUnique();
 		}
-		
+
 		//1. 查询出部门下的人员信息, 并且展示到前端
 		int count = 0;
 		// 获取到人员集合对象
@@ -143,4 +139,5 @@ public class HrmUserSchedule {
 		System.out.println("添加人员总数： " + count);
 		System.out.println("定时更新用户信息完成!");
 	}
+
 }

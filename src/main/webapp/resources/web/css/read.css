@@ -1,7 +1,11 @@
+
 .oa-read-form .layui-form-select{
     display: inline-block;
     width: 110px;
     vertical-align: middle;
+}
+.oa-read-form .layui-form-select dl dd{
+    font-size: 12px;
 }
 .oa-read-form .oa-form-input{
     display: inline-table;
@@ -13,9 +17,9 @@
 }
 
 .oa-read-form .oa-form-input input{
-    height: 38px;
+    height: 32px;
     padding: 4px 12px;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.42857143;
     background-color: #fff;
     background-image: none;
@@ -31,11 +35,11 @@
 }
 .oa-read-form .oa-form-search input{
     border-right:0;
-    height: 28px;
+    height: 22px;
 }
 .oa-read-form .input-addon{
     padding: 6px 12px;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 400;
     line-height: 1;
     color: #fff;
@@ -55,7 +59,7 @@
 .oa-read-skip:hover{
     /*border-color:#008cd6;;*/
 }
-.oa-read-form .layui-form-select dl dd.layui-this{
+.layui-form-select dl dd.layui-this{
     background-color: #1e90ff;
 }
 .oa-read-table .layui-form-checkbox[lay-skin=primary] i{
@@ -98,8 +102,12 @@
     background: #fff;
     border-bottom: 2px solid #e6e6ed;
     border-top:0;
-    font-size: 16px;
-    color:#22262a;
+    font-size: 14px;
+    font-weight:bold;
+    color:#464e55;
+}
+.oa-read-table .layui-table tbody td{
+    font-size: 12px;
 }
 .oa-read-table .layui-table .star{
     width: 16px;
@@ -132,35 +140,8 @@
 .oa-read-table .layui-laypage input:focus{
     border-color:#008cd6 !important;
 }
-.oa-read-table #paging{
-    margin-right: 11px;
-    float: right;
-}
+
 .oa-read-table .layui-laypage button:hover{
     background: #008cd6;
     color:#fff;
-}
-.oa-read-table .item-box{
-    float: right;
-    margin-top: 10px;
-    vertical-align: middle;
-    font-size: 12px;
-    color: #999999;
-}
-.oa-read-table .item-box .layui-form-select{
-    width: 70px;
-    margin-right:0;
-    margin-left: 8px;
-}
-.oa-read-table .item-box .layui-input{
-    height: 30px;
-    line-height: 30px;
-}
-.oa-read-table .item-box .layui-form-select dl{
-    top: auto;
-    bottom: 30px;
-}
-.oa-read-table .item-box .layui-form-select dl dd,
-.oa-read-table .item-box .layui-form-select dl dt{
-    line-height: 30px;
 }

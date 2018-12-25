@@ -53,7 +53,7 @@ public class InsertUploadSdk extends BaseParameter {
 		// 1. 使用UUID生成附件上传批次ID ,用该批次ID进行管理多个上次附件
 		String uuidBulkId = null;
 
-		if(!bulkId.equals("null") && bulkId != null){
+		if(!bulkId.equals("null") && !bulkId.equals("") && bulkId != null){
 			uuidBulkId = bulkId;
 		}else {
 			uuidBulkId = UUID.randomUUID().toString();

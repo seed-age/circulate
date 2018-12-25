@@ -1,11 +1,12 @@
 .layui-body .content-body h2 {
     margin: 0 7px 0 20px;
-    font-size: 15px;
-    color: #22262a;
-    height: 44px;
-    line-height: 44px;
+    font-size: 13px;
+    color: #fff;
+    height: 40px;
+    line-height: 40px;
     display: inline-block;
     vertical-align: middle;
+    font-weight: bold;
 }
 .sloa-box .sloa-box{
 // max-width: 450px;
@@ -15,40 +16,49 @@
 }
 
 .layui-row .sub-title {
-    background: #f5f6f7;
+    background: #0a6ea3;
 }
 .layui-row .content-box .content-item{
-    width:20%;
+    /*width:20%;*/
 }
 .sub-title .tips{
     display: inline-block;
     vertical-align: middle;
 }
 .layui-row img {
-    display: inline-block;
+    display: block;
     vertical-align: middle;
     cursor:pointer;
     padding: 0 20px 0 0px;
 }
 
 .content-box {
-    border: 1px solid #e6e6ed;
+    border: 1px solid #0a6ea3;
     border-top: none;
     text-align: center;
+
+    display: table;
+    width: 100%;
+    box-sizing: border-box;
+}
+.content-box>.layui-row{
+    display: table-cell;
     padding: 30px 0;
 }
-
+.content-box>.layui-row + .layui-row{
+    border-left: 1px solid #0a6ea3;
+}
 .content-box .layui-row .content-item + .content-item {
-    border-left: 1px solid #e6e6ed;
+    border-left: 1px solid #e9ebec;
 }
 
 .layui-row .content-item .txt {
-    font-size: 13px;
+    font-size: 12px;
     color: #666;
 }
 
 .layui-row .content-item h3 {
-    font-size: 26px;
+    font-size: 22px;
     color: #22262a;
     margin: 20px 0;
 }

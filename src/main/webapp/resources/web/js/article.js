@@ -510,9 +510,9 @@ $(document).ready(function(){
                         //string += '	<td>'+data[i].openTime == null ? '暂无' : data[i].openTime +'</td>';
 
                         if(data[i].mailStatusss===0){
-                            string += '	<td>未开封</td>';
+                            string += '	<td>未读</td>';
                         }else if(data[i].mailStatusss===1){
-                            string += '	<td>已开封</td>';
+                            string += '	<td>已读</td>';
                         }else if(data[i].mailStatusss===2){
                             string += '	<td>确认</td>';
                         }
@@ -586,13 +586,30 @@ $(document).ready(function(){
             dataType:'json',
             data:{
                 userId:storageData.userId,
-                mailId:storageData.article
+                mailId:storageData.article,
+                page:1 ,
+                pageRows:10
             },
             templateTag:'.object-tab .layui-table-body table'
         });
-        setTimeout(function(){
+        articleObjext.getData();
+        // 每页显示几条
+        form.on('select(item-num)', function(data){
+            articleObjext = new ArticleObjext({
+                type:'post',
+                url:'/web/received/find-mail-object.htm',
+                dataType:'json',
+                data:{
+                    userId:storageData.userId,
+                    mailId:storageData.article,
+                    page:1 ,
+                    pageRows:data.value
+                },
+                templateTag:'.object-tab .layui-table-body table'
+            });
             articleObjext.getData();
-        },100);
+        });
+
         // 批量删除
         $('.object-tab .title-right .annex-dele').on('click',function(e){
             var choice = $(this).parents('.object-tab').find('.layui-table-body tbody tr').children().children('input[name="choice"]:checked');

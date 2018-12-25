@@ -41,6 +41,8 @@
     width: 46px;
     padding-right:10px;
     color:#666;
+    font-size: 12px;
+    font-weight: bold;
 }
 .table-input .layui-input-block{
     margin-left: 56px;
@@ -75,7 +77,7 @@
     display: inline-block;
     border: 1px solid #e6e6e6;
     background-color: #fff;
-    font-size: 14px;
+    font-size: 12px;
     padding: 4px 10px;
     border-radius: 20px;
     margin: 3px 4px 0;
@@ -118,6 +120,7 @@
 }
 .table-input .mp_item{
     cursor:pointer;
+    font-size: 12px;
 }
 .table-input .mp_item:hover{
     background: #f0f8fd;
@@ -129,7 +132,7 @@
     text-overflow:ellipsis;
     white-space:nowrap;
     line-height: 30px;
-    font-size: 14px;
+    font-size: 12px;
 }
 .uploader-accessory{
     padding-left:56px;
@@ -140,6 +143,7 @@
     background: url(../images/accessory-icon01.png) no-repeat left center;
     padding-left:20px;
     color:#008cd6;
+    font-size: 14px;
 }
 .uploader-accessory .uploader-list{
     padding-left: 0;
@@ -221,6 +225,8 @@
     text-align: right;
     padding-right: 10px;
     color:#666;
+    font-size: 12px;
+    font-weight:bold;
 }
 .form-checked-box{
     overflow: hidden;
@@ -240,12 +246,18 @@
 .form-checked .layui-form-checkbox[lay-skin=primary]:hover i{
     border-color: #008cd6;
 }
+.form-checked .layui-form-checkbox[lay-skin=primary] span{
+    font-size: 12px;
+    line-height: 16px;
+}
+
 .form-checked .layui-form-checked[lay-skin=primary] i{
     background-color:#008cd6;
     border-color: #008cd6;
+
 }
 .form-checked .more{
-    font-size: 14px;
+    font-size: 12px;
     color:#666;
     background: url(../images/more-icon01.png) no-repeat right center;
     position: absolute;
@@ -287,7 +299,8 @@
     width: 50%;
     box-sizing: border-box;
     color:#666;
-    font-size:16px;
+    font-size:14px;
+    font-weight: bold;
     height: auto;
     line-height: 52px
 }

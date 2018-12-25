@@ -5,6 +5,7 @@ import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.AttachmentItem;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
+import com.sunnsoft.sloa.util.ConstantUtils;
 import com.sunnsoft.sloa.util.HrmMessagePushUtils;
 import com.sunnsoft.sloa.util.mail.MessageUtils;
 import com.sunnsoft.util.struts2.Results;
@@ -304,7 +305,7 @@ public class FindMailParticulars extends BaseParameter {
 							map.put("attachmentItemss", itemList);
 
 							// 判断如果是未读
-							if (receive.getMailState() == 5) {
+							if (receive.getMailState() == ConstantUtils.RECEIVE_UNREAD_STATUS) {
 								receivedStatus = true;
 								status = true;
 							}
@@ -337,8 +338,8 @@ public class FindMailParticulars extends BaseParameter {
 
 						if (status) {
 
-							receive.setMailState(6); // 表示已读
-							receive.setReceiveStatus(1); // 表示 已开封
+							receive.setMailState(ConstantUtils.RECEIVE_READ_STATUS); // 表示已读
+							receive.setReceiveStatus(ConstantUtils.RECEIVE_OPEN_STATUS); // 表示 已开封
 							receive.setOpenTime(new Date()); // 开封时间
 							// 更新
 							Services.getReceiveService().update(receive);
@@ -351,16 +352,16 @@ public class FindMailParticulars extends BaseParameter {
 
 							// 设置
 							// 修改收件人的传阅状态, 进行修改该传阅的状态 修改为 6 (表示已读) 以及进行确认传阅
-							receive.setReceiveStatus(1); // 1 表示 已开封
+							receive.setReceiveStatus(ConstantUtils.RECEIVE_OPEN_STATUS); // 1 表示 已开封
 							receive.setOpenTime(new Date()); // 记录打开传阅的时间
-							receive.setMailState(6); // 收件人的传阅筛选状态 6 表示 已读
+							receive.setMailState(ConstantUtils.RECEIVE_READ_STATUS); // 收件人的传阅筛选状态 6 表示 已读
 							receive.setIfConfirm(true); // true 表示 已确认该传阅
 							receive.setAffirmTime(new Date()); // 设置确认时间
 							receive.setRemark("传阅已确认.."); // 确认时的 确认信息
 							// 设置确认/标识
-							receive.setConfirmRecord(
-									receive.getRemark() + "  确认(" + dateToString(receive.getAffirmTime()) + ")");
-							receive.setStepStatus(1); // 修改当前收件人这边的传阅流程状态 1 表示传阅中
+//						receive.setConfirmRecord(receive.getRemark() + "  确认(" + dateToString(receive.getAffirmTime()) + ")");
+							receive.setConfirmRecord(receive.getRemark() + "  (" + dateToString(receive.getAffirmTime()) + ")");
+							receive.setStepStatus(ConstantUtils.MAIL_HALFWAY_STATUS); // 修改当前收件人这边的传阅流程状态 1 表示传阅中
 
 							// 更新
 							Services.getReceiveService().update(receive);
@@ -422,12 +423,12 @@ public class FindMailParticulars extends BaseParameter {
 								// 遍历
 								for (Receive newReceive : receives) {
 									// 设置
-									newReceive.setStepStatus(3); // 表示 已完成
+									newReceive.setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS); // 表示 已完成
 									// 更新
 									Services.getReceiveService().update(newReceive);
 								}
 								// 设置
-								newMail.setStepStatus(3); // 已发传阅 --> 表示该传阅已完成
+								newMail.setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS); // 已发传阅 --> 表示该传阅已完成
 								// 更新
 								Services.getMailService().update(newMail);
 								msg = msg + " 该传阅已完成!";

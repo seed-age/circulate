@@ -176,7 +176,7 @@
 										<tr>
 											<th><input type="checkbox" name="all-object" lay-skin="primary" lay-filter="all-object"></th>
 											<th>姓名</th>
-											<th>确认/标志</th>
+											<th>确认</th>
 											<th>发送时间</th>
 											<th>开封时间</th>
 											<th>状态</th>
@@ -200,6 +200,18 @@
 
 										<%--</tbody>--%>
 									</table>
+								</div>
+								<div class="layui-table-footer page-layout layui-clear">
+									<div class="item-box layui-form oa-read-form">
+										每页
+										<select name="item-num" lay-filter="item-num">
+											<option value="10">10</option>
+											<option value="20">20</option>
+											<option value="50">50</option>
+											<option value="100">100</option>
+										</select>
+									</div>
+									<div id="paging"></div>
 								</div>
 								<!-- <div class="obj-table-footer-height"></div> -->
 								<!-- <div class="layui-table-page">

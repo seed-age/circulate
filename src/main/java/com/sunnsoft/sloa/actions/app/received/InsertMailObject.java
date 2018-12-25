@@ -5,6 +5,7 @@ import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.sloa.db.vo.UserMssage;
+import com.sunnsoft.sloa.util.ConstantUtils;
 import com.sunnsoft.util.struts2.Results;
 import org.springframework.util.Assert;
 
@@ -58,7 +59,7 @@ public class InsertMailObject extends BaseParameter {
 				return Results.GLOBAL_FORM_JSON;
 			}
 
-			if(mail.getStepStatus() == 3){
+			if(mail.getStepStatus() == ConstantUtils.MAIL_COMPLETE_STATUS){
 				success = false;
 				msg = "已完成的传阅不能新增传阅对象";
 				code = "206";
@@ -76,15 +77,15 @@ public class InsertMailObject extends BaseParameter {
 
 			//判断该传阅的传阅对象是否超过150个人
 			//已存在的传阅对象 + 要添加的传阅对象
-			int objectCount = receivesList.size() + receiveUserId.length;
-			//得到总数后进行判断
-			if(objectCount > 150) {
-				msg = "你不是管理员,最多可以添加150个联系人!";
-				success = false;
-				code = "206";
-				json = "null";
-				return Results.GLOBAL_FORM_JSON;
-			}
+//			int objectCount = receivesList.size() + receiveUserId.length;
+//			//得到总数后进行判断
+//			if(objectCount > 150) {
+//				msg = "你不是管理员,最多可以添加150个联系人!";
+//				success = false;
+//				code = "206";
+//				json = "null";
+//				return Results.GLOBAL_FORM_JSON;
+//			}
 
 			// 进行迭代
 			Iterator<Long> it = list.iterator();
@@ -124,8 +125,11 @@ public class InsertMailObject extends BaseParameter {
 				Services.getReceiveService().createHelper().bean().create().setMail(mail).setUserId(list.get(i))
 						.setLastName(userMssage.getLastName()).setLoginId(userMssage.getLoginId())
 						.setWorkCode(userMssage.getWorkCode()).setSubcompanyName(userMssage.getFullName())
-						.setDepartmentName(userMssage.getDeptFullname()).setJoinTime(new Date()).setReceiveTime(new Date()).setReceiveStatus(0)
-						.setStepStatus(2).setMailState(5).setIfConfirm(false).setReDifferentiate(userId).insertUnique();
+						.setDepartmentName(userMssage.getDeptFullname()).setJoinTime(new Date()).setReceiveTime(new Date())
+						.setReceiveStatus(ConstantUtils.RECEIVE_NOTOPEN_STATUS)
+						.setStepStatus(ConstantUtils.RECEIVE_AWAIT_STATUS)
+						.setMailState(ConstantUtils.RECEIVE_UNREAD_STATUS)
+						.setIfConfirm(false).setReDifferentiate(userId).insertUnique();
 
 				success = true;
 				msg = "再次添加联系人成功!";

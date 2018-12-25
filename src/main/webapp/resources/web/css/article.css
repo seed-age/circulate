@@ -24,7 +24,8 @@
     overflow: hidden;
 }
 .interacts-bd{
-    font-size: 16px;
+    font-size: 14px;
+    font-weight:bold;
     color:#22262a;
     padding-bottom:20px;
     border-bottom:1px solid #e6e6ed;
@@ -91,7 +92,7 @@
     left: 0;
 }
 .oa-form-input input{
-    height: 28px;
+    height: 22px;
     padding: 4px 12px;
     font-size: 14px;
     line-height: 1.42857143;
@@ -106,8 +107,8 @@
 }
 .oa-form-input .input-addon{
     border: 0;
-    padding: 12px 12px;
-    font-size: 14px;
+    padding: 10px 12px;
+    font-size: 12px;
     font-weight: 400;
     line-height: 1;
     color: #fff;
@@ -129,7 +130,7 @@
     margin-bottom: 18px;
 }
 .oa-receive-list li{
-    font-size: 14px;
+    font-size: 12px;
 }
 .oa-receive-list li + li{
     margin-top:10px;
@@ -171,7 +172,8 @@
     margin-bottom:20px;
 }
 .oa-receive-table .table-title{
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: bold;
     padding: 20px;
     background: #f7f9fa;
 }
@@ -193,10 +195,10 @@
     background-repeat: no-repeat;
     background-position: right center;
     padding-right:24px;
-    font-size: 16px;
     cursor: pointer;
     margin-left:30px;
-
+    font-size: 14px;
+    font-weight:normal;
 }
 .oa-receive-table .title-right .annex-up{
     padding-right: 0;
@@ -244,6 +246,18 @@
     overflow-y: auto;
     margin-bottom: 0;
 }
+.oa-receive-table .layui-table-footer{
+    border-top: 1px solid #e6e6ed;
+}
+.oa-receive-table .layui-table-footer .layui-laypage{
+    margin: 10px 0 5px;
+}
+.oa-receive-table .layui-table-footer .layui-form-select dl dd.layui-this{
+    background-color: #1e90ff;
+}
+.oa-receive-table .layui-table-footer  .layui-laypage input:focus{
+    border-color: #008cd6 !important;
+}
 .obj-table-footer-height{
     height: 40px;
 }
@@ -271,8 +285,8 @@
     margin:0;
 }
 .oa-receive-table .layui-table .tab-icon{
-    width: 15px;
-    height: 15px;
+    width: 12px;
+    height: 12px;
     background-repeat: no-repeat;
     background-position: center center;
     display: inline-block;
@@ -293,11 +307,11 @@
     height: 100%;
     width: 100%;
 }
-.oa-receive-table .layui-form-checkbox[lay-skin=primary] i{
-    box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-}
+/*.oa-receive-table .layui-form-checkbox[lay-skin=primary] i{*/
+/*box-sizing: border-box;*/
+/*-webkit-box-sizing: border-box;*/
+/*-moz-box-sizing: border-box;*/
+/*}*/
 .oa-receive-table .layui-table thead tr{
     background: #fff;
 }
@@ -308,14 +322,17 @@
 .oa-receive-table .layui-table th{
     padding:11px 8px;
     border-top:1px solid #e6e6ed;
+
 }
 .oa-receive-table .layui-table th{
     color:#22262a;
     border-top:0;
-    font-size: 16px;
+    font-weight:bold;
+    font-size: 14px;
 }
 .oa-receive-table .layui-table td{
     color:#666;
+    font-size: 12px;
 }
 .oa-receive-table .layui-form-checkbox[lay-skin=primary]:hover i{
     border-color: #008cd6;

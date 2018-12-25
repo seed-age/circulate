@@ -4,6 +4,8 @@ import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
+import com.sunnsoft.sloa.util.PageUtil;
+import com.sunnsoft.util.PageUtils;
 import com.sunnsoft.util.struts2.Results;
 import org.gteam.db.helper.json.EachEntity2Map;
 import org.springframework.util.Assert;
@@ -22,17 +24,26 @@ public class FindMailObject extends BaseParameter {
 
 	private Long mailId; // 传阅ID
 	private Long userId; // 用户ID
+	private Integer page;
+	private Integer pageRows;
+
+
 
 	@Override
 	public String execute() throws Exception {
 
 		// 校验参数
 		Assert.notNull(mailId, "传阅ID不能为空!!");
+		Assert.notNull(userId, "用户ID不能为空!!");
+
+		// 默认参数
+		page = PageUtils.defaultPageNumber(page);
+		pageRows = PageUtils.defaultPageSize(pageRows);
 
 		// 根据ID查询
 		final Mail mail = Services.getMailService().findById(mailId);
 
-		json = Services.getReceiveService().createHelper().getMail().Eq(mail).json().listJson(new EachEntity2Map<Receive>() {
+		json = Services.getReceiveService().createHelper().getMail().Eq(mail).json().listPageJson(page, pageRows, new EachEntity2Map<Receive>() {
 
 			@Override
 			public void each(Receive receive, Map<String, Object> map) {
@@ -76,6 +87,7 @@ public class FindMailObject extends BaseParameter {
 				}else {
 					map.put("authority", Boolean.FALSE);
 				}
+
 			}
 		});
 
@@ -91,6 +103,22 @@ public class FindMailObject extends BaseParameter {
 			json = "null";
 			return Results.GLOBAL_FORM_JSON;
 		}
+	}
+
+	public Integer getPage() {
+		return page;
+	}
+
+	public void setPage(Integer page) {
+		this.page = page;
+	}
+
+	public Integer getPageRows() {
+		return pageRows;
+	}
+
+	public void setPageRows(Integer pageRows) {
+		this.pageRows = pageRows;
 	}
 
 	public Long getMailId() {

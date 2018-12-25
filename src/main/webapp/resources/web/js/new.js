@@ -26,6 +26,7 @@ $(document).ready(function(){
         $('.rightArea .org-branch-one').trigger('click').addClass('cur')
         $('.rightArea').off('click','.org-branch-two').on('click','.org-branch-two',function(){
             if($(this).siblings('.tree-box')[0])return;
+            console.log(132456798)
             var options = {
                 supsubcomid:$(this).data('supsubcomid'),
             }
@@ -78,7 +79,7 @@ $(document).ready(function(){
         }
         editor = new Simditor({
             textarea: $('#editor'),
-            toolbar: ['title', 'bold', 'italic', 'underline', 'strikethrough','|', 'ol', 'ul', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent'],
+            toolbar: ['title', 'bold', 'italic', 'underline', 'strikethrough','|', 'ol', 'ul',  '|', 'link', 'image', 'hr', '|', 'indent', 'outdent'],
             pasteImage: true,//支持通过从剪贴板粘贴图像来上传
             locale:'en-US',//语言
             upload :{
