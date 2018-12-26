@@ -54,7 +54,9 @@ public class HrmUtils {
             if (userMssageList.size() > 0) {
                 for (UserMssage user : userMssageList) {
                     userMssageSet.add(user); // 重复的不可以添加
-                    sb.append(user.getLastName()).append(";");
+                    if (sb != null) {
+                        sb.append(user.getLastName()).append(";");
+                    }
                 }
             }
 
@@ -114,10 +116,20 @@ public class HrmUtils {
         hrmdepartmentMap.put("type", "department");
         int countUser = 0;
         if (openType) {
+
+            countUser += (int) Services.getUserMssageService().createHelper().getDepartmentId().Eq(hrmdepartment.getId() + "")
+                    .startOr()
+                    .getStatus().Eq(ConstantUtils.OA_USER_PROBATION_STATUS)
+                    .getStatus().Eq(ConstantUtils.OA_USER_OFFICIAL_STATUS)
+                    .getStatus().Eq(ConstantUtils.OA_USER_TEMPORARY_STATUS)
+                    .getStatus().Eq(ConstantUtils.OA_USER_PROBATION_DELAY_STATUS)
+                    .stopOr()
+                    .rowCount();
+
             // 获取当前部门所属的下级部门
             List<Hrmdepartment> hrmdepartmentList = Services.getHrmdepartmentService().createHelper().getSupdepid().Eq(hrmdepartment.getId()).list();
             if (hrmdepartmentList.size() > 0) {
-                getUserCount(hrmdepartmentList, countUser);
+                countUser += getUserCount(hrmdepartmentList, countUser);
             }
         }
         hrmdepartmentMap.put("count", countUser);

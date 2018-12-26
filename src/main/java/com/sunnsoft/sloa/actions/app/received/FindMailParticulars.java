@@ -308,6 +308,39 @@ public class FindMailParticulars extends BaseParameter {
 							}
 							map.put("attachmentItemss", itemList);
 
+							List<Receive> receives = mail.getReceives();
+							List<Receive> receivesList = new ArrayList<>();
+							for (Receive receive1 : receives) {
+								// 创建接收人对象
+								Receive receivess = new Receive();
+								receivess.setReceiveId(receive1.getReceiveId()); // 收件ID
+								receivess.setUserId(receive1.getUserId()); // 接收人ID
+								receivess.setWorkCode(receive1.getWorkCode()); // 接收人工作编号
+								receivess.setLastName(receive1.getLastName()); // 接收人姓名
+								receivess.setLoginId(receive1.getLoginId()); // 接收人登录名
+								receivess.setSubcompanyName(receive1.getSubcompanyName()); // 分部全称
+								receivess.setDepartmentName(receivess.getDepartmentName()); // 部门全称
+								receivess.setReceiveTime(receive1.getReceiveTime()); // 接收时间(PS: 和传阅的发送时间一样)
+								receivess.setJoinTime(receive1.getJoinTime());
+								receivess.setReceiveStatus(receive1.getReceiveStatus());
+								receivess.setMailState(receive1.getMailState());
+								receivess.setStepStatus(receive1.getStepStatus());
+								receivess.setOpenTime(receive1.getOpenTime());
+								receivess.setIfConfirm(receive1.getIfConfirm());
+								receivess.setAffirmTime(receive1.getAffirmTime());
+								receivess.setRemark(receive1.getRemark());
+								receivess.setConfirmRecord(receive1.getConfirmRecord());
+								receivess.setSerialNum(receive1.getSerialNum());
+								receivess.setAfreshConfim(receive1.getAfreshConfim());
+								receivess.setAcRecord(receive1.getAcRecord());
+								receivess.setMhTime(receive1.getMhTime());
+								receivess.setReceiveAttention(receive1.getReceiveAttention());
+								receivess.setReDifferentiate(receive1.getReDifferentiate());
+								receivesList.add(receivess);
+
+							}
+							map.put("receivess", receivesList);
+
 							// 判断如果是未读
 							if (receive.getMailState() == ConstantUtils.RECEIVE_UNREAD_STATUS) {
 								receivedStatus = true;
@@ -519,6 +552,38 @@ public class FindMailParticulars extends BaseParameter {
 				}
 				map.put("attachmentItemss", itemList);
 
+				List<Receive> receives = mail.getReceives();
+				List<Receive> receivesList = new ArrayList<>();
+				for (Receive receive1 : receives) {
+					// 创建接收人对象
+					Receive receivess = new Receive();
+					receivess.setReceiveId(receive1.getReceiveId()); // 收件ID
+					receivess.setUserId(receive1.getUserId()); // 接收人ID
+					receivess.setWorkCode(receive1.getWorkCode()); // 接收人工作编号
+					receivess.setLastName(receive1.getLastName()); // 接收人姓名
+					receivess.setLoginId(receive1.getLoginId()); // 接收人登录名
+					receivess.setSubcompanyName(receive1.getSubcompanyName()); // 分部全称
+					receivess.setDepartmentName(receivess.getDepartmentName()); // 部门全称
+					receivess.setReceiveTime(receive1.getReceiveTime()); // 接收时间(PS: 和传阅的发送时间一样)
+					receivess.setJoinTime(receive1.getJoinTime());
+					receivess.setReceiveStatus(receive1.getReceiveStatus());
+					receivess.setMailState(receive1.getMailState());
+					receivess.setStepStatus(receive1.getStepStatus());
+					receivess.setOpenTime(receive1.getOpenTime());
+					receivess.setIfConfirm(receive1.getIfConfirm());
+					receivess.setAffirmTime(receive1.getAffirmTime());
+					receivess.setRemark(receive1.getRemark());
+					receivess.setConfirmRecord(receive1.getConfirmRecord());
+					receivess.setSerialNum(receive1.getSerialNum());
+					receivess.setAfreshConfim(receive1.getAfreshConfim());
+					receivess.setAcRecord(receive1.getAcRecord());
+					receivess.setMhTime(receive1.getMhTime());
+					receivess.setReceiveAttention(receive1.getReceiveAttention());
+					receivess.setReDifferentiate(receive1.getReDifferentiate());
+					receivesList.add(receivess);
+
+				}
+				map.put("receivess", receivesList);
 			}
 		});
 	}

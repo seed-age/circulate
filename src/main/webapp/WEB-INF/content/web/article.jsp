@@ -96,7 +96,7 @@
                             </li>   -->
 						</ul>
 						<div class="oa-import-content editor-style">
-							传阅迭代需求调研，请各各部门激励配合完成市场调研工作
+
 						</div>
 						<div class="oa-receive-table attachmentItems-tab">
 							<div class="table-title layui-clear">

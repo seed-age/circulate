@@ -4,7 +4,10 @@ import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.UserMssage;
 import com.sunnsoft.util.struts2.Results;
+import org.gteam.db.helper.json.EachEntity2Map;
 import org.springframework.util.Assert;
+
+import java.util.Map;
 
 /**
  * 新建传阅---添加联系人--点击同部门: 查询出该用户所在部门的所有人员信息.
@@ -34,7 +37,12 @@ public class FindHrmSameDepartment extends BaseParameter {
 
 		// 根据该用户所在的部门ID 和 部门名称, 查询出该用户同一个部门的所有人员信息
 		json = Services.getUserMssageService().createHelper().getDepartmentId().Eq(departmentId).getDeptFullname()
-				.Eq(deptFullname).getStatus().Le("3").json().listJson();
+				.Eq(deptFullname).getStatus().Le("3").json().listJson(new EachEntity2Map<UserMssage>() {
+					@Override
+					public void each(UserMssage userMssage, Map<String, Object> map) {
+						map.put("type", "userMssage");
+					}
+				});
 
 		success = true;
 		code = "200";

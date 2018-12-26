@@ -197,7 +197,7 @@ html,body{
 .dialog-contacts .contacts-nav li.active{
     background: #fff;
     border-bottom: transparent;
-    font-size: 14px;
+    font-size: 12px;
     color:#008cd6;
 }
 .dialog-contacts .oa-form-input input {
@@ -330,6 +330,10 @@ html,body{
     padding: 8px;
     box-sizing: border-box;
     font-size: 12px;
+}
+.dialog-contacts .contacts-table td .layui-icon-home,
+.dialog-contacts .contacts-table td .layui-icon-file{
+    font-size: 20px;
 }
 .dialog-contacts .contacts-table td input[name="contacts-choice"]{
     display: none;

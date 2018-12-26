@@ -4,6 +4,7 @@ import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
+import com.sunnsoft.sloa.util.ConstantUtils;
 import com.sunnsoft.util.struts2.Results;
 import org.springframework.util.Assert;
 
@@ -11,8 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 已发传阅(APP端)---点击删除: 批量删除传阅(逻辑删除)
- * 
+ * 已发传阅(web端)---点击删除: 批量删除传阅(逻辑删除)
+ *
  * @author chenjian
  *
  */
@@ -21,7 +22,7 @@ public class DeleteMail extends BaseParameter {
 	private static final long serialVersionUID = 1L;
 
 	private long userId; // 用户ID
-	private long[] mailId; // 传阅ID(因为要批量操作,用数组)
+	private Long[] mailId; // 传阅ID(因为要批量操作,用数组)
 
 	@Override
 	public String execute() throws Exception {
@@ -38,16 +39,26 @@ public class DeleteMail extends BaseParameter {
 			return Results.GLOBAL_FORM_JSON;
 		}
 
-		// 遍历数组
-		for (int i = 0; i < mailId.length; i++) {
-			// 查询数据, 并修改状态
-			Mail mail = Services.getMailService().findById(mailId[i]);
+		List<Mail> mailList = Services.getMailService().findByIds(mailId);
+		for (Mail mail : mailList) {
 
+			if(mail.getStepStatus() == ConstantUtils.MAIL_COMPLETE_STATUS){ // 如果传阅状态为3(已完成) 则跳过本次循环, 不能删除.
+				continue;
+			}
 			// 判断
-			if (mail.getUserId() == userId) {
+			if (mail.getUserId() == userId && mail.getStepStatus() != ConstantUtils.MAIL_COMPLETE_STATUS) { // 只有ID相同 和 传阅状态不为 已完成的 传阅才可以被删除
 
+				// 更改需求: 一封传阅中  只要有一个传阅对象确认传阅后  就不可以删除.  那发起人也是不可以对这封传阅进行删除操作.
+				List<Receive> receiveList = mail.getReceives();
+				for (Receive receive : receiveList) {
+					if(receive.getIfConfirm()){
+						success = false;
+						msg = "有确认过的传阅不可删除";
+						return Results.GLOBAL_FAILURE_JSON;
+					}
+				}
 				// 修改状态
-				mail.setStatus(7); // 7 表示已删除
+				mail.setStatus(ConstantUtils.MAIL_DELETE_STATUS); // 7 表示已删除
 				//设置删除时间
 				mail.setDeleteTime(new Date());
 				// 更新
@@ -63,7 +74,7 @@ public class DeleteMail extends BaseParameter {
 				success = true;
 				msg = "删除成功!";
 				code = "200";
-			} else {
+			}else {
 				success = false;
 				msg = "删除失败!";
 				code = "500";
@@ -87,12 +98,11 @@ public class DeleteMail extends BaseParameter {
 		this.userId = userId;
 	}
 
-	public long[] getMailId() {
+	public Long[] getMailId() {
 		return mailId;
 	}
 
-	public void setMailId(long[] mailId) {
+	public void setMailId(Long[] mailId) {
 		this.mailId = mailId;
 	}
-
 }

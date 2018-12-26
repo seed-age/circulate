@@ -56,6 +56,7 @@
     /*padding-left: 38px;*/
     max-height: 162px;
     overflow: auto;
+    padding-right: 40px;
     /* background:#fff url(../images/search-icon.png) no-repeat left center;  */
 }
 .table-input .add-search{
@@ -95,7 +96,7 @@
     border-left: 1px solid #e6e6e6;
     padding-left: 2px;
     margin-left: 5px;
-    line-height: .8;
+    line-height: 0.2;
     vertical-align: middle;
 }
 

@@ -38,7 +38,8 @@ public class FindLatelyHrm extends BaseParameter {
 //		String SQL = "SELECT r.user_id FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.last_name";
 //		List<Map<String, Object>> mapList = jdbcTemplate.queryForList(SQL);
 
-		String SQL1 = "SELECT DISTINCT r.user_id userId, r.department_name departmentName, r.subcompany_name fullName, r.last_name lastName FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.user_id ORDER BY r.receive_time DESC;";
+//		String SQL1 = "SELECT DISTINCT r.user_id userId, r.department_name departmentName, r.subcompany_name fullName, r.last_name lastName FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.user_id ORDER BY r.receive_time DESC;";
+		String SQL1 = "SELECT DISTINCT r.user_id userId, (select u.department_id from user_mssage_tbl u where u.user_id = r.user_id)departmentId, r.department_name departmentName, r.subcompany_name fullName, r.last_name lastName, r.receive_time receiveTime, 'userMssage' as type FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.user_id, r.department_name, r.subcompany_name, r.last_name, r.receive_time ORDER BY r.receive_time DESC LIMIT 0, 200;";
 		List<Map<String, Object>> mapList1 = jdbcTemplate.queryForList(SQL1);
 //		System.out.println(JSONObject.toJSONString(mapList1));
 //

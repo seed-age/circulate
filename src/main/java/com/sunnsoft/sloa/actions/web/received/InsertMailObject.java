@@ -2,11 +2,14 @@ package com.sunnsoft.sloa.actions.web.received;
 
 import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
-import com.sunnsoft.sloa.db.vo.Mail;
-import com.sunnsoft.sloa.db.vo.Receive;
-import com.sunnsoft.sloa.db.vo.UserMssage;
+import com.sunnsoft.sloa.db.vo.*;
+import com.sunnsoft.sloa.helper.ReceiveBean;
 import com.sunnsoft.sloa.util.ConstantUtils;
+import com.sunnsoft.sloa.util.HrmUtils;
 import com.sunnsoft.util.struts2.Results;
+import org.apache.log4j.Logger;
+import org.gteam.db.dao.TransactionalCallBack;
+import org.gteam.service.IService;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -20,20 +23,44 @@ import java.util.*;
 public class InsertMailObject extends BaseParameter {
 
 	private static final long serialVersionUID = 1L;
+	private static final Logger LOGGER = Logger.getLogger(InsertMailObject.class);
 
 	private Long userId; // 用户ID
 	private Long mailId; // 传阅ID
 
-	/** 该参数接收从前端页面传过来的接收人参数 */
-	private Long[] receiveUserId; // 收件人id
+	private Integer userTotal = 0; // 0 不是  1 表示添加整个组织架构
+	private Integer[] subcompanyIds; // 分部Ids
+	private Integer[] departmentIds; // 部门Ids
+	private Integer[] receiveUserIds; // 收件人ids
 
 	@Override
 	public String execute() throws Exception {
+		String result = null ;
+		try {
+			result = (String)Services.getReceiveService().executeTransactional(new TransactionalCallBack() {
 
+				@Override
+				public Object execute(IService arg0) {
+					LOGGER.warn("开启事物了....");
+					return doInsertMailObject();
+				}
+			});
+		} catch (Exception e) {
+			LOGGER.warn("事物回滚了.....");
+			msg = this.msg;
+			success = false;
+			code = "404";
+			json = "null";
+			return Results.GLOBAL_FORM_JSON;
+		}
+		return result;
+
+	}
+
+	private String doInsertMailObject() {
 		// 校验参数
 		Assert.notNull(userId, "用户ID不能为空");
 		Assert.notNull(mailId, "传阅ID不能为空");
-		Assert.notNull(receiveUserId, "接收人ID不能为空");
 
 		try {
 			// 根据传阅ID查询数据
@@ -73,77 +100,139 @@ public class InsertMailObject extends BaseParameter {
 				return Results.GLOBAL_FORM_JSON;
 			}
 
-			// 创建list集合, 用于存储userId.
-			List<Long> list = new ArrayList<Long>(receiveUserId.length);
-			// 把数组中的数据添加到集合中
-			Collections.addAll(list, receiveUserId);
+			// 把接收人的名称拼接成一个字符串
+			Set<UserMssage> userMssageSet = new HashSet<>();
+			try {
 
-			// 获取接收人的数据
-			List<Receive> receivesList = mail.getReceives();
-
-			//判断该传阅的传阅对象是否超过150个人
-			//已存在的传阅对象 + 要添加的传阅对象
-//			int objectCount = receivesList.size() + receiveUserId.length;
-			//得到总数后进行判断
-//			if(objectCount > 150) {
-//				msg = "你不是管理员,最多可以添加150个联系人!";
-//				success = false;
-//				code = "206";
-//				json = "null";
-//				return Results.GLOBAL_FORM_JSON;
-//			}
-
-			String receiveLastName = "";
-			// 进行迭代
-			Iterator<Long> it = list.iterator();
-			while (it.hasNext()) {
-				Long next = it.next();
-				// 遍历接收人集合
-				for (Receive receive : receivesList) {
-					// 取出接收人userId, 进行判断
-					if (next.equals(receive.getUserId())) {
-						// 如果相同, 就把这个元素删除
-						it.remove();
-						receiveLastName += receive.getLastName() + ", ";
+				if (subcompanyIds != null) { // 不为 null, 表示添加了分部
+					// 根据分部ID查询信息
+					List<Hrmsubcompany> hrmsubcompanyList = Services.getHrmsubcompanyService().findByIds(subcompanyIds);
+					for (Hrmsubcompany hrmsubcompany : hrmsubcompanyList) {
+						HrmUtils.getSubcompanyUserMssage(hrmsubcompany.getId(), null, userMssageSet, null);
 					}
-				}
-			}
+				}else if(departmentIds != null){
 
-			int size = list.size();
-			if (size == 0) {
-				receiveLastName = receiveLastName.substring(0, receiveLastName.length() - 2);
-				success = true;
-				msg = "该联系人 " + receiveLastName + " 已经是传阅对象了!";
-				code = "404";
+					List<Hrmdepartment> hrmdepartmentList = Services.getHrmdepartmentService().findByIds(departmentIds);
+					HrmUtils.getSubcompanyUserMssage(null, hrmdepartmentList, userMssageSet, null);
+
+				}else if(receiveUserIds != null) {
+
+					// 查询接收人信息
+					List<UserMssage> userMssages  = Services.getUserMssageService().createHelper().getUserId().In(receiveUserIds)
+							.list();
+
+					for (UserMssage userMssage : userMssages) {
+						userMssageSet.add(userMssage);
+					}
+
+
+				}else  if (userTotal == 1) { // 表示整个组织架构
+					List<UserMssage> mssageList = Services.getUserMssageService().createHelper().startOr().getStatus().Eq(ConstantUtils.OA_USER_PROBATION_STATUS)
+							.getStatus().Eq(ConstantUtils.OA_USER_OFFICIAL_STATUS).getStatus().Eq(ConstantUtils.OA_USER_TEMPORARY_STATUS)
+							.getStatus().Eq(ConstantUtils.OA_USER_PROBATION_DELAY_STATUS)
+							.stopOr().list();
+					for (UserMssage userMssage : mssageList) {
+						userMssageSet.add(userMssage);
+					}
+
+				}else {
+					msg = "请选择联系人!";
+					success = false;
+					code = "205";
+					json = "null";
+					return Results.GLOBAL_FORM_JSON;
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				msg = "请添加存在的联系人!";
+				success = false;
+				code = "205";
 				json = "null";
 				return Results.GLOBAL_FORM_JSON;
 			}
+
+
+
+			// 创建list集合, 用于存储user
+			List<UserMssage> list = new ArrayList<>(userMssageSet);
+			// 获取接收人的数据
+			List<Receive> receivesList = mail.getReceives();
+			if (userTotal == 0) {
+
+				String receiveLastName = "";
+				// 进行迭代
+				Iterator<UserMssage> it = list.iterator();
+				while (it.hasNext()) {
+					UserMssage next = it.next();
+					// 遍历接收人集合
+					for (Receive receive : receivesList) {
+						// 取出接收人userId, 进行判断
+						if (next.getUserId() == receive.getUserId()) {
+							// 如果相同, 就把这个元素删除
+							it.remove();
+							receiveLastName += receive.getLastName() + ", ";
+						}
+					}
+				}
+
+				int size = list.size();
+				if (size == 0) {
+					receiveLastName = receiveLastName.substring(0, receiveLastName.length() - 2);
+					success = true;
+					msg = "该联系人 " + receiveLastName + " 已经是传阅对象了!";
+					code = "404";
+					json = "null";
+					return Results.GLOBAL_FORM_JSON;
+				}
+			}else if(userTotal == 1){
+				// 如果是添加整个组织架构, 则删除原有的接收人.
+				Services.getReceiveService().deleteList(receivesList);
+			}
+
+
+			Assert.notNull(list, "接收人ID不能为空");
+
+
 			// 拼接字符串
 			StringBuilder sb = new StringBuilder();
 
 			// 定义一个标记
 			boolean res = false;
 			// 添加新的收件人
-			for (int i = 0; i < list.size(); i++) {
+			int num = 0;
+			ReceiveBean bean = Services.getReceiveService().createHelper().bean();
+			for (UserMssage userMssage : list) {
 
-				// 根据ID查询用户信息
-				UserMssage userMssage = Services.getUserMssageService().createHelper().getUserId()
-						.Eq(list.get(i).intValue()).uniqueResult();
+				try {
+					// 新增收件人记录
+					bean.create().setMail(mail).setUserId(userMssage.getUserId())
+							.setLastName(userMssage.getLastName()).setLoginId(userMssage.getLoginId())
+							.setWorkCode(userMssage.getWorkCode()).setSubcompanyName(userMssage.getFullName())
+							.setDepartmentName(userMssage.getDeptFullname()).setJoinTime(new Date()).setReceiveTime(new Date())
+							.setReceiveStatus(ConstantUtils.RECEIVE_NOTOPEN_STATUS)
+							.setStepStatus(ConstantUtils.RECEIVE_AWAIT_STATUS).setMailState(ConstantUtils.RECEIVE_UNREAD_STATUS)
+							.setIfConfirm(false).setReDifferentiate(userId);
 
-				// 新增收件人记录
-				Services.getReceiveService().createHelper().bean().create().setMail(mail).setUserId(list.get(i))
-						.setLastName(userMssage.getLastName()).setLoginId(userMssage.getLoginId())
-						.setWorkCode(userMssage.getWorkCode()).setSubcompanyName(userMssage.getFullName())
-						.setDepartmentName(userMssage.getDeptFullname()).setJoinTime(new Date()).setReceiveTime(new Date())
-						.setReceiveStatus(ConstantUtils.RECEIVE_NOTOPEN_STATUS)
-						.setStepStatus(ConstantUtils.RECEIVE_AWAIT_STATUS).setMailState(ConstantUtils.RECEIVE_UNREAD_STATUS)
-						.setIfConfirm(false).setReDifferentiate(userId).insertUnique();
-
-				success = true;
-				msg = "再次添加联系人成功!";
+					if (num == 100) {
+						LOGGER.warn("传阅详情 -- 开始新增接收人数据:::::::::: 一次一百条.");
+						bean.insert();
+						LOGGER.warn("传阅详情 -- 新增后, 进行睡眠 两秒:::::::::::::::::::");
+						Thread.sleep(2000);
+						bean = Services.getReceiveService().createHelper().bean();
+						num = 0;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
 				sb.append(";").append(userMssage.getLastName());
 				res = true;
+			}
+
+			if (num < 100) {
+				LOGGER.warn("传阅详情 --  一次性新增 " + num + "条接收人数据!");
+				bean.insert();
 			}
 
 			if (res) { // true 表示联系人增加成功
@@ -169,13 +258,16 @@ public class InsertMailObject extends BaseParameter {
 
 				String allReceiveName = mail.getAllReceiveName();
 				String allName = sb.toString();
-				// 设置
 				mail.setAllReceiveName(allReceiveName + allName);
-				// 更新
+				if(userTotal == 1){
+					mail.setAllReceiveName(allName);
+				}
 				Services.getMailService().update(mail);
 
 				code = "200";
 				json = "null";
+				success = true;
+				msg = this.msg != null ? this.msg : "再次添加联系人成功!";
 				return Results.GLOBAL_FORM_JSON;
 			}
 		} catch (Exception e) {
@@ -209,12 +301,35 @@ public class InsertMailObject extends BaseParameter {
 		this.mailId = mailId;
 	}
 
-	public Long[] getReceiveUserId() {
-		return receiveUserId;
+	public Integer getUserTotal() {
+		return userTotal;
 	}
 
-	public void setReceiveUserId(Long[] receiveUserId) {
-		this.receiveUserId = receiveUserId;
+	public void setUserTotal(Integer userTotal) {
+		this.userTotal = userTotal;
 	}
 
+	public Integer[] getSubcompanyIds() {
+		return subcompanyIds;
+	}
+
+	public void setSubcompanyIds(Integer[] subcompanyIds) {
+		this.subcompanyIds = subcompanyIds;
+	}
+
+	public Integer[] getDepartmentIds() {
+		return departmentIds;
+	}
+
+	public void setDepartmentIds(Integer[] departmentIds) {
+		this.departmentIds = departmentIds;
+	}
+
+	public Integer[] getReceiveUserIds() {
+		return receiveUserIds;
+	}
+
+	public void setReceiveUserIds(Integer[] receiveUserIds) {
+		this.receiveUserIds = receiveUserIds;
+	}
 }

@@ -149,22 +149,37 @@ $(document).ready(function(){
                     var allCheckedArr = $('.contacts-box-r .contacts-table-outer table tr').find('input[name="contacts-choice"]');
                     var beLi = $('.table-input .mf_container .mf_list li').children('input');
                     var receiveTag = $('.table-input .mf_container .mf_list');
-                    var numArr = [];
+                    // var numArr = [];
                     var newArr = [];
+                    var userTotalArr =  [];
+                    var subcompanyArr = [];
+                    var departmentArr = [];
+                    var receiveArr = [];
                     for(var i=0;i<beLi.length;i++){
-                        numArr.push($(beLi[i]).data('userid'));
+                        receiveArr.push($(beLi[i]).data('userid'));
                     };
                     for(var j=0;j<allCheckedArr.length;j++){
-                        if(numArr.indexOf($(allCheckedArr[j]).data('receiveuserid')) == -1){
+                        if(receiveArr.indexOf($(allCheckedArr[j]).data('receiveuserid')) == -1){
                             newArr.push(allCheckedArr[j])
                         }
-
                     }
                     var liHTML = '';
                     for(var k=0;k<newArr.length;k++){
-                        liHTML += '<li class="mf_item" role="option" aria-selected="false">'+$(newArr[k]).data('receivelastname')+'';
+                        liHTML += '<li class="mf_item" role="option" aria-selected="false">';
+                        liHTML +=      $(newArr[k]).data('receivelastname');
+                        if($(newArr[k]).data('type') === 'usertotal'){
+                            liHTML +=      $(newArr[k]).data('count');
+                            liHTML += '    <input type="hidden" class="mf_value" data-type="'+$(newArr[k]).data('type')+'" data-usertotal="'+$(newArr[k]).data('usertotal')+'">';
+                        }else if($(newArr[k]).data('type') === 'department'){
+                            liHTML +=      $(newArr[k]).data('count');
+                            liHTML += '    <input type="hidden" class="mf_value" data-type="'+$(newArr[k]).data('type')+'" data-departmentid="'+$(newArr[k]).data('departmentid')+'">';
+                        }else if($(newArr[k]).data('type') === 'subcompany'){
+                            liHTML +=      $(newArr[k]).data('count');
+                            liHTML += '    <input type="hidden" class="mf_value" data-type="'+$(newArr[k]).data('type')+'" data-supsubcomid="'+$(newArr[k]).data('supsubcomid')+'">';
+                        }else{
+                            liHTML += '    <input type="hidden" class="mf_value" data-type="'+$(newArr[k]).data('type')+'" data-userid="'+$(newArr[k]).data('receiveuserid')+'">';
+                        }
                         liHTML += '    <a href="#" class="mf_remove layui-icon" title="删除">&#x1006;</a>';
-                        liHTML += '    <input type="hidden" class="mf_value" data-userid="'+$(newArr[k]).data('receiveuserid')+'">';
                         liHTML += '</li>';
                     };
                     receiveTag.append(liHTML);
@@ -517,7 +532,11 @@ function sendData(flg){
         // subcompanyName:'武当山',//发件人公司
         // departmentName:'技术部',//发件人部门
         title:'',//主题
+        userTotal:0,//组织架构
+        subcompanyIds:[],//分部Ids
+        departmentIds:[],//部们Ids
         receiveUserId:[],//收件人id
+
         // receiveWorkCode:[],//收件人工作编号
         // receiveLastName:[],//收件人名称
         // receiveLoginId:[],//收件人登录名
@@ -554,7 +573,15 @@ function sendData(flg){
     // 获取发送人信息
     if(mf_value){
         for(var i=0;i<mf_value.length;i++){
-            params.receiveUserId.push($(mf_value[i]).data('userid'));
+            if($(mf_value[i]).data('type') === 'usertotal'){
+                params.userTotal = $(mf_value[i]).data('usertotal');
+            }else if($(mf_value[i]).data('type') === 'subcompany'){
+                params.subcompanyIds.push($(mf_value[i]).data('supsubcomid'))
+            }else if($(mf_value[i]).data('type') === 'department'){
+                params.departmentIds.push($(mf_value[i]).data('departmentid'))
+            }else{
+                params.receiveUserId.push($(mf_value[i]).data('userid'));
+            }
         };
     }
     // 判断主题是否为空

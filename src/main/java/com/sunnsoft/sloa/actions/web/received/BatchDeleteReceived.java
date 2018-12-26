@@ -37,6 +37,15 @@ public class BatchDeleteReceived extends BaseParameter {
 
 		// 根据传阅ID查询
 		Mail mail = Services.getMailService().createHelper().getMailId().Eq(mailId).uniqueResult();
+		List<Receive> ress = mail.getReceives();
+		if (ress .size() == 1) {
+			success = false;
+			code = "404";
+			msg = "传阅对象只有一个用户时, 不允许删除";
+			json = "null";
+			return Results.GLOBAL_FORM_JSON;
+		}
+		Receive lastReceive = ress.get(ress.size() - 1);
 		try {
 
 			// 遍历收件人数组
@@ -49,8 +58,13 @@ public class BatchDeleteReceived extends BaseParameter {
 				// 获取要删除的传阅是谁添加的
 				Long reDifferentiate = receive.getReDifferentiate();
 
+				if (lastReceive.getUserId() == receive.getUserId()){
+					continue;
+				}
+
 				// 判断 删除传阅对象, 有两种情况 : 一. 是发件人可以删除所有的传阅对象 , 二是 谁添加该传阅对象 谁才有权限删除
 				if (reDifferentiate.equals(userId) || mail.getUserId() == userId) {
+
 					// 执行删除
 					Services.getReceiveService().delete(receive);
 

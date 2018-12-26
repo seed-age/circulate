@@ -77,7 +77,7 @@
 								<div class="layui-tab-item layui-show">
 									<ul class="contact-tree">
 										<li>
-											<div class="tree-branch org-branch-one">
+											<div class="tree-branch org-branch-one" data-lastname="组织架构" data-departmentid="0">
 												<img class="tree-icon icon-up" src="/resources/web/images/contact-icon01.png" alt="">
 												<img class="tree-icon icon-down" src="/resources/web/images/contact-icon02.png" alt=""> 组织架构
 											</div>

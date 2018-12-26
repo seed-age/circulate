@@ -122,19 +122,48 @@ layui.use(['element','laypage','table','form','layer','jquery'], function(){
             window.location.href = 'http://sso-test.seedland.cc/pactera_sso_localmodel_exit.axd';
         },200)
     });
+    $('.contacts-content').off('click','.org-branch-one').on('click','.org-branch-one',function(){
+        if($(this).siblings('.tree-box')[0])return;
+        if($(this).hasClass('layui-disabled'))return;
+        $.getContact(this,{openType:true},'article')
+    });
     $('.contacts-content').off('click','.org-branch-two').on('click','.org-branch-two',function(){
         if($(this).siblings('.tree-box')[0])return;
         var options = {
             supsubcomid:$(this).data('supsubcomid'),
+            openType:true
         }
-        $.getContact(this,options,'article')
+        var flag = true;
+        var departmentArr = $('.dialog-contacts .contacts-box-r .contacts-table').find('[data-supsubcomid]');
+        for(var i=0;i<departmentArr.length;i++){
+            var dom = $(departmentArr[i]);
+            if(dom.data('supsubcomid') === $(this).data('supsubcomid') && dom.data('type') === $(this).data('type')){
+                flag = false;
+                return;
+            }
+        }
+        if(flag){
+            $.getContact(this,options,'article')
+        }
     })
     $('.contacts-content').off('click','.org-branch-three').on('click','.org-branch-three',function(){
         if($(this).siblings('.tree-box')[0])return;
         var options = {
             departmentid:$(this).data('departmentid'),
+            openType:true
+        };
+        var flag = true;
+        var departmentArr = $('.dialog-contacts .contacts-box-r .contacts-table').find('[data-departmentid]');
+        for(var i=0;i<departmentArr.length;i++){
+            var dom = $(departmentArr[i]);
+            if(dom.data('departmentid') === $(this).data('departmentid') && dom.data('type') === $(this).data('type')){
+                flag = false;
+                return;
+            }
         }
-        $.getContact(this,options,'article')
+        if(flag){
+            $.getContact(this,options,'article')
+        }
     })
     $('.contacts-content').off('click','.org-branch-personnel').on('click','.org-branch-personnel',function(){
         addLight(this);
@@ -369,7 +398,7 @@ function delAttachment(options){
 };
 // 封装联系人接口
 function getContactData(options){
-    options.params.openType = true;
+    options.params.openType = false;
     $.ajax({
         type:'post',
         url:'/web/hr/hr-framework-tree.htm',
@@ -428,7 +457,7 @@ jQuery.extend({
                 for(var i=0;i<data.length;i++){
                     tableHTML += '		<tr>';
                     tableHTML += '			<td style="width:50px;text-align:center;">';
-                    tableHTML += '				<input name="contacts-choice" data-receiveUserId="'+data[i].userId+'" data-receiveLastName="'+data[i].lastName+'" data-departmentId="'+data[i].departmentId+'" type="checkbox" class="contacts-table-input">';
+                    tableHTML += '				<input name="contacts-choice" data-type="'+data[i].type+'" data-receiveUserId="'+data[i].userId+'" data-receiveLastName="'+data[i].lastName+'" data-departmentId="'+data[i].departmentId+'" type="checkbox" class="contacts-table-input">';
                     tableHTML += '				<img src="/resources/web/images/head-icon.png" alt="">';
                     tableHTML += '			</td>';
                     tableHTML += '			<td style="color:#22262a;">';
@@ -458,35 +487,49 @@ jQuery.extend({
         // 右箭头点击
         $('body').off('click').on('click','.dialog-contacts .contacts-box-c .single-r',function(){
             var electArr;
-            var tree = $('.contacts-box-l .contact-tree .tree-box .tree-branch.active');
+            var tree = $('.contacts-box-l .contact-tree .tree-branch.active');
             if(tree.length != 0){
                 if(tree.data('userid') === undefined){
-                    electArr = tree.siblings().children().find('[data-userid]');
+                    // electArr = tree.siblings().children().find('[data-userid]');
+                    if(tree.hasClass('layui-disabled'))return layer.msg('已添加',{time: 1000});
+                    addRightTr(tree,'.contacts-box-r .contacts-table-outer table tbody','right');
+                    tree.addClass('layui-disabled')
+                    tree.siblings().remove();
                 }else{
                     electArr = tree;
                 }
             }else{
                 electArr = $('.contacts-box-l .contacts-table-outer table tr').find('input[name="contacts-choice"]:checked');
             };
-            addRightTr(electArr,'.contacts-box-r .contacts-table-outer table tbody');
-            tree.length!=0?treeUniq('left'):repetition('left');
+            addRightTr(electArr,'.contacts-box-r .contacts-table-outer table tbody','right');
             leftArrow();
+            tree.length!=0?treeUniq('left'):repetition('left');
             rightArrow();
             allrightArrow();
             trItemSize();
             allLeftArrow();
+            $('.dialog-contacts .contacts-box-c .single-r').removeClass('active').addClass('layui-disabled');
         });
 
         // 左箭头点击
+        // 克隆
         // $('.dialog-contacts').on('click',function(){alert(1)})
         $('.dialog-contacts').off('click','.contacts-box-c .single-l').on('click','.contacts-box-c .single-l',function(){
             var isTree = $('.contacts-table-outer .contact-tree').length;
-            var electArr = $('.contacts-box-r .contacts-table-outer table tr').find('input[name="contacts-choice"]:checked');
-            if(isTree>0){
+            var electArr = $('.contacts-box-r .contacts-table-outer table tr').find('input[name="contacts-choice"]:checked') || [];
+            var subcompanyArr = $('.contacts-box-r .contacts-table-outer table tr.active').find('[data-type="subcompany"]') || [];
+            var departmentArr = $('.contacts-box-r .contacts-table-outer table tr.active').find('[data-type="department"]') || [];
+            if(isTree>0 || subcompanyArr.length>0 || departmentArr.length>0){
+                for(var i=0;i<subcompanyArr.length;i++){
+                    electArr.push(subcompanyArr[i])
+                }
+                for(var j=0;j<departmentArr.length;j++){
+                    electArr.push(departmentArr[j])
+                }
                 addLeftTree(electArr);
                 treeUniq('right');
             }else{
-                addRightTr(electArr,'.contacts-box-l .contacts-table-outer table tbody');
+                addRightTr(electArr,'.contacts-box-l .contacts-table-outer table tbody','left');
                 repetition('right');
             }
             leftArrow();
@@ -494,11 +537,12 @@ jQuery.extend({
             allLeftArrow();
             allrightArrow();
             trItemSize();
+            isTree>0 && $('.dialog-contacts .contacts-box-c .single-r').removeClass('layui-disabled').addClass('active');
         });
         // 选择全部的左箭头
         $('.dialog-contacts').off('click','.contacts-box-c .entire-l').on('click','.contacts-box-c .entire-l',function(){
             var allCheckedArr = $('.contacts-box-l .contacts-table-outer table tr').find('input[name="contacts-choice"]');
-            addRightTr(allCheckedArr,'.contacts-box-r .contacts-table-outer table tbody');
+            addRightTr(allCheckedArr,'.contacts-box-r .contacts-table-outer table tbody','right');
             repetition('left');
             leftArrow();
             rightArrow();
@@ -516,27 +560,17 @@ jQuery.extend({
                 // $.organization();
                 // $('.contacts-box-r .contacts-table-outer table tbody').html('');
             }else{
-                addRightTr(allCheckedArr,'.contacts-box-l .contacts-table-outer table tbody');
+                addRightTr(allCheckedArr,'.contacts-box-l .contacts-table-outer table tbody','left');
                 repetition('right');
+
             };
             leftArrow();
             rightArrow();
             allLeftArrow();
             allrightArrow();
             trItemSize();
+            isTree>0 && $('.dialog-contacts .contacts-box-c .single-r').removeClass('layui-disabled').addClass('active');
         });
-
-
-
-        // contactsData({
-        // 	url:'/web/createmail/find-lately-hrm.htm',
-        // 	params:{
-        // 		userId:$.session.get('userId')
-        // 	},
-        // 	render:function(data){
-        // 		contactsHTML(data);
-        // 	}
-        // });
 
         // 右边按钮搜索
         $('#have-search').on('keyup',function(e){
@@ -553,7 +587,7 @@ jQuery.extend({
         });
         $('.contacts-box-l').off("dblclick",".contacts-table-outer table tr").on("dblclick",".contacts-table-outer table tr",function(){
             var singleChoice = $(this).find('input[name="contacts-choice"]');
-            addRightTr(singleChoice,'.contacts-box-r .contacts-table-outer table tbody');
+            addRightTr(singleChoice,'.contacts-box-r .contacts-table-outer table tbody','right');
             repetition('left');
             leftArrow();
             rightArrow();
@@ -578,7 +612,7 @@ jQuery.extend({
                 addLeftTree(singleChoice);
                 treeUniq('right');
             }else{
-                addRightTr(singleChoice,'.contacts-box-l .contacts-table-outer table tbody');
+                addRightTr(singleChoice,'.contacts-box-l .contacts-table-outer table tbody','left');
                 repetition('right');
             }
             leftArrow();
@@ -626,6 +660,9 @@ jQuery.extend({
             firstNum = $(this).index();
             $('#contacts_search').val('');
             leftArrow();
+            if($(this).data('group')=== '组织结构'){
+                $('.dialog-contacts .contacts-box-c .single-r').removeClass('layui-disabled').addClass('active');
+            }
         });
         $('.dialog-contacts .contacts-nav li').first().trigger('click');
         // 搜索按钮
@@ -669,15 +706,21 @@ jQuery.extend({
             }
         });
         // 部门按钮
-        $(document).off('click','.dialog-contacts .org-branch-three').on('click','.dialog-contacts .org-branch-three',function(){
+        $(document).off('click','.dialog-contacts .tree-branch').on('click','.dialog-contacts .tree-branch:not(.org-branch-personnel)',function(){
             $(this).parents('.contact-tree').find('.org-branch-three').removeClass('active');
+            $('.dialog-contacts .tree-branch').removeClass('active');
+            if(!$(this).hasClass('layui-disabled')){
+                $('.dialog-contacts .contacts-box-c .single-r').removeClass('layui-disabled').addClass('active');
+            }else{
+                $('.dialog-contacts .contacts-box-c .single-r').removeClass('active').addClass('layui-disabled');
+            }
             $(this).addClass('active');
-            leftArrow();
+            // leftArrow();
         });
         // 组织架构的人双击
         $(document).off('dblclick','.dialog-contacts .org-branch-personnel').on('dblclick','.dialog-contacts .org-branch-personnel',function(){
             var singleChoice = $(this);
-            addRightTr(singleChoice,'.contacts-box-r .contacts-table-outer table tbody');
+            addRightTr(singleChoice,'.contacts-box-r .contacts-table-outer table tbody','right');
             treeUniq('left');
             leftArrow();
             allrightArrow();
@@ -688,7 +731,7 @@ jQuery.extend({
         var ulHTML = '';
         ulHTML += '<ul class="contact-tree">';
         ulHTML += '	<li>';
-        ulHTML += '		<div class="tree-branch org-branch-one">';
+        ulHTML += '		<div class="tree-branch org-branch-one" data-type="usertotal" data-lastname="组织架构" data-usertotal="1">';
         ulHTML += '			<img class="tree-icon icon-up" src="/resources/web/images/contact-icon01.png" alt="">';
         ulHTML += '			<img class="tree-icon icon-down" src="/resources/web/images/contact-icon02.png" alt="">';
         ulHTML += '			组织架构';
@@ -698,15 +741,20 @@ jQuery.extend({
         $('.contacts-box-l .contacts-table-outer').html(ulHTML);
         // 公司分部
         $('.dialog-contacts .org-branch-one').one('click',function(){
-            $.getContact(this,{},'article')
+            if($('.dialog-contacts .contacts-box-r .contacts-table-outer').find('[data-type="usertotal"]').length){
+                $('.dialog-contacts .contacts-box-c .single-r').removeClass('active').addClass('layui-disabled');
+                $(this).addClass('layui-disabled');
+                return false;
+            }
+            $.getContact(this,{openType:true},'article')
             // $.getContact({id:this},'article');
         });
-        $('.dialog-contacts .org-branch-one').trigger('click').addClass('cur')
+        $('.dialog-contacts .org-branch-one').trigger('click').addClass('cur');
+
     },
     getContact : function (_this,options,type){
         var $self = $(_this);
         var getContactDataMsg;
-
         getContactData({
             params:options,
             before:function(){
@@ -730,72 +778,32 @@ jQuery.extend({
                 }
                 if(res.code === '200'){
                     var data = res.data;
+                    var count = 0;
                     var ul = '';
                     ul += '<ul class="tree-box">';
                     for(var i=0;i<data.length;i++){
                         if(data[i].supsubcomid){
                             ul += '	<li>';
-                            ul += '		<div class="tree-branch org-branch-two" data-supsubcomid="'+data[i].supsubcomid+'"><img class="tree-icon icon-up" src="/resources/web/images/more-icon01.png" alt=""><img class="tree-icon icon-down" src="/resources/web/images/more-icon02.png" alt="">'+data[i].subcompanyname+'</div>';
+                            ul += '		<div class="tree-branch org-branch-two" data-count="'+data[i].count+'" data-lastName="'+data[i].subcompanyname+'" data-type="'+data[i].type+'" data-supsubcomid="'+data[i].supsubcomid+'"><img class="tree-icon icon-up" src="/resources/web/images/more-icon01.png" alt=""><img class="tree-icon icon-down" src="/resources/web/images/more-icon02.png" alt="">'+data[i].subcompanyname+'</div>';
                             ul += '	</li>';
+                            count += data[i].count;
                         }else if(data[i].departmentid){
                             ul += '	<li>';
-                            ul += '		<div class="tree-branch org-branch-three" data-departmentid="'+data[i].departmentid+'"><img class="tree-icon icon-up" src="/resources/web/images/more-icon01.png" alt=""><img class="tree-icon icon-down" src="/resources/web/images/more-icon02.png" alt="">'+data[i].departmentname+'</div>';
+                            ul += '		<div class="tree-branch org-branch-three" data-count="'+data[i].count+'" data-lastName="'+data[i].departmentname+'" data-type="'+data[i].type+'" data-departmentid="'+data[i].departmentid+'"><img class="tree-icon icon-up" src="/resources/web/images/more-icon01.png" alt=""><img class="tree-icon icon-down" src="/resources/web/images/more-icon02.png" alt="">'+data[i].departmentname+'</div>';
                             ul += '	</li>';
                         }else if(data[i].userId){
                             ul += '	<li>';
-                            ul += '		<div class="tree-branch org-branch-personnel" data-userId="'+data[i].userId+'" data-lastName="'+data[i].lastName+'" data-departmentid="'+data[i].departmentId+'">'+data[i].lastName+'</div>';
+                            ul += '		<div class="tree-branch org-branch-personnel" data-type="'+data[i].type+'" data-userId="'+data[i].userId+'" data-lastName="'+data[i].lastName+'" data-departmentid="'+data[i].departmentId+'">'+data[i].lastName+'</div>';
                             ul += '	</li>';
                         }
                     }
                     $($self).after(ul);
-                    // if(data[0].hasOwnProperty('fullName')){
-                    // 	for(var i=0;i<data.length;i++){
-                    // 		ul += '	<li>';
-                    // 		ul += '		<div class="tree-branch org-branch-two" data-subcompanyId="'+data[i].subcompanyId1+'"><img class="tree-icon icon-up" src="/resources/web/images/more-icon01.png" alt=""><img class="tree-icon icon-down" src="/resources/web/images/more-icon02.png" alt="">'+data[i].fullName+'</div>';
-                    // 		ul += '	</li>';
-                    // 	}
-                    // 	ul += '</ul>';
-                    // 	$($self).after(ul);
-                    // 	$('.org-branch-two').one('click',function(){
-                    // 		var options = {
-                    // 			statusHrm:1,
-                    // 			subcompanyid: $(this).data('subcompanyid')//公司分部ID
-                    // 		}
-                    // 		$.getContact(this,options)
-                    // 	})
-                    // }
-                    // // 判断公司部门
-                    // else if(data[0].hasOwnProperty('deptFullname')){
-                    // 	for(var i=0;i<data.length;i++){
-                    // 		ul += '	<li>';
-                    // 		ul += '		<div class="tree-branch org-branch-three" data-departmentId="'+data[i].departmentId+'"><img class="tree-icon icon-up" src="/resources/web/images/more-icon01.png" alt=""><img class="tree-icon icon-down" src="/resources/web/images/more-icon02.png" alt="">'+data[i].deptFullname+'</div>';
-                    // 		ul += '	</li>';
-                    // 	}
-                    // 	ul += '</ul>';
-                    // 	$($self).after(ul);
-                    // 	$('.dialog-contacts .org-branch-three').one('click',function(){
-                    // 		var options = {
-                    // 			statusHrm:2,
-                    // 			departmentid: $(this).data('departmentid')//公司分部ID
-                    // 		}
-                    // 		$.getContact(this,options);
-
-                    // 	})
-                    // }
-                    // // 员工
-                    // else if(data[0].hasOwnProperty('userId')){
-                    // 	for(var i=0;i<data.length;i++){
-                    // 		ul += '	<li>';
-                    // 		ul += '		<div onclick="addLight(this)" class="tree-branch org-branch-personnel" data-userId="'+data[i].userId+'" data-lastName="'+data[i].lastName+'" data-departmentId="'+data[i].departmentId+'">'+data[i].lastName+'</div>';
-                    // 		ul += '	</li>';
-                    // 	}
-                    // 	ul += '</ul>';
-                    // 	$($self).after(ul);
-                    treeUniq('left');//去重
+                    if($($self).hasClass('org-branch-one')){
+                        $($self).attr('data-count',count)
+                    }
+                    treeUniq('left',$($self));//去重
                     alreadyDialog();
-                    // }else{
-                    // 	return false;
-                    // }
+
                 }else{
                     layer.msg('加载出错',{time: 2000,icon: 2});
                 }
@@ -839,16 +847,33 @@ jQuery.extend({
 });
 // 新增联系人//////////////////////////////////////
 // 新增人员请求数据字符串拼接
-function addRightTr(data,tag){
+function addRightTr(data,tag,direction){
+    if(!data)return;
     var rightTrHTML = '';
     for(var j=0;j<data.length;j++){
+        if(direction==='left' && $(data[j]).data('type') !== 'userMssage'){
+            $('.dialog-contacts .contacts-box-r .contacts-table tr').find('[name="contacts-choice"]').parents('tr').remove();
+            continue;
+        }
         rightTrHTML += '		<tr>';
         rightTrHTML += '			<td style="width:50px;text-align:center;">';
-        rightTrHTML += '				<input name="contacts-choice" data-receiveUserId="'+($(data[j]).data('receiveuserid')||$(data[j]).data('userid'))+'" data-receiveLastName="'+($(data[j]).data('receivelastname')||$(data[j]).data('lastname'))+'" data-departmentId="'+($(data[j]).data('departmentid'))+'"type="checkbox" class="contacts-table-input">';
-        rightTrHTML += '				<img src="/resources/web/images/head-icon.png" alt="">';
+        if($(data[j]).data('type') === 'userMssage'){
+            rightTrHTML += '			<input name="contacts-choice" data-type="'+$(data[j]).data('type')+'"  data-receiveUserId="'+($(data[j]).data('receiveuserid')||$(data[j]).data('userid'))+'" data-receiveLastName="'+($(data[j]).data('receivelastname')||$(data[j]).data('lastname'))+'" data-departmentId="'+($(data[j]).data('departmentid'))+'"type="checkbox" class="contacts-table-input">';
+            rightTrHTML += '			<img src="/resources/web/images/head-icon.png" alt="">';
+        }else if($(data[j]).data('type') === 'department'){
+            rightTrHTML += '			<input name="contacts-choice" data-count="'+$(data[j]).data('count')+'" data-type="'+$(data[j]).data('type')+'"  data-receiveLastName="'+($(data[j]).data('receivelastname')||$(data[j]).data('lastname'))+'" data-departmentId="'+($(data[j]).data('departmentid'))+'"type="checkbox" class="contacts-table-input">';
+            rightTrHTML += '			<span class="layui-icon layui-icon-file"></span>';
+        }else if($(data[j]).data('type') === 'subcompany'){
+            rightTrHTML += '			<input name="contacts-choice" data-count="'+$(data[j]).data('count')+'" data-type="'+$(data[j]).data('type')+'"  data-receiveLastName="'+($(data[j]).data('receivelastname')||$(data[j]).data('lastname'))+'" data-supsubcomid="'+($(data[j]).data('supsubcomid'))+'"type="checkbox" class="contacts-table-input">';
+            rightTrHTML += '			<span class="layui-icon layui-icon-home"></span>';
+        }else{
+            rightTrHTML += '			<input name="contacts-choice" data-count="'+$(data[j]).data('count')+'" data-type="'+$(data[j]).data('type')+'"  data-receiveLastName="'+($(data[j]).data('receivelastname')||$(data[j]).data('lastname'))+'" data-usertotal="'+($(data[j]).data('usertotal'))+'"type="checkbox" class="contacts-table-input">';
+            rightTrHTML += '			<span class="layui-icon layui-icon-home"></span>';
+        }
         rightTrHTML += '			</td>';
         rightTrHTML += '			<td style="color:#22262a;">';
         rightTrHTML += '				'+($(data[j]).data('receivelastname') ||$(data[j]).data('lastname'))+'';
+        rightTrHTML += '                '+($(data[j]).data('type') === 'userMssage'? '':'('+$(data[j]).data('count')+')')+'';
         rightTrHTML += '			</td>';
         rightTrHTML += '			<td  style="color:#999;">';
         rightTrHTML += '				';
@@ -861,15 +886,27 @@ function addRightTr(data,tag){
 function addLeftTree(data){
     for(var i=0;i<data.length;i++){
         var ulTag = $('.dialog-contacts .org-branch-three[data-departmentid="'+$(data[i]).data('departmentid')+'"]').siblings();
+        if($(data[i]).data('type') === 'usertotal'){
+            $('.dialog-contacts .contacts-table-outer .contact-tree').find('[data-type="usertotal"]').removeClass('layui-disabled cur');
+            $(data[i]).parents('tr').remove();
+            $('.dialog-contacts .contacts-box-c .single-r').removeClass('layui-disabled').addClass('active');
+            continue;
+        }
+        if($(data[i]).data('type') !== 'userMssage'){
+            $('.dialog-contacts .contacts-table-outer .contact-tree').find($(data[i]).data('type')==='department'?'[data-departmentid="'+$(data[i]).data('departmentid')+'"][data-type="department"]':'[data-supsubcomid="'+$(data[i]).data('supsubcomid')+'"][data-type="subcompany"]').removeClass('layui-disabled cur');
+            $(data[i]).parents('tr').remove();
+            continue;
+        }
         if( ulTag.length !== 0){
             var liHTML = '';
             liHTML += '<li>';
-            liHTML += '	<div class="tree-branch org-branch-personnel" data-userid="'+$(data[i]).data('receiveuserid')+'" data-lastname="'+$(data[i]).data('receivelastname')+'" data-departmentid="'+$(data[i]).data('departmentid')+'">'+$(data[i]).data('receivelastname')+'</div>';
+            liHTML += '	<div class="tree-branch org-branch-personnel" data-type="'+$(data[i]).data('type')+'" data-userid="'+$(data[i]).data('receiveuserid')+'" data-lastname="'+$(data[i]).data('receivelastname')+'" data-departmentid="'+$(data[i]).data('departmentid')+'">'+$(data[i]).data('receivelastname')+'</div>';
             liHTML += '</li>';
             ulTag.append(liHTML);
         }else{
             $('.contacts-box-r .contacts-table-outer table tr input[data-receiveuserid="'+$(data[i]).data('receiveuserid')+'"]').parent().parent().remove();
         }
+
     }
 };
 // 左箭头高亮
@@ -919,8 +956,16 @@ function clickTr(_this){
 };
 // 人数
 function trItemSize(){
-    var rightTrSize = $('.contacts-box-r .contacts-table-outer table tr').length;
-    $('.layui-layer-btn .layui-layer-btn0').text('确认('+rightTrSize+'人)');
+    var rightTr = $('.contacts-box-r .contacts-table-outer table tr').find('[name="contacts-choice"]');
+    var count = 0;
+    for(var i=0;i<rightTr.length;i++){
+        if($(rightTr[i]).data('type') === 'userMssage'){
+            count += 1;
+        }else{
+            count += parseInt($(rightTr[i]).data('count'));
+        }
+    }
+    $('.layui-layer-btn .layui-layer-btn0').text('确认('+count+'人)');
 };
 // 添加联系人去重
 function repetition(Arrow){
@@ -951,18 +996,34 @@ function addLight(_this){
     leftArrow();
 };
 // 组织架构去重
-function treeUniq(Arrow){
-    var treeCur = $('.contacts-box-l .contact-tree .tree-box .org-branch-personnel');
+function treeUniq(Arrow,dom){
+    // var treeCur = $('.contacts-box-l .contact-tree .tree-box .org-branch-personnel');
     var rightTr = $('.contacts-box-r .contacts-table-outer table tr').find('input[name="contacts-choice"]');
+    // var treeBox = dom.siblings('.tree-box');
+    var treeCur = dom?dom.siblings().find('[data-type]'):$('.contacts-box-l .contact-tree').find('[data-type]');
+    // for(){
+    //
+    // }
     for(var i=0;i<treeCur.length;i++){
         for(var k=0;k<rightTr.length;k++){
-            if($(treeCur[i]).data('userid') === $(rightTr[k]).data('receiveuserid')){
-                if(Arrow === 'left'){
-                    $(treeCur[i]).remove();
-                }else{
-                    $(rightTr[k].parentNode.parentNode).remove();
+            if($(rightTr[k]).data('type') === 'userMssage'){
+                if($(treeCur[i]).data('userid') === $(rightTr[k]).data('receiveuserid')){
+                    if(Arrow === 'left'){
+                        $(treeCur[i]).remove();
+                    }else{
+                        $(rightTr[k].parentNode.parentNode).remove();
+                    }
+                }
+            }else if($(rightTr[k]).data('type') === 'subcompany'){
+                if($(treeCur[i]).data('supsubcomid') === $(rightTr[k]).data('supsubcomid')){
+                    $(treeCur[i]).addClass('layui-disabled')
+                }
+            }else if($(rightTr[k]).data('type') === 'department'){
+                if($(treeCur[i]).data('departmentid') === $(rightTr[k]).data('departmentid')){
+                    $(treeCur[i]).addClass('layui-disabled')
                 }
             }
+
         }
     }
 };
@@ -1024,4 +1085,6 @@ function alreadyDialog(){
     }
     window.cookie = new cookie();
 })(window);
+
+
 

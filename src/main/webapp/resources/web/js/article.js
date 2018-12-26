@@ -484,8 +484,8 @@ $(document).ready(function(){
         // });
         ArticleObjext.prototype.templateHTML = function(that,data){
             layui.use(['form','table'], function(){
-                $('.object-tab .title-left').html('传阅对象（'+data.length+'个）');
-                $('input[name="object-total"]').val(data.length);
+                $('.object-tab .title-left').html('传阅对象（'+this.totalRecord+'个）');
+                $('input[name="object-total"]').val(this.totalRecord);
                 var form = layui.form;
                 this.templateTag.empty();//清空上次内容
                 var string = '';
@@ -560,23 +560,24 @@ $(document).ready(function(){
                 // 单个删除
                 var totalRecord = data.length;
                 $('.object-tab .layui-table .tab-icon').on('click',{totalRecord:totalRecord},function(e){
-                    if(e.data.totalRecord>1){
-                        var arr = [$(this).parent().siblings().children('input[name="choice"]').val()];
-                        layer.confirm(
-                            '您确定要删除该传阅对象吗？',
-                            {
-                                btn: ['是','否'],
-                                title:'删除提示'
-                            }, //按钮
-                            function(index, layero){
-                                //按钮【按钮一】的回调
-                                deleObjext(arr);
-                            }
-                        );
-                    }else{
-                        //layer.msg('删除失败，传阅对象不能为空',{time: 2000});
-                        layer.msg('传阅对象只有一个用户时，不允许删除',{time: 2000});
-                    }
+                    // debugger
+                    // if(e.data.totalRecord>1){
+                    var arr = [$(this).parent().siblings().children('input[name="choice"]').val()];
+                    layer.confirm(
+                        '您确定要删除该传阅对象吗？',
+                        {
+                            btn: ['是','否'],
+                            title:'删除提示'
+                        }, //按钮
+                        function(index, layero){
+                            //按钮【按钮一】的回调
+                            deleObjext(arr);
+                        }
+                    );
+                    // }else{
+                    //     //layer.msg('删除失败，传阅对象不能为空',{time: 2000});
+                    //     layer.msg('传阅对象只有一个用户时，不允许删除',{time: 2000});
+                    // }
                 })
             }.bind(that));
         };
@@ -587,8 +588,8 @@ $(document).ready(function(){
             data:{
                 userId:storageData.userId,
                 mailId:storageData.article,
-                page:1 ,
-                pageRows:10
+                page:$('.layui-table-footer .layui-laypage input').val(),
+                pageRows:$('.layui-table-footer .layui-form-select .layui-input').val()
             },
             templateTag:'.object-tab .layui-table-body table'
         });
@@ -623,11 +624,11 @@ $(document).ready(function(){
                 layer.msg('请选择传阅对象',{time: 2000});
                 return false;
             }else if(totalRecord == choiceArr.length){
-                newChoiceArr = choiceArr.splice(1);
-                if(newChoiceArr.length<=0){
-                    layer.msg('传阅对象只有一个用户时，不允许删除',{time: 2000});
-                    return false;
-                };
+                newChoiceArr = choiceArr;
+                // if(newChoiceArr.length<=0){
+                //     layer.msg('传阅对象只有一个用户时，不允许删除',{time: 2000});
+                //     return false;
+                // };
                 layer.confirm(
                     '您确定要删除所选中的传阅对象吗？',
                     {
@@ -688,7 +689,7 @@ $(document).ready(function(){
                     }else if(res.code === '501'){
                         layer.msg('传阅对象只有一个用户时，不允许删除',{time: 2000});
                     }else{
-                        layer.msg('删除失败',{time: 2000});
+                        layer.msg(res.msg,{time: 2000});
                     }
                 },
                 error:function(){
@@ -896,12 +897,24 @@ $(document).ready(function(){
                 btn: ['确认(0人)', '清除', '取消'],
                 yes: function(index, layero){
                     var allCheckedArr = $('.contacts-box-r .contacts-table-outer table tr').find('input[name="contacts-choice"]');
+                    var userTotal = [];
+                    var subcompanyIds = [];
+                    var departmentIds = [];
                     var receiveUserId = [];
+
                     var layer_msg;
                     for(var i=0;i<allCheckedArr.length;i++){
-                        receiveUserId.push($(allCheckedArr[i]).data().receiveuserid)
+                        if($(allCheckedArr[i]).data('type') === 'userMssage'){
+                            receiveUserId.push($(allCheckedArr[i]).data('receiveuserid'))
+                        }else if($(allCheckedArr[i]).data('type') === 'subcompany'){
+                            subcompanyIds.push($(allCheckedArr[i]).data('supsubcomid'))
+                        }else if($(allCheckedArr[i]).data('type') === 'department'){
+                            departmentIds.push($(allCheckedArr[i]).data('departmentid'))
+                        }else if($(allCheckedArr[i]).data('type') === 'usertotal'){
+                            userTotal.push($(allCheckedArr[i]).data('usertotal'))
+                        }
                     }
-                    if(receiveUserId.length == 0){
+                    if(receiveUserId.length == 0 && subcompanyIds.length == 0 && departmentIds.length == 0 && userTotal.length == 0){
                         layer.msg('请添加联系人',{time: 2000});
                         return false;
                     };
@@ -911,7 +924,11 @@ $(document).ready(function(){
                         data:{
                             userId:storageData.userId,//用户id
                             mailId:storageData.article,//传阅的ID
-                            receiveUserId:receiveUserId
+                            userTotal : userTotal.length,
+                            subcompanyIds : subcompanyIds,
+                            departmentIds : departmentIds,
+                            receiveUserIds:receiveUserId
+
                         },
                         beforeSend:function(xhr){
                             layer_msg = layer.msg('正在请求数据中', {
@@ -942,13 +959,14 @@ $(document).ready(function(){
                     //按钮【按钮一】的回调
                 },
                 btn2: function(index, layero){
+                    console.log(123)
                     var allCheckedArr = $('.contacts-box-r .contacts-table-outer table tr').find('input[name="contacts-choice"]');
                     var isTree = $('.contacts-table-outer .contact-tree').length;
                     if(isTree>0){
                         addLeftTree(allCheckedArr);
                         treeUniq('right');
                     }else{
-                        addRightTr(allCheckedArr,'.contacts-box-l .contacts-table-outer table tbody');
+                        addRightTr(allCheckedArr,'.contacts-box-l .contacts-table-outer table tbody','left');
                         repetition('right');
                     }
                     allrightArrow();

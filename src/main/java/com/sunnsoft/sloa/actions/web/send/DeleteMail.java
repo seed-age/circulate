@@ -4,6 +4,7 @@ import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
+import com.sunnsoft.sloa.util.ConstantUtils;
 import com.sunnsoft.util.struts2.Results;
 import org.springframework.util.Assert;
 
@@ -41,11 +42,11 @@ public class DeleteMail extends BaseParameter {
 		List<Mail> mailList = Services.getMailService().findByIds(mailId);
 		for (Mail mail : mailList) {
 
-			if(mail.getStepStatus() == 3){ // 如果传阅状态为3(已完成) 则跳过本次循环, 不能删除.
+			if(mail.getStepStatus() == ConstantUtils.MAIL_COMPLETE_STATUS){ // 如果传阅状态为3(已完成) 则跳过本次循环, 不能删除.
 				continue;
 			}
 			// 判断
-			if (mail.getUserId() == userId && mail.getStepStatus() != 3) { // 只有ID相同 和 传阅状态不为 已完成的 传阅才可以被删除
+			if (mail.getUserId() == userId && mail.getStepStatus() != ConstantUtils.MAIL_COMPLETE_STATUS) { // 只有ID相同 和 传阅状态不为 已完成的 传阅才可以被删除
 
 				// 更改需求: 一封传阅中  只要有一个传阅对象确认传阅后  就不可以删除.  那发起人也是不可以对这封传阅进行删除操作.
 				List<Receive> receiveList = mail.getReceives();
@@ -57,7 +58,7 @@ public class DeleteMail extends BaseParameter {
 					}
 				}
 				// 修改状态
-				mail.setStatus(7); // 7 表示已删除
+				mail.setStatus(ConstantUtils.MAIL_DELETE_STATUS); // 7 表示已删除
 				//设置删除时间
 				mail.setDeleteTime(new Date());
 				// 更新

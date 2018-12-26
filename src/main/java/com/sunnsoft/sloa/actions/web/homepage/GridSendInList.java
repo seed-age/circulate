@@ -19,7 +19,7 @@ import java.util.Map;
 
 /**
  * 已发传阅: 点击查看跳转到已发传阅列表（传阅数据筛选为 传阅中 , 已完成 其中的任意一个)
- * 
+ *
  * @author chenjian
  *
  */
@@ -52,981 +52,78 @@ public class GridSendInList extends BaseParameter {
 		this.orderBy = (orderBy == null) ? 2 : orderBy;
 
 		// 设置默认值, 如果搜索条件为null 默认值为 ""
-		this.likeName = (likeName == null) ? "" : likeName;
+		this.likeName = (likeName.equals("")) ? null : likeName;
 		this.startTime = (startTime.equals("")) ? null : startTime;
+
+		MailHelper helper = Services.getMailService().createHelper().getUserId().Eq(userId).ignoreEmptyValueCondiction();
+
+		//进行判断
+		if(startTime != null) {
+			//设置开始时间 和 结束时间 以及 日期转换的格式
+			String timeStr = getDateTime();
+			helper.getSendTime().Ge(StrToDate(startTime, timeStr)).getSendTime()
+					.Le(StrToDate(endTime, timeStr));
+		}
+
+		helper.startOr().getTitle().Like(likeName).getAllReceiveName()
+				.Like(likeName).getLastName().Like(likeName).getMailContent().Like(likeName).stopOr();
+
 
 		// 使用switch 选择查询数据
 		switch (mailStatus) {
-		case 0: // 表示查询所有的已发传阅 包含 传阅中 , 已完成
+			case 0: // 表示查询所有的已发传阅 包含 传阅中 , 已完成
 
-			if (orderBy == 2) { // 2 表示降序
+				helper.getStatus().Eq(mailStatus);
 
-				if (likeName.length() > 0 || !likeName.equals("") || startTime != null) {
-					
-					
-					MailHelper helper = Services.getMailService().createHelper().getUserId().Eq(userId).getStatus().Eq(mailStatus);
-					
-					//进行判断
-					if(startTime != null) {
-						//设置开始时间 和 结束时间 以及 日期转换的格式
-						String timeStr = getDateTime();
-						helper.getSendTime().Ge(StrToDate(startTime, timeStr)).getSendTime()
-						.Le(StrToDate(endTime, timeStr));
-					}
-					
-					
-					// 分页查询 传阅状态默认为 0 0 不做任何表示
-					json = helper.startOr().getTitle().Like(likeName).getAllReceiveName()
-							.Like(likeName).getLastName().Like(likeName).getMailContent().Like(likeName).stopOr()
-							.getSendTime().Desc().json().listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
+				break;
+			case 1: // 表示查询所有的 传阅中
 
-								@Override
-								public void each(Mail mail, Map<String, Object> map) {
-									List<AttachmentItem> itemList = new ArrayList<>();
-									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-									for (AttachmentItem attachmentItem : attachmentItems) {
-										// 创建附件对象
-										AttachmentItem item = new AttachmentItem();
-										// 设置需要的值
-										item.setItemId(attachmentItem.getItemId()); // 附件ID
-										item.setBulkId(attachmentItem.getBulkId()); // 附近批次ID
-										item.setUserId(attachmentItem.getUserId()); // 创建人ID
-										item.setCreator(attachmentItem.getCreator()); // 上传附件的传阅对象
-										item.setCreateTime(attachmentItem.getCreateTime()); // 上传附件的时间
-										item.setFileName(attachmentItem.getFileName()); // 附件原名
-										item.setFileCategory(attachmentItem.getFileCategory()); // 附件后缀
-										item.setSaveName(attachmentItem.getSaveName()); // 附件保存名
-										item.setUrlPath(attachmentItem.getUrlPath()); // url
-										item.setState(attachmentItem.getState()); // 附件状态
-										item.setItemSize(attachmentItem.getItemSize()); // 附件大小
-										item.setItemNeid(attachmentItem.getItemNeid()); // 附件的网盘ID
-										item.setItemRev(attachmentItem.getItemRev()); // 附件的网盘版本
-										item.setItemDifferentiate(attachmentItem.getItemDifferentiate()); // 区别
-										itemList.add(item);
+				helper.getStatus().Eq(0).getStepStatus().Eq(mailStatus);
 
-									}
-									map.put("attachmentItemss", itemList);
+				break;
+			case 3: // 表示查询所有的 已完成
 
-									List<Receive> receiveList = new ArrayList<>();
-									List<Receive> receives = mail.getReceives();
-									for (Receive receive : receives) {
-										Receive receivess = new Receive();
-										receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-										receivess.setUserId(receive.getUserId()); // 收件人ID
-										receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
-										receivess.setLastName(receive.getLastName()); // 收件人姓名
-										receivess.setLoginId(receive.getLoginId()); // 收件人登录名
-										receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
-										receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
-										receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
-										receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
-										receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
-										receivess.setRemark(receive.getRemark()); // 确认信息备注
-										receivess.setMailState(receive.getMailState()); // 传阅筛选状态
-										receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
-										receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
-										receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
-										receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
-										receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
-										receivess.setSerialNum(receive.getSerialNum()); // 序号
-										receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
-										receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
-										receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
-										receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
-										receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
-										receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
-																									// 存放添加该联系人的用户ID
-										receiveList.add(receivess);
-									}
+				helper.getStatus().Eq(0).getStepStatus().Eq(mailStatus);
 
-									map.put("receivess", receiveList);
-								}
-							});
-
-				} else {
-					
-					json = Services.getMailService().createHelper().getUserId().Eq(userId).getStatus().Eq(mailStatus)
-							.getSendTime().Desc().json().listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
-
-								@Override
-								public void each(Mail mail, Map<String, Object> map) {
-									List<AttachmentItem> itemList = new ArrayList<>();
-									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-									for (AttachmentItem attachmentItem : attachmentItems) {
-										// 创建附件对象
-										AttachmentItem item = new AttachmentItem();
-										// 设置需要的值
-										item.setItemId(attachmentItem.getItemId()); // 附件ID
-										item.setBulkId(attachmentItem.getBulkId()); // 附近批次ID
-										item.setUserId(attachmentItem.getUserId()); // 创建人ID
-										item.setCreator(attachmentItem.getCreator()); // 上传附件的传阅对象
-										item.setCreateTime(attachmentItem.getCreateTime()); // 上传附件的时间
-										item.setFileName(attachmentItem.getFileName()); // 附件原名
-										item.setFileCategory(attachmentItem.getFileCategory()); // 附件后缀
-										item.setSaveName(attachmentItem.getSaveName()); // 附件保存名
-										item.setUrlPath(attachmentItem.getUrlPath()); // url
-										item.setState(attachmentItem.getState()); // 附件状态
-										item.setItemSize(attachmentItem.getItemSize()); // 附件大小
-										item.setItemNeid(attachmentItem.getItemNeid()); // 附件的网盘ID
-										item.setItemRev(attachmentItem.getItemRev()); // 附件的网盘版本
-										item.setItemDifferentiate(attachmentItem.getItemDifferentiate()); // 区别
-										itemList.add(item);
-
-									}
-									map.put("attachmentItemss", itemList);
-
-									List<Receive> receiveList = new ArrayList<>();
-									List<Receive> receives = mail.getReceives();
-									for (Receive receive : receives) {
-										Receive receivess = new Receive();
-										receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-										receivess.setUserId(receive.getUserId()); // 收件人ID
-										receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
-										receivess.setLastName(receive.getLastName()); // 收件人姓名
-										receivess.setLoginId(receive.getLoginId()); // 收件人登录名
-										receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
-										receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
-										receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
-										receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
-										receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
-										receivess.setRemark(receive.getRemark()); // 确认信息备注
-										receivess.setMailState(receive.getMailState()); // 传阅筛选状态
-										receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
-										receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
-										receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
-										receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
-										receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
-										receivess.setSerialNum(receive.getSerialNum()); // 序号
-										receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
-										receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
-										receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
-										receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
-										receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
-										receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
-																									// 存放添加该联系人的用户ID
-										receiveList.add(receivess);
-									}
-
-									map.put("receivess", receiveList);
-								}
-							});
-
-				}
-				success = true;
-				code = "200";
-				msg = "查询已发传阅!";
-			} else if (orderBy == 1) { // 1 表示升序
-
-				if (likeName.length() > 0 || !likeName.equals("") || startTime != null) {
-
-					
-					MailHelper helper = Services.getMailService().createHelper().getUserId().Eq(userId).getStatus().Eq(mailStatus);
-					
-					//进行判断
-					if(startTime != null) {
-						//设置开始时间 和 结束时间 以及 日期转换的格式
-						String timeStr = getDateTime();
-						helper.getSendTime().Ge(StrToDate(startTime, timeStr)).getSendTime()
-						.Le(StrToDate(endTime, timeStr));
-					}
-					
-					
-					// 分页查询 传阅状态默认为 0 0 不做任何表示
-					json = helper.startOr().getTitle().Like(likeName).getAllReceiveName()
-							.Like(likeName).getLastName().Like(likeName).getMailContent().Like(likeName).stopOr()
-							.getSendTime().Asc().json().listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
-
-								@Override
-								public void each(Mail mail, Map<String, Object> map) {
-									List<AttachmentItem> itemList = new ArrayList<>();
-									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-									for (AttachmentItem attachmentItem : attachmentItems) {
-										// 创建附件对象
-										AttachmentItem item = new AttachmentItem();
-										// 设置需要的值
-										item.setItemId(attachmentItem.getItemId()); // 附件ID
-										item.setBulkId(attachmentItem.getBulkId()); // 附近批次ID
-										item.setUserId(attachmentItem.getUserId()); // 创建人ID
-										item.setCreator(attachmentItem.getCreator()); // 上传附件的传阅对象
-										item.setCreateTime(attachmentItem.getCreateTime()); // 上传附件的时间
-										item.setFileName(attachmentItem.getFileName()); // 附件原名
-										item.setFileCategory(attachmentItem.getFileCategory()); // 附件后缀
-										item.setSaveName(attachmentItem.getSaveName()); // 附件保存名
-										item.setUrlPath(attachmentItem.getUrlPath()); // url
-										item.setState(attachmentItem.getState()); // 附件状态
-										item.setItemSize(attachmentItem.getItemSize()); // 附件大小
-										item.setItemNeid(attachmentItem.getItemNeid()); // 附件的网盘ID
-										item.setItemRev(attachmentItem.getItemRev()); // 附件的网盘版本
-										item.setItemDifferentiate(attachmentItem.getItemDifferentiate()); // 区别
-										itemList.add(item);
-
-									}
-									map.put("attachmentItemss", itemList);
-
-									List<Receive> receiveList = new ArrayList<>();
-									List<Receive> receives = mail.getReceives();
-									for (Receive receive : receives) {
-										Receive receivess = new Receive();
-										receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-										receivess.setUserId(receive.getUserId()); // 收件人ID
-										receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
-										receivess.setLastName(receive.getLastName()); // 收件人姓名
-										receivess.setLoginId(receive.getLoginId()); // 收件人登录名
-										receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
-										receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
-										receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
-										receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
-										receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
-										receivess.setRemark(receive.getRemark()); // 确认信息备注
-										receivess.setMailState(receive.getMailState()); // 传阅筛选状态
-										receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
-										receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
-										receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
-										receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
-										receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
-										receivess.setSerialNum(receive.getSerialNum()); // 序号
-										receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
-										receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
-										receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
-										receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
-										receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
-										receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
-																									// 存放添加该联系人的用户ID
-										receiveList.add(receivess);
-									}
-
-									map.put("receivess", receiveList);
-								}
-							});
-				} else {
-					json = Services.getMailService().createHelper().getUserId().Eq(userId).getStatus().Eq(mailStatus)
-							.getSendTime().Asc().json().listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
-
-								@Override
-								public void each(Mail mail, Map<String, Object> map) {
-									List<AttachmentItem> itemList = new ArrayList<>();
-									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-									for (AttachmentItem attachmentItem : attachmentItems) {
-										// 创建附件对象
-										AttachmentItem item = new AttachmentItem();
-										// 设置需要的值
-										item.setItemId(attachmentItem.getItemId()); // 附件ID
-										item.setBulkId(attachmentItem.getBulkId()); // 附近批次ID
-										item.setUserId(attachmentItem.getUserId()); // 创建人ID
-										item.setCreator(attachmentItem.getCreator()); // 上传附件的传阅对象
-										item.setCreateTime(attachmentItem.getCreateTime()); // 上传附件的时间
-										item.setFileName(attachmentItem.getFileName()); // 附件原名
-										item.setFileCategory(attachmentItem.getFileCategory()); // 附件后缀
-										item.setSaveName(attachmentItem.getSaveName()); // 附件保存名
-										item.setUrlPath(attachmentItem.getUrlPath()); // url
-										item.setState(attachmentItem.getState()); // 附件状态
-										item.setItemSize(attachmentItem.getItemSize()); // 附件大小
-										item.setItemNeid(attachmentItem.getItemNeid()); // 附件的网盘ID
-										item.setItemRev(attachmentItem.getItemRev()); // 附件的网盘版本
-										item.setItemDifferentiate(attachmentItem.getItemDifferentiate()); // 区别
-										itemList.add(item);
-
-									}
-									map.put("attachmentItemss", itemList);
-
-									List<Receive> receiveList = new ArrayList<>();
-									List<Receive> receives = mail.getReceives();
-									for (Receive receive : receives) {
-										Receive receivess = new Receive();
-										receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-										receivess.setUserId(receive.getUserId()); // 收件人ID
-										receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
-										receivess.setLastName(receive.getLastName()); // 收件人姓名
-										receivess.setLoginId(receive.getLoginId()); // 收件人登录名
-										receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
-										receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
-										receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
-										receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
-										receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
-										receivess.setRemark(receive.getRemark()); // 确认信息备注
-										receivess.setMailState(receive.getMailState()); // 传阅筛选状态
-										receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
-										receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
-										receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
-										receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
-										receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
-										receivess.setSerialNum(receive.getSerialNum()); // 序号
-										receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
-										receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
-										receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
-										receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
-										receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
-										receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
-																									// 存放添加该联系人的用户ID
-										receiveList.add(receivess);
-									}
-
-									map.put("receivess", receiveList);
-								}
-							});
-
-				}
-
-				success = true;
-				code = "200";
-				msg = "查询已发传阅!";
-			}
-
-			if (json != null) {
+				break;
+			default:
+				msg = "网络繁忙, 请稍后再试!";
+				success = false;
+				code = "404";
 				return Results.GLOBAL_FORM_JSON;
-			}
-
-			break;
-		case 1: // 表示查询所有的 传阅中
-
-			if (orderBy == 2) { // 2 表示降序
-				// 分页查询 传阅状态默认为 0 0 不做任何表示
-				if (likeName.length() > 0 || !likeName.equals("") || startTime != null) {
-
-					
-					MailHelper helper = Services.getMailService().createHelper().getUserId().Eq(userId).getStatus().Eq(0).getStepStatus().Eq(mailStatus);
-					
-					//进行判断
-					if(startTime != null) {
-						//设置开始时间 和 结束时间 以及 日期转换的格式
-						String timeStr = getDateTime();
-						helper.getSendTime().Ge(StrToDate(startTime, timeStr)).getSendTime()
-						.Le(StrToDate(endTime, timeStr));
-					}
-					
-					json = helper.startOr().getTitle().Like(likeName)
-							.getAllReceiveName().Like(likeName).getLastName().Like(likeName).getMailContent()
-							.Like(likeName).stopOr().getSendTime().Desc().json()
-							.listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
-
-								@Override
-								public void each(Mail mail, Map<String, Object> map) {
-									List<AttachmentItem> itemList = new ArrayList<>();
-									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-									for (AttachmentItem attachmentItem : attachmentItems) {
-										// 创建附件对象
-										AttachmentItem item = new AttachmentItem();
-										// 设置需要的值
-										item.setItemId(attachmentItem.getItemId()); // 附件ID
-										item.setBulkId(attachmentItem.getBulkId()); // 附近批次ID
-										item.setUserId(attachmentItem.getUserId()); // 创建人ID
-										item.setCreator(attachmentItem.getCreator()); // 上传附件的传阅对象
-										item.setCreateTime(attachmentItem.getCreateTime()); // 上传附件的时间
-										item.setFileName(attachmentItem.getFileName()); // 附件原名
-										item.setFileCategory(attachmentItem.getFileCategory()); // 附件后缀
-										item.setSaveName(attachmentItem.getSaveName()); // 附件保存名
-										item.setUrlPath(attachmentItem.getUrlPath()); // url
-										item.setState(attachmentItem.getState()); // 附件状态
-										item.setItemSize(attachmentItem.getItemSize()); // 附件大小
-										item.setItemNeid(attachmentItem.getItemNeid()); // 附件的网盘ID
-										item.setItemRev(attachmentItem.getItemRev()); // 附件的网盘版本
-										item.setItemDifferentiate(attachmentItem.getItemDifferentiate()); // 区别
-										itemList.add(item);
-
-									}
-									map.put("attachmentItemss", itemList);
-
-									List<Receive> receiveList = new ArrayList<>();
-									List<Receive> receives = mail.getReceives();
-									for (Receive receive : receives) {
-										Receive receivess = new Receive();
-										receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-										receivess.setUserId(receive.getUserId()); // 收件人ID
-										receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
-										receivess.setLastName(receive.getLastName()); // 收件人姓名
-										receivess.setLoginId(receive.getLoginId()); // 收件人登录名
-										receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
-										receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
-										receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
-										receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
-										receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
-										receivess.setRemark(receive.getRemark()); // 确认信息备注
-										receivess.setMailState(receive.getMailState()); // 传阅筛选状态
-										receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
-										receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
-										receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
-										receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
-										receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
-										receivess.setSerialNum(receive.getSerialNum()); // 序号
-										receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
-										receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
-										receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
-										receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
-										receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
-										receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
-																									// 存放添加该联系人的用户ID
-										receiveList.add(receivess);
-									}
-
-									map.put("receivess", receiveList);
-								}
-							});
-
-				} else {
-					json = Services.getMailService().createHelper().getUserId().Eq(userId).getStatus().Eq(0)
-							.getStepStatus().Eq(mailStatus).getSendTime().Desc().json()
-							.listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
-
-								@Override
-								public void each(Mail mail, Map<String, Object> map) {
-									List<AttachmentItem> itemList = new ArrayList<>();
-									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-									for (AttachmentItem attachmentItem : attachmentItems) {
-										// 创建附件对象
-										AttachmentItem item = new AttachmentItem();
-										// 设置需要的值
-										item.setItemId(attachmentItem.getItemId()); // 附件ID
-										item.setBulkId(attachmentItem.getBulkId()); // 附近批次ID
-										item.setUserId(attachmentItem.getUserId()); // 创建人ID
-										item.setCreator(attachmentItem.getCreator()); // 上传附件的传阅对象
-										item.setCreateTime(attachmentItem.getCreateTime()); // 上传附件的时间
-										item.setFileName(attachmentItem.getFileName()); // 附件原名
-										item.setFileCategory(attachmentItem.getFileCategory()); // 附件后缀
-										item.setSaveName(attachmentItem.getSaveName()); // 附件保存名
-										item.setUrlPath(attachmentItem.getUrlPath()); // url
-										item.setState(attachmentItem.getState()); // 附件状态
-										item.setItemSize(attachmentItem.getItemSize()); // 附件大小
-										item.setItemNeid(attachmentItem.getItemNeid()); // 附件的网盘ID
-										item.setItemRev(attachmentItem.getItemRev()); // 附件的网盘版本
-										item.setItemDifferentiate(attachmentItem.getItemDifferentiate()); // 区别
-										itemList.add(item);
-
-									}
-									map.put("attachmentItemss", itemList);
-
-									List<Receive> receiveList = new ArrayList<>();
-									List<Receive> receives = mail.getReceives();
-									for (Receive receive : receives) {
-										Receive receivess = new Receive();
-										receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-										receivess.setUserId(receive.getUserId()); // 收件人ID
-										receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
-										receivess.setLastName(receive.getLastName()); // 收件人姓名
-										receivess.setLoginId(receive.getLoginId()); // 收件人登录名
-										receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
-										receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
-										receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
-										receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
-										receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
-										receivess.setRemark(receive.getRemark()); // 确认信息备注
-										receivess.setMailState(receive.getMailState()); // 传阅筛选状态
-										receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
-										receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
-										receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
-										receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
-										receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
-										receivess.setSerialNum(receive.getSerialNum()); // 序号
-										receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
-										receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
-										receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
-										receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
-										receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
-										receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
-																									// 存放添加该联系人的用户ID
-										receiveList.add(receivess);
-									}
-
-									map.put("receivess", receiveList);
-								}
-							});
-				}
-
-				success = true;
-				code = "200";
-				msg = "查询已发传阅!";
-			} else if (orderBy == 1) { // 1 表示升序
-
-				if (likeName.length() > 0 || !likeName.equals("") || startTime != null) {
-					
-					
-					MailHelper helper = Services.getMailService().createHelper().getUserId().Eq(userId).getStatus().Eq(0).getStepStatus().Eq(mailStatus);
-					
-					//进行判断
-					if(startTime != null) {
-						//设置开始时间 和 结束时间 以及 日期转换的格式
-						String timeStr = getDateTime();
-						helper.getSendTime().Ge(StrToDate(startTime, timeStr)).getSendTime()
-						.Le(StrToDate(endTime, timeStr));
-					}
-					
-					// 分页查询 传阅状态默认为 0 0 不做任何表示
-					json = helper.startOr().getTitle().Like(likeName)
-							.getAllReceiveName().Like(likeName).getLastName().Like(likeName).getMailContent()
-							.Like(likeName).stopOr().getSendTime().Asc().json()
-							.listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
-
-								@Override
-								public void each(Mail mail, Map<String, Object> map) {
-									List<AttachmentItem> itemList = new ArrayList<>();
-									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-									for (AttachmentItem attachmentItem : attachmentItems) {
-										// 创建附件对象
-										AttachmentItem item = new AttachmentItem();
-										// 设置需要的值
-										item.setItemId(attachmentItem.getItemId()); // 附件ID
-										item.setBulkId(attachmentItem.getBulkId()); // 附近批次ID
-										item.setUserId(attachmentItem.getUserId()); // 创建人ID
-										item.setCreator(attachmentItem.getCreator()); // 上传附件的传阅对象
-										item.setCreateTime(attachmentItem.getCreateTime()); // 上传附件的时间
-										item.setFileName(attachmentItem.getFileName()); // 附件原名
-										item.setFileCategory(attachmentItem.getFileCategory()); // 附件后缀
-										item.setSaveName(attachmentItem.getSaveName()); // 附件保存名
-										item.setUrlPath(attachmentItem.getUrlPath()); // url
-										item.setState(attachmentItem.getState()); // 附件状态
-										item.setItemSize(attachmentItem.getItemSize()); // 附件大小
-										item.setItemNeid(attachmentItem.getItemNeid()); // 附件的网盘ID
-										item.setItemRev(attachmentItem.getItemRev()); // 附件的网盘版本
-										item.setItemDifferentiate(attachmentItem.getItemDifferentiate()); // 区别
-										itemList.add(item);
-
-									}
-									map.put("attachmentItemss", itemList);
-
-									List<Receive> receiveList = new ArrayList<>();
-									List<Receive> receives = mail.getReceives();
-									for (Receive receive : receives) {
-										Receive receivess = new Receive();
-										receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-										receivess.setUserId(receive.getUserId()); // 收件人ID
-										receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
-										receivess.setLastName(receive.getLastName()); // 收件人姓名
-										receivess.setLoginId(receive.getLoginId()); // 收件人登录名
-										receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
-										receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
-										receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
-										receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
-										receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
-										receivess.setRemark(receive.getRemark()); // 确认信息备注
-										receivess.setMailState(receive.getMailState()); // 传阅筛选状态
-										receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
-										receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
-										receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
-										receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
-										receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
-										receivess.setSerialNum(receive.getSerialNum()); // 序号
-										receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
-										receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
-										receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
-										receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
-										receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
-										receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
-										// 存放添加该联系人的用户ID
-										receiveList.add(receivess);
-									}
-
-									map.put("receivess", receiveList);
-								}
-							});
-
-				} else {
-					json = Services.getMailService().createHelper().getUserId().Eq(userId).getStatus().Eq(0)
-							.getStepStatus().Eq(mailStatus).getSendTime().Asc().json()
-							.listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
-
-								@Override
-								public void each(Mail mail, Map<String, Object> map) {
-									List<AttachmentItem> itemList = new ArrayList<>();
-									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-									for (AttachmentItem attachmentItem : attachmentItems) {
-										// 创建附件对象
-										AttachmentItem item = new AttachmentItem();
-										// 设置需要的值
-										item.setItemId(attachmentItem.getItemId()); // 附件ID
-										item.setBulkId(attachmentItem.getBulkId()); // 附近批次ID
-										item.setUserId(attachmentItem.getUserId()); // 创建人ID
-										item.setCreator(attachmentItem.getCreator()); // 上传附件的传阅对象
-										item.setCreateTime(attachmentItem.getCreateTime()); // 上传附件的时间
-										item.setFileName(attachmentItem.getFileName()); // 附件原名
-										item.setFileCategory(attachmentItem.getFileCategory()); // 附件后缀
-										item.setSaveName(attachmentItem.getSaveName()); // 附件保存名
-										item.setUrlPath(attachmentItem.getUrlPath()); // url
-										item.setState(attachmentItem.getState()); // 附件状态
-										item.setItemSize(attachmentItem.getItemSize()); // 附件大小
-										item.setItemNeid(attachmentItem.getItemNeid()); // 附件的网盘ID
-										item.setItemRev(attachmentItem.getItemRev()); // 附件的网盘版本
-										item.setItemDifferentiate(attachmentItem.getItemDifferentiate()); // 区别
-										itemList.add(item);
-
-									}
-									map.put("attachmentItemss", itemList);
-
-									List<Receive> receiveList = new ArrayList<>();
-									List<Receive> receives = mail.getReceives();
-									for (Receive receive : receives) {
-										Receive receivess = new Receive();
-										receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-										receivess.setUserId(receive.getUserId()); // 收件人ID
-										receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
-										receivess.setLastName(receive.getLastName()); // 收件人姓名
-										receivess.setLoginId(receive.getLoginId()); // 收件人登录名
-										receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
-										receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
-										receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
-										receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
-										receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
-										receivess.setRemark(receive.getRemark()); // 确认信息备注
-										receivess.setMailState(receive.getMailState()); // 传阅筛选状态
-										receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
-										receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
-										receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
-										receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
-										receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
-										receivess.setSerialNum(receive.getSerialNum()); // 序号
-										receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
-										receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
-										receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
-										receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
-										receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
-										receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
-										// 存放添加该联系人的用户ID
-										receiveList.add(receivess);
-									}
-
-									map.put("receivess", receiveList);
-								}
-							});
-				}
-				success = true;
-				code = "200";
-				msg = "查询已发传阅!";
-			}
-
-			if (json != null) {
-				return Results.GLOBAL_FORM_JSON;
-			}
-
-			break;
-		case 3: // 表示查询所有的 已完成
-
-			if (orderBy == 2) { // 2 表示降序
-
-				if (likeName.length() > 0 || !likeName.equals("") || startTime != null) {
-
-					
-					MailHelper helper = Services.getMailService().createHelper().getUserId().Eq(userId).getStatus().Eq(0).getStepStatus().Eq(mailStatus);
-					
-					//进行判断
-					if(startTime != null) {
-						//设置开始时间 和 结束时间 以及 日期转换的格式
-						String timeStr = getDateTime();
-						helper.getSendTime().Ge(StrToDate(startTime, timeStr)).getSendTime()
-						.Le(StrToDate(endTime, timeStr));
-					}
-					
-					json = helper.startOr().getTitle().Like(likeName)
-							.getAllReceiveName().Like(likeName).getLastName().Like(likeName).getMailContent()
-							.Like(likeName).stopOr().getSendTime().Desc().json()
-							.listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
-
-								@Override
-								public void each(Mail mail, Map<String, Object> map) {
-									List<AttachmentItem> itemList = new ArrayList<>();
-									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-									for (AttachmentItem attachmentItem : attachmentItems) {
-										// 创建附件对象
-										AttachmentItem item = new AttachmentItem();
-										// 设置需要的值
-										item.setItemId(attachmentItem.getItemId()); // 附件ID
-										item.setBulkId(attachmentItem.getBulkId()); // 附近批次ID
-										item.setUserId(attachmentItem.getUserId()); // 创建人ID
-										item.setCreator(attachmentItem.getCreator()); // 上传附件的传阅对象
-										item.setCreateTime(attachmentItem.getCreateTime()); // 上传附件的时间
-										item.setFileName(attachmentItem.getFileName()); // 附件原名
-										item.setFileCategory(attachmentItem.getFileCategory()); // 附件后缀
-										item.setSaveName(attachmentItem.getSaveName()); // 附件保存名
-										item.setUrlPath(attachmentItem.getUrlPath()); // url
-										item.setState(attachmentItem.getState()); // 附件状态
-										item.setItemSize(attachmentItem.getItemSize()); // 附件大小
-										item.setItemNeid(attachmentItem.getItemNeid()); // 附件的网盘ID
-										item.setItemRev(attachmentItem.getItemRev()); // 附件的网盘版本
-										item.setItemDifferentiate(attachmentItem.getItemDifferentiate()); // 区别
-										itemList.add(item);
-
-									}
-									map.put("attachmentItemss", itemList);
-
-									List<Receive> receiveList = new ArrayList<>();
-									List<Receive> receives = mail.getReceives();
-									for (Receive receive : receives) {
-										Receive receivess = new Receive();
-										receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-										receivess.setUserId(receive.getUserId()); // 收件人ID
-										receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
-										receivess.setLastName(receive.getLastName()); // 收件人姓名
-										receivess.setLoginId(receive.getLoginId()); // 收件人登录名
-										receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
-										receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
-										receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
-										receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
-										receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
-										receivess.setRemark(receive.getRemark()); // 确认信息备注
-										receivess.setMailState(receive.getMailState()); // 传阅筛选状态
-										receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
-										receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
-										receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
-										receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
-										receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
-										receivess.setSerialNum(receive.getSerialNum()); // 序号
-										receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
-										receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
-										receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
-										receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
-										receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
-										receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
-										// 存放添加该联系人的用户ID
-										receiveList.add(receivess);
-									}
-
-									map.put("receivess", receiveList);
-								}
-							});
-				} else {
-
-					json = Services.getMailService().createHelper().getUserId().Eq(userId).getStatus().Eq(0)
-							.getStepStatus().Eq(mailStatus).getSendTime().Desc().json()
-							.listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
-
-								@Override
-								public void each(Mail mail, Map<String, Object> map) {
-									List<AttachmentItem> itemList = new ArrayList<>();
-									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-									for (AttachmentItem attachmentItem : attachmentItems) {
-										// 创建附件对象
-										AttachmentItem item = new AttachmentItem();
-										// 设置需要的值
-										item.setItemId(attachmentItem.getItemId()); // 附件ID
-										item.setBulkId(attachmentItem.getBulkId()); // 附近批次ID
-										item.setUserId(attachmentItem.getUserId()); // 创建人ID
-										item.setCreator(attachmentItem.getCreator()); // 上传附件的传阅对象
-										item.setCreateTime(attachmentItem.getCreateTime()); // 上传附件的时间
-										item.setFileName(attachmentItem.getFileName()); // 附件原名
-										item.setFileCategory(attachmentItem.getFileCategory()); // 附件后缀
-										item.setSaveName(attachmentItem.getSaveName()); // 附件保存名
-										item.setUrlPath(attachmentItem.getUrlPath()); // url
-										item.setState(attachmentItem.getState()); // 附件状态
-										item.setItemSize(attachmentItem.getItemSize()); // 附件大小
-										item.setItemNeid(attachmentItem.getItemNeid()); // 附件的网盘ID
-										item.setItemRev(attachmentItem.getItemRev()); // 附件的网盘版本
-										item.setItemDifferentiate(attachmentItem.getItemDifferentiate()); // 区别
-										itemList.add(item);
-
-									}
-									map.put("attachmentItemss", itemList);
-
-									List<Receive> receiveList = new ArrayList<>();
-									List<Receive> receives = mail.getReceives();
-									for (Receive receive : receives) {
-										Receive receivess = new Receive();
-										receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-										receivess.setUserId(receive.getUserId()); // 收件人ID
-										receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
-										receivess.setLastName(receive.getLastName()); // 收件人姓名
-										receivess.setLoginId(receive.getLoginId()); // 收件人登录名
-										receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
-										receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
-										receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
-										receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
-										receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
-										receivess.setRemark(receive.getRemark()); // 确认信息备注
-										receivess.setMailState(receive.getMailState()); // 传阅筛选状态
-										receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
-										receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
-										receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
-										receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
-										receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
-										receivess.setSerialNum(receive.getSerialNum()); // 序号
-										receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
-										receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
-										receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
-										receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
-										receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
-										receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
-										// 存放添加该联系人的用户ID
-										receiveList.add(receivess);
-									}
-
-									map.put("receivess", receiveList);
-								}
-							});
-
-				}
-				// 分页查询 传阅状态默认为 0 0 不做任何表示
-
-				success = true;
-				code = "200";
-				msg = "查询已发传阅!";
-			} else if (orderBy == 1) { // 1 表示升序
-				// 分页查询
-				if (likeName.length() > 0 || !likeName.equals("") || startTime != null) {
-
-					MailHelper helper = Services.getMailService().createHelper().getUserId().Eq(userId).getStatus().Eq(0).getStepStatus().Eq(mailStatus);
-					
-					//进行判断
-					if(startTime != null) {
-						
-						//设置开始时间 和 结束时间 以及 日期转换的格式
-						String timeStr = getDateTime();
-						helper.getSendTime().Ge(StrToDate(startTime, timeStr)).getSendTime()
-						.Le(StrToDate(endTime, timeStr));
-					}
-					
-					json = helper.startOr().getTitle().Like(likeName)
-							.getAllReceiveName().Like(likeName).getLastName().Like(likeName).getMailContent()
-							.Like(likeName).stopOr().getSendTime().Asc().json()
-							.listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
-
-								@Override
-								public void each(Mail mail, Map<String, Object> map) {
-									List<AttachmentItem> itemList = new ArrayList<>();
-									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-									for (AttachmentItem attachmentItem : attachmentItems) {
-										// 创建附件对象
-										AttachmentItem item = new AttachmentItem();
-										// 设置需要的值
-										item.setItemId(attachmentItem.getItemId()); // 附件ID
-										item.setBulkId(attachmentItem.getBulkId()); // 附近批次ID
-										item.setUserId(attachmentItem.getUserId()); // 创建人ID
-										item.setCreator(attachmentItem.getCreator()); // 上传附件的传阅对象
-										item.setCreateTime(attachmentItem.getCreateTime()); // 上传附件的时间
-										item.setFileName(attachmentItem.getFileName()); // 附件原名
-										item.setFileCategory(attachmentItem.getFileCategory()); // 附件后缀
-										item.setSaveName(attachmentItem.getSaveName()); // 附件保存名
-										item.setUrlPath(attachmentItem.getUrlPath()); // url
-										item.setState(attachmentItem.getState()); // 附件状态
-										item.setItemSize(attachmentItem.getItemSize()); // 附件大小
-										item.setItemNeid(attachmentItem.getItemNeid()); // 附件的网盘ID
-										item.setItemRev(attachmentItem.getItemRev()); // 附件的网盘版本
-										item.setItemDifferentiate(attachmentItem.getItemDifferentiate()); // 区别
-										itemList.add(item);
-
-									}
-									map.put("attachmentItemss", itemList);
-
-									List<Receive> receiveList = new ArrayList<>();
-									List<Receive> receives = mail.getReceives();
-									for (Receive receive : receives) {
-										Receive receivess = new Receive();
-										receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-										receivess.setUserId(receive.getUserId()); // 收件人ID
-										receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
-										receivess.setLastName(receive.getLastName()); // 收件人姓名
-										receivess.setLoginId(receive.getLoginId()); // 收件人登录名
-										receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
-										receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
-										receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
-										receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
-										receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
-										receivess.setRemark(receive.getRemark()); // 确认信息备注
-										receivess.setMailState(receive.getMailState()); // 传阅筛选状态
-										receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
-										receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
-										receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
-										receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
-										receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
-										receivess.setSerialNum(receive.getSerialNum()); // 序号
-										receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
-										receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
-										receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
-										receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
-										receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
-										receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
-										// 存放添加该联系人的用户ID
-										receiveList.add(receivess);
-									}
-
-									map.put("receivess", receiveList);
-								}
-							});
-				} else {
-
-					json = Services.getMailService().createHelper().getUserId().Eq(userId).getStatus().Eq(0)
-							.getStepStatus().Eq(mailStatus).getSendTime().Asc().json()
-							.listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
-
-								@Override
-								public void each(Mail mail, Map<String, Object> map) {
-									List<AttachmentItem> itemList = new ArrayList<>();
-									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
-									for (AttachmentItem attachmentItem : attachmentItems) {
-										// 创建附件对象
-										AttachmentItem item = new AttachmentItem();
-										// 设置需要的值
-										item.setItemId(attachmentItem.getItemId()); // 附件ID
-										item.setBulkId(attachmentItem.getBulkId()); // 附近批次ID
-										item.setUserId(attachmentItem.getUserId()); // 创建人ID
-										item.setCreator(attachmentItem.getCreator()); // 上传附件的传阅对象
-										item.setCreateTime(attachmentItem.getCreateTime()); // 上传附件的时间
-										item.setFileName(attachmentItem.getFileName()); // 附件原名
-										item.setFileCategory(attachmentItem.getFileCategory()); // 附件后缀
-										item.setSaveName(attachmentItem.getSaveName()); // 附件保存名
-										item.setUrlPath(attachmentItem.getUrlPath()); // url
-										item.setState(attachmentItem.getState()); // 附件状态
-										item.setItemSize(attachmentItem.getItemSize()); // 附件大小
-										item.setItemNeid(attachmentItem.getItemNeid()); // 附件的网盘ID
-										item.setItemRev(attachmentItem.getItemRev()); // 附件的网盘版本
-										item.setItemDifferentiate(attachmentItem.getItemDifferentiate()); // 区别
-										itemList.add(item);
-
-									}
-									map.put("attachmentItemss", itemList);
-
-									List<Receive> receiveList = new ArrayList<>();
-									List<Receive> receives = mail.getReceives();
-									for (Receive receive : receives) {
-										Receive receivess = new Receive();
-										receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-										receivess.setUserId(receive.getUserId()); // 收件人ID
-										receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
-										receivess.setLastName(receive.getLastName()); // 收件人姓名
-										receivess.setLoginId(receive.getLoginId()); // 收件人登录名
-										receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
-										receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
-										receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
-										receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
-										receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
-										receivess.setRemark(receive.getRemark()); // 确认信息备注
-										receivess.setMailState(receive.getMailState()); // 传阅筛选状态
-										receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
-										receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
-										receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
-										receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
-										receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
-										receivess.setSerialNum(receive.getSerialNum()); // 序号
-										receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
-										receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
-										receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
-										receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
-										receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
-										receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
-										// 存放添加该联系人的用户ID
-										receiveList.add(receivess);
-									}
-
-									map.put("receivess", receiveList);
-								}
-							});
-
-				}
-				success = true;
-				code = "200";
-				msg = "查询已发传阅!";
-			}
-
-			if (json != null) {
-				return Results.GLOBAL_FORM_JSON;
-			}
-
-			break;
-		default:
-			msg = "网络繁忙, 请稍后再试!";
-			success = false;
-			code = "404";
-			return Results.GLOBAL_FORM_JSON;
 		}
 
-		msg = "查询失败";
-		success = false;
-		code = "404";
+		if (orderBy == 2) { // 2 表示降序
+			helper.getSendTime().Desc();
+		}else { // 1 表示升序
+			helper.getSendTime().Asc();
+		}
+
+		json = helper.json().listPageJson(page, pageRows, new EachEntity2Map<Mail>() {
+
+			@Override
+			public void each(Mail mail, Map<String, Object> map) {
+				map.clear();
+
+				map.put("mailId", mail.getMailId());
+				map.put("userId", mail.getUserId());
+				map.put("lastName", mail.getLastName());
+				map.put("title", mail.getTitle());
+				map.put("status", mail.getStatus());
+				map.put("stepStatus", mail.getStepStatus());
+				map.put("allReceiveName", mail.getAllReceiveName());
+				map.put("hasAttachment", mail.getHasAttachment());
+				map.put("attention", mail.getAttention());
+				map.put("createTime", mail.getCreateTime());
+				map.put("sendTime", mail.getSendTime());
+				map.put("deleteTime", mail.getDeleteTime());
+			}
+		});
+
+
+		msg = "查询成功";
+		success = true;
+		code = "200";
 		return Results.GLOBAL_FORM_JSON;
 	}
 
@@ -1035,21 +132,21 @@ public class GridSendInList extends BaseParameter {
 	 * @return
 	 */
 	public String getDateTime() {
-		
+
 		String timeStr = "";
-		
+
 		if (startTime != null && endTime != null) {
 			startTime += " 00:00:00";
 			endTime += " 23:59:59";
 			timeStr = "yyyy-MM-dd HH:mm:ss";
 		}
-		
+
 		return timeStr;
 	}
 
 	/**
 	 * 字符串转换成日期
-	 * 
+	 *
 	 * @param str
 	 * @return date
 	 */
