@@ -76,6 +76,12 @@
 .oa-read-table .layui-form-checked[lay-skin=primary] i{
     border-color: #008cd6;
     background-color: #008cd6;
+
+}
+.oa-read-table .layui-form-checkbox[lay-skin=primary] i{
+    box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
 }
 .oa-read-table .layui-table{
     table-layout: fixed;

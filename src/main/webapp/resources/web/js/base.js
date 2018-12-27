@@ -398,7 +398,7 @@ function delAttachment(options){
 };
 // 封装联系人接口
 function getContactData(options){
-    options.params.openType = false;
+    // options.params.openType = false;
     $.ajax({
         type:'post',
         url:'/web/hr/hr-framework-tree.htm',

@@ -33,23 +33,8 @@ public class FindLatelyHrm extends BaseParameter {
 		// 参数校验
 		Assert.notNull(userId, "用户ID不能为空!");
 
-//		String SQL = "SELECT * FROM user_mssage_tbl u WHERE u.user_id IN(SELECT r.user_id FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.last_name)";
-
-//		String SQL = "SELECT r.user_id FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.last_name";
-//		List<Map<String, Object>> mapList = jdbcTemplate.queryForList(SQL);
-
-//		String SQL1 = "SELECT DISTINCT r.user_id userId, r.department_name departmentName, r.subcompany_name fullName, r.last_name lastName FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.user_id ORDER BY r.receive_time DESC;";
-		String SQL1 = "SELECT DISTINCT r.user_id userId, (select u.department_id from user_mssage_tbl u where u.user_id = r.user_id)departmentId, r.department_name departmentName, r.subcompany_name fullName, r.last_name lastName, r.receive_time receiveTime, 'userMssage' as type FROM receive_tbl r WHERE r.re_differentiate = " + userId + " AND DATE_SUB(CURDATE(), INTERVAL 6 DAY) <= date(r.receive_time) GROUP BY r.user_id, r.department_name, r.subcompany_name, r.last_name, r.receive_time ORDER BY r.receive_time DESC LIMIT 0, 200;";
+		String SQL1 = "select u.user_id userId, u.department_id departmentId, u.full_name fullName, u.dept_fullname deptFullname, u.last_name lastName, 'userMssage' as type from user_mssage_tbl u where u.user_id in (select * from (select distinct r.user_id from receive_tbl r where r.re_differentiate = " + userId + " order by r.receive_time desc LIMIT 200) as x)";
 		List<Map<String, Object>> mapList1 = jdbcTemplate.queryForList(SQL1);
-//		System.out.println(JSONObject.toJSONString(mapList1));
-//
-//		// 存储联系人对象
-//		List<UserMssage> listHrm = new ArrayList<UserMssage>();
-//		for(Map<String, Object> map : mapList){
-//			Long user_id = (Long)map.get("user_id");
-//			UserMssage mssage = Services.getUserMssageService().createHelper().getUserId().Eq(user_id.intValue()).uniqueResult();
-//			listHrm.add(mssage);
-//		}
 
 		json = JSONObject.toJSONString(mapList1);
 		success = true;

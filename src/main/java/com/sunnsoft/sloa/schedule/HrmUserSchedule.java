@@ -3,6 +3,7 @@ package com.sunnsoft.sloa.schedule;
 import com.sunnsoft.ThirdPartyConfiguration;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.UserMssage;
+import com.sunnsoft.sloa.helper.HrmsubcompanyBean;
 import com.sunnsoft.sloa.service.UserService;
 import com.sunnsoft.util.SpringUtils;
 import localhost.services.hrmservice.HrmService;
@@ -28,7 +29,7 @@ import java.util.List;
  */
 @Service
 public class HrmUserSchedule {
-	private static final Log logger = LogFactory.getLog(HrmUserSchedule.class);
+	private static final Log LOGGER = LogFactory.getLog(HrmUserSchedule.class);
 	@Resource
 	private UserService userService;
 
@@ -37,19 +38,19 @@ public class HrmUserSchedule {
 
 	@PostConstruct
 	private void init() {
-		System.out.println("初始化OA联系人!");
+		LOGGER.warn("初始化OA联系人!");
 		try {
 			this.doJob();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("================初始化OA联系人失败=====================");
+			LOGGER.warn("================初始化OA联系人失败=====================");
 		}
 	}
 
-	@Scheduled(cron = "0/10 * * * * ?")
+//	@Scheduled(cron = "0/10 * * * * ?")
 	public void test() {
 		//System.out.println("thirdPartyConfiguration: " + SpringUtils.getBean(ThirdPartyConfiguration.class));
-		logger.debug("thirdPartyConfiguration:" + SpringUtils.getBean(ThirdPartyConfiguration.Configuration.class));
+//		LOGGER.warn("thirdPartyConfiguration:" + SpringUtils.getBean(ThirdPartyConfiguration.Configuration.class));
 	}
 
 	@Scheduled(cron = "0 30 2 * * ?")
@@ -57,7 +58,7 @@ public class HrmUserSchedule {
 		if (!scheduleOn) {// 开关没打开则不跑定时任务。
 			return;
 		}
-		System.out.println("定时任务被调用了!!");
+		LOGGER.warn("定时任务被调用了!!");
 		// ip地址
 		//String ip = "192.168.4.183"; // 测试环境
 		//String ip = "https://oa-uat.seedland.cc:8443/services/HrmService"; // 测试环境
@@ -81,12 +82,21 @@ public class HrmUserSchedule {
 			if(showorder != null && !"".equals(showorder)){
 				showorderInt = Integer.valueOf(showorder);
 			}
+
+			String canceled = subCompany.getCanceled().getValue();
+			char cancledChar = 0;
+			if (canceled != null && !canceled.equals("")) {
+				LOGGER.warn("分部 Canceled的值: " + canceled);
+				cancledChar = canceled.charAt(0);
+			}
+			LOGGER.warn("LOCAL 分部 Canceled的值: " + canceled);
+
 			Services.hrmsubcompanyHelper().bean().create()
 					.setSubcompanyname(subCompany.getShortname().getValue())
 					.setShoworder(showorderInt)
 					.setId(Integer.valueOf(subCompany.getSubcompanyid().getValue()))
 					.setSupsubcomid(Integer.valueOf(subCompany.getSupsubcompanyid().getValue()))
-					.setCanceled(subCompany.getCanceled().getValue().toCharArray()[0])
+					.setCanceled(cancledChar)
 					.insertUnique();
 
 		}
@@ -103,13 +113,21 @@ public class HrmUserSchedule {
 			if(showorder != null && !"".equals(showorder)){
 				showorderInt = Integer.valueOf(showorder);
 			}
+
+			String canceled = departmentBean.getCanceled().getValue();
+			char cancledChar = 0;
+			if (canceled != null && !canceled.equals("")) {
+				LOGGER.warn("部门 Canceled的值: " + canceled);
+				cancledChar = canceled.charAt(0);
+			}
+			LOGGER.warn("LOCAL 部门 Canceled的值: " + cancledChar);
 			Services.hrmdepartmentHelper().bean().create()
 					.setDepartmentname(departmentBean.getShortname().getValue())
 					.setShoworder(showorderInt)
 					.setId(Integer.valueOf(departmentBean.getDepartmentid().getValue()))
 					.setSupdepid(Integer.valueOf(departmentBean.getSupdepartmentid().getValue()))
 					.setSubcompanyid1(Integer.valueOf(departmentBean.getSubcompanyid().getValue()))
-					.setCanceled(departmentBean.getCanceled().getValue().toCharArray()[0])
+					.setCanceled(cancledChar)
 					.insertUnique();
 		}
 

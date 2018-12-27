@@ -152,8 +152,28 @@ $(document).ready(function(){
                     '	<p>'+(storageData.mailStatus==3?data.receiveTime:data.sendTime)+'</p>'+
                     '</li>';
                 $('.oa-receive-list').html(liHTML);
-                $('.oa-import-content').html(data.mailContent);//传阅内容
-
+                var iframe = $('.oa-import-content')[0];
+                var iframeNum = 5;
+                var iframeTimer = null;
+                iframe.src = 'rich_text.htm?userId='+storageData.userId+'&mailId='+storageData.article+'';
+                function reinitIframe(){
+                    if(iframeNum == 0){
+                        clearInterval(iframeTimer);
+                    }
+                    try{
+                        var bHeight = iframe.contentWindow.document.body.scrollHeight;
+                        var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+                        var height = Math.max(bHeight, dHeight);
+                        if(height>900){
+                            iframe.height = 900
+                        }else{
+                            iframe.height = height;
+                        }
+                    }catch (ex){}
+                    iframeNum--;
+                }
+                iframeTimer = window.setInterval(reinitIframe, 200);
+                // $('.oa-import-content').html(data.mailContent);//传阅内容
                 // 附件
                 $('.attachmentItems-tab .table-title .title-left').html('附件（'+data.attachmentItemss.length+'个）')
                 var attachmentItemss = data.attachmentItemss.reverse();//附件倒序

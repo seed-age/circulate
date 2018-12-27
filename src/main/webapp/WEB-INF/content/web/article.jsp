@@ -95,9 +95,8 @@
                                 <p>2017-12-20 14:20:01</p>
                             </li>   -->
 						</ul>
-						<div class="oa-import-content editor-style">
-
-						</div>
+						<%--<div class="oa-import-content editor-style"></div>--%>
+						<iframe class="oa-import-content"  width="100%" height="100%" frameborder="0" src=""></iframe>
 						<div class="oa-receive-table attachmentItems-tab">
 							<div class="table-title layui-clear">
 								<div class="title-left">附件（0个）</div>
