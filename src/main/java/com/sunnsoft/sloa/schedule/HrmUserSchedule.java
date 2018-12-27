@@ -47,10 +47,10 @@ public class HrmUserSchedule {
 		}
 	}
 
-//	@Scheduled(cron = "0/10 * * * * ?")
+	//	@Scheduled(cron = "0/10 * * * * ?")
 	public void test() {
 		//System.out.println("thirdPartyConfiguration: " + SpringUtils.getBean(ThirdPartyConfiguration.class));
-//		LOGGER.warn("thirdPartyConfiguration:" + SpringUtils.getBean(ThirdPartyConfiguration.Configuration.class));
+		LOGGER.warn("thirdPartyConfiguration:" + SpringUtils.getBean(ThirdPartyConfiguration.Configuration.class));
 	}
 
 	@Scheduled(cron = "0 30 2 * * ?")
@@ -63,8 +63,8 @@ public class HrmUserSchedule {
 		//String ip = "192.168.4.183"; // 测试环境
 		//String ip = "https://oa-uat.seedland.cc:8443/services/HrmService"; // 测试环境
 		//String ip = "oa-uat.seedland.cc:8443"; // 生产环境
-//		String ip = ThirdPartyConfiguration.getOaHrmSchedulerUrl();//"oa.seedland.cc"; // 生产环境
-//		String ip = "oa.seedland.cc";// 生产环境
+		//String ip = ThirdPartyConfiguration.getOaHrmSchedulerUrl();//"oa.seedland.cc"; // 生产环境
+//        String ip = "oa.seedland.cc";// 生产环境
 		String ip = "192.168.64.40";// 测试环境
 
 		HrmService client = new HrmService();
@@ -84,19 +84,18 @@ public class HrmUserSchedule {
 			}
 
 			String canceled = subCompany.getCanceled().getValue();
-			char cancledChar = 0;
 			if (canceled != null && !canceled.equals("")) {
 				LOGGER.warn("分部 Canceled的值: " + canceled);
-				cancledChar = canceled.charAt(0);
+				if(canceled.equals("1")){
+					LOGGER.warn("===========如果 分部 Canceled的值为 1 的话  就跳过本次循环  不进行新增===================");
+					continue;
+				}
 			}
-			LOGGER.warn("LOCAL 分部 Canceled的值: " + canceled);
-
 			Services.hrmsubcompanyHelper().bean().create()
 					.setSubcompanyname(subCompany.getShortname().getValue())
 					.setShoworder(showorderInt)
 					.setId(Integer.valueOf(subCompany.getSubcompanyid().getValue()))
 					.setSupsubcomid(Integer.valueOf(subCompany.getSupsubcompanyid().getValue()))
-					.setCanceled(cancledChar)
 					.insertUnique();
 
 		}
@@ -115,19 +114,19 @@ public class HrmUserSchedule {
 			}
 
 			String canceled = departmentBean.getCanceled().getValue();
-			char cancledChar = 0;
 			if (canceled != null && !canceled.equals("")) {
 				LOGGER.warn("部门 Canceled的值: " + canceled);
-				cancledChar = canceled.charAt(0);
+				if(canceled.equals("1")){
+					LOGGER.warn("===========如果 部门 Canceled的值为 1 的话  就跳过本次循环  不进行新增===================");
+					continue;
+				}
 			}
-			LOGGER.warn("LOCAL 部门 Canceled的值: " + cancledChar);
 			Services.hrmdepartmentHelper().bean().create()
 					.setDepartmentname(departmentBean.getShortname().getValue())
 					.setShoworder(showorderInt)
 					.setId(Integer.valueOf(departmentBean.getDepartmentid().getValue()))
 					.setSupdepid(Integer.valueOf(departmentBean.getSupdepartmentid().getValue()))
 					.setSubcompanyid1(Integer.valueOf(departmentBean.getSubcompanyid().getValue()))
-					.setCanceled(cancledChar)
 					.insertUnique();
 		}
 

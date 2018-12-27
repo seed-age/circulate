@@ -27,7 +27,7 @@ public class findMailContent extends BaseParameter {
         Assert.notNull(userId, "用户的ID不能为空");
         Assert.notNull(mailId, "传阅的ID不能为空");
 
-        json = Services.getMailService().createHelper().getUserId().Eq(userId).getMailId().Eq(mailId).json().uniqueJson(new EachEntity2Map<Mail>() {
+        json = Services.getMailService().createHelper().getMailId().Eq(mailId).json().uniqueJson(new EachEntity2Map<Mail>() {
             @Override
             public void each(Mail mail, Map<String, Object> map) {
                 map.clear();
