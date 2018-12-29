@@ -111,12 +111,16 @@ public class InsertMail extends BaseParameter {
 				for (Hrmsubcompany hrmsubcompany : hrmsubcompanyList) {
 					HrmUtils.getSubcompanyUserMssage(hrmsubcompany.getId(), null, userMssageSet, sb);
 				}
-			}else if(departmentIds != null){
+			}
+
+			if(departmentIds != null){
 
 				List<Hrmdepartment> hrmdepartmentList = Services.getHrmdepartmentService().findByIds(departmentIds);
 				HrmUtils.getSubcompanyUserMssage(null, hrmdepartmentList, userMssageSet, sb);
 
-			}else if(receiveUserId != null) {
+			}
+
+			if(receiveUserId != null) {
 
 				// 查询接收人信息
 				List<UserMssage> userMssages  = Services.getUserMssageService().createHelper().getUserId().In(receiveUserId)
@@ -128,7 +132,9 @@ public class InsertMail extends BaseParameter {
 				}
 
 
-			}else  if (userTotal == 1) { // 表示整个组织架构
+			}
+
+			if (userTotal == 1) { // 表示整个组织架构
 				List<UserMssage> mssageList = Services.getUserMssageService().createHelper().startOr().getStatus().Eq(ConstantUtils.OA_USER_PROBATION_STATUS)
 						.getStatus().Eq(ConstantUtils.OA_USER_OFFICIAL_STATUS).getStatus().Eq(ConstantUtils.OA_USER_TEMPORARY_STATUS)
 						.getStatus().Eq(ConstantUtils.OA_USER_PROBATION_DELAY_STATUS)
@@ -139,7 +145,9 @@ public class InsertMail extends BaseParameter {
 				}
 
 
-			}else {
+			}
+
+			if(userMssageSet.size() == 0){
 				msg = "请选择联系人!";
 				success = false;
 				code = "205";

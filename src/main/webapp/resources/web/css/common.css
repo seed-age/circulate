@@ -340,6 +340,7 @@ html,body{
     display: block;
     border-radius: 2px;
     padding: 2px 0px;
+    width: 30px;
 }
 .dialog-contacts .contacts-table td img{
     width: 30px;
@@ -352,6 +353,7 @@ html,body{
     font-size: 20px;
     border-radius: 2px;
     display: block;
+    width: 30px;
 }
 .dialog-contacts .contacts-table td input[name="contacts-choice"]{
     display: none;

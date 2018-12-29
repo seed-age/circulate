@@ -48,8 +48,12 @@ public class HrmUtils {
 
             // 获取当前部门所属的人员
             List<UserMssage> userMssageList = Services.getUserMssageService().createHelper().getDepartmentId().Eq(hrmdepartment.getId() + "")
-                    .startOr().getStatus().Eq(ConstantUtils.OA_USER_PROBATION_STATUS).getStatus().Eq(ConstantUtils.OA_USER_OFFICIAL_STATUS)
-                    .getStatus().Eq(ConstantUtils.OA_USER_TEMPORARY_STATUS).getStatus().Eq(ConstantUtils.OA_USER_PROBATION_DELAY_STATUS).stopOr()
+                    .startOr()
+                    .getStatus().Eq(ConstantUtils.OA_USER_PROBATION_STATUS)
+                    .getStatus().Eq(ConstantUtils.OA_USER_OFFICIAL_STATUS)
+                    .getStatus().Eq(ConstantUtils.OA_USER_TEMPORARY_STATUS)
+                    .getStatus().Eq(ConstantUtils.OA_USER_PROBATION_DELAY_STATUS)
+                    .stopOr()
                     .list();
             if (userMssageList.size() > 0) {
                 for (UserMssage user : userMssageList) {
@@ -86,8 +90,12 @@ public class HrmUtils {
             for (Hrmdepartment hrmdepartment : hrmdepartmentList) {
                 // 获取当前部门所属的人员
                 countUser += (int) Services.getUserMssageService().createHelper().getDepartmentId().Eq(hrmdepartment.getId() + "")
-                        .startOr().getStatus().Eq("0").getStatus().Eq("1")
-                        .getStatus().Eq("2").getStatus().Eq("3").stopOr()
+                        .startOr()
+                        .getStatus().Eq(ConstantUtils.OA_USER_PROBATION_STATUS)
+                        .getStatus().Eq(ConstantUtils.OA_USER_OFFICIAL_STATUS)
+                        .getStatus().Eq(ConstantUtils.OA_USER_TEMPORARY_STATUS)
+                        .getStatus().Eq(ConstantUtils.OA_USER_PROBATION_DELAY_STATUS)
+                        .stopOr()
                         .rowCount();
 
                 // 获取当前部门所属的下级部门
@@ -129,10 +137,12 @@ public class HrmUtils {
             // 获取当前部门所属的下级部门
             List<Hrmdepartment> hrmdepartmentList = Services.getHrmdepartmentService().createHelper().getSupdepid().Eq(hrmdepartment.getId()).list();
             if (hrmdepartmentList.size() > 0) {
-                countUser += getUserCount(hrmdepartmentList, countUser);
+                hrmdepartmentMap.put("count", getUserCount(hrmdepartmentList, countUser));
             }
+        }else {
+            hrmdepartmentMap.put("count", 0);
         }
-        hrmdepartmentMap.put("count", countUser);
+
         return hrmdepartmentMap;
     }
 
@@ -149,8 +159,12 @@ public class HrmUtils {
             // 2. 根据当前部门ID查询所属的人员及其下属部门
             // 2.1. 人员
             countUser += (int) Services.getUserMssageService().createHelper().getDepartmentId().Eq(hrmdepartment.getId() + "")
-                    .startOr().getStatus().Eq("0").getStatus().Eq("1")
-                    .getStatus().Eq("2").getStatus().Eq("3").stopOr()
+                    .startOr()
+                    .getStatus().Eq(ConstantUtils.OA_USER_PROBATION_STATUS)
+                    .getStatus().Eq(ConstantUtils.OA_USER_OFFICIAL_STATUS)
+                    .getStatus().Eq(ConstantUtils.OA_USER_TEMPORARY_STATUS)
+                    .getStatus().Eq(ConstantUtils.OA_USER_PROBATION_DELAY_STATUS)
+                    .stopOr()
                     .rowCount();
             // 2.2. 下属部门
             // 因为实地组织架构表的关系, 第二级的部门的上级为 subcompanyid1字段, 而部门所属的下级部门为 supdepid 字段
