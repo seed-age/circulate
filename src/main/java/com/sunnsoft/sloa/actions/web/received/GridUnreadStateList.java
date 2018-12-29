@@ -111,7 +111,8 @@ public class GridUnreadStateList extends BaseParameter {
 					map.put("lastName", mail.getLastName());
 					map.put("mailId", mail.getMailId());
 					map.put("title", mail.getTitle());
-					map.put("mailContent", mail.getMailContent());
+					// 按照实地徐经理的要求, 把传阅内容去掉 或者设置为  null
+					map.put("mailContent", null);
 					map.put("hasAttachment", mail.getHasAttachment());
 					map.put("ruleName", mail.getRuleName());
 					map.put("allReceiveName", mail.getAllReceiveName());

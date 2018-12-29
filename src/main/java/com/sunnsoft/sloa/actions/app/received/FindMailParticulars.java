@@ -131,6 +131,10 @@ public class FindMailParticulars extends BaseParameter {
 
 								@Override
 								public void each(Mail mail, Map<String, Object> map) {
+
+									// 按照实地徐经理的要求, 把传阅内容去掉 或者设置为  null
+									map.put("mailContent", null);
+
 									List<AttachmentItem> itemList = new ArrayList<>();
 									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
 									for (AttachmentItem attachmentItem : attachmentItems) {
@@ -204,6 +208,10 @@ public class FindMailParticulars extends BaseParameter {
 
 								@Override
 								public void each(Mail mail, Map<String, Object> map) {
+
+									// 按照实地徐经理的要求, 把传阅内容去掉 或者设置为  null
+									map.put("mailContent", null);
+
 									List<AttachmentItem> itemList = new ArrayList<>();
 									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
 									for (AttachmentItem attachmentItem : attachmentItems) {
@@ -275,7 +283,8 @@ public class FindMailParticulars extends BaseParameter {
 							map.put("ifAdd", mail.getIfAdd());
 							map.put("createTime", mail.getCreateTime());
 							map.put("deleteTime", mail.getDeleteTime());
-							map.put("mailContent", mail.getMailContent());
+							// 按照实地徐经理的要求, 把传阅内容去掉 或者设置为  null
+							map.put("mailContent", null);
 							map.put("attention", mail.getAttention());
 							map.put("mailId", mail.getMailId());
 							map.put("ifUpdate", mail.getIfUpdate());
