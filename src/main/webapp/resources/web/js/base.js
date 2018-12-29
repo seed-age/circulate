@@ -256,8 +256,8 @@ Pages.prototype = {
             data:this.data,
             beforeSend:function(xhr){
                 layui.use('layer', function(){
-                    layer_del = layui.layer;
-                    layer.msg('数据加载中', {
+                    // layer_del = layui.layer;
+                    layer_del = layer.msg('数据加载中', {
                         icon: 16,
                         area:'40px',
                         time:0
@@ -271,7 +271,7 @@ Pages.prototype = {
                 layui.use('layer', function(){
                     var layer = layui.layer;
                     // layer.closeAll()
-                    layer.close(layer_del.index);
+                    layer.close(layer_del);
                 });
                 if(res.code === '200'){
                     this.totalRecord = res.data.totalRecord;
@@ -305,7 +305,7 @@ Pages.prototype = {
                 layui.use('layer', function(){
                     var layer = layui.layer;
                     // layer.closeAll('dialog');
-                    layer.close(layer_del.index);
+                    layer.close(layer_del);
                     layer.msg('网络出错',{time: 2000,icon: 2});
                 });
             }
@@ -862,7 +862,7 @@ function addRightTr(data,tag,direction){
             rightTrHTML += '			<img src="/resources/web/images/head-icon.png" alt="">';
         }else if($(data[j]).data('type') === 'department'){
             rightTrHTML += '			<input name="contacts-choice" data-count="'+$(data[j]).data('count')+'" data-type="'+$(data[j]).data('type')+'"  data-receiveLastName="'+($(data[j]).data('receivelastname')||$(data[j]).data('lastname'))+'" data-departmentId="'+($(data[j]).data('departmentid'))+'"type="checkbox" class="contacts-table-input">';
-            rightTrHTML += '			<span class="layui-icon layui-icon-file"></span>';
+            rightTrHTML += '			<span class="layui-icon layui-icon-group"></span>';
         }else if($(data[j]).data('type') === 'subcompany'){
             rightTrHTML += '			<input name="contacts-choice" data-count="'+$(data[j]).data('count')+'" data-type="'+$(data[j]).data('type')+'"  data-receiveLastName="'+($(data[j]).data('receivelastname')||$(data[j]).data('lastname'))+'" data-supsubcomid="'+($(data[j]).data('supsubcomid'))+'"type="checkbox" class="contacts-table-input">';
             rightTrHTML += '			<span class="layui-icon layui-icon-home"></span>';

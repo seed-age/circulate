@@ -61,6 +61,7 @@ html,body{
     padding: 0 2px;
     line-height: 30px;
     cursor: pointer;
+    height: 30px;
 }
 /* .contact-tree .tree-branch.active, */
 .contact-tree .tree-branch:hover{
@@ -334,6 +335,23 @@ html,body{
 .dialog-contacts .contacts-table td .layui-icon-home,
 .dialog-contacts .contacts-table td .layui-icon-file{
     font-size: 20px;
+    background: #ccd2d8;
+    color: #fff;
+    display: block;
+    border-radius: 2px;
+    padding: 2px 0px;
+}
+.dialog-contacts .contacts-table td img{
+    width: 30px;
+    height: 26px;
+}
+.dialog-contacts .contacts-table td .layui-icon-group{
+    background: #ccd2d8;
+    color: white;
+    padding: 3px 0px 0 0px;
+    font-size: 20px;
+    border-radius: 2px;
+    display: block;
 }
 .dialog-contacts .contacts-table td input[name="contacts-choice"]{
     display: none;
