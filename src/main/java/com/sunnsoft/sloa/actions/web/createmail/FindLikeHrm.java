@@ -41,7 +41,8 @@ public class FindLikeHrm extends BaseParameter {
 
 		try {
 			//查询
-			List<UserMssage> list = Services.getUserMssageService().createHelper().getLastName().Like(likeName).list();
+			List<UserMssage> list = Services.getUserMssageService().createHelper().startOr().getStatus().Eq("0").getStatus().Eq("1")
+					.getStatus().Eq("2").getStatus().Eq("3").stopOr().getLastName().Like(likeName).list();
 
 			List<Map<String, Object>> userList = new ArrayList<Map<String, Object>>();
 
