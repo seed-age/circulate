@@ -6,7 +6,9 @@ import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.*;
 import com.sunnsoft.sloa.helper.ReceiveBean;
 import com.sunnsoft.sloa.util.ConstantUtils;
+import com.sunnsoft.sloa.util.HrmMessagePushUtils;
 import com.sunnsoft.sloa.util.HrmUtils;
+import com.sunnsoft.sloa.util.mail.MessageUtils;
 import com.sunnsoft.util.struts2.Results;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.gteam.db.dao.TransactionalCallBack;
@@ -324,10 +326,10 @@ public class InsertMail extends BaseParameter {
 				map.put("userId", mail.getUserId());
 
 				// 调用消息推送的方法 --> (web)
-//				HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, mail.getUserId(),1 , mail.getMailId());
-//
-//				// 推送消息 --> (APP)
-//				MessageUtils.pushEmobile(ids, 1, mail.getMailId(), null);
+				HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, mail.getUserId(),1 , mail.getMailId());
+
+				// 推送消息 --> (APP)
+				MessageUtils.pushEmobile(ids, 1, mail.getMailId(), null);
 
 				msg = "发送新建传阅成功!";
 				success = true;

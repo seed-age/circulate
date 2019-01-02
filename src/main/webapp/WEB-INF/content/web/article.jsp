@@ -1,4 +1,6 @@
+<%@ page import="java.util.Date" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +12,8 @@
 	<meta name="keywords" content="a,b,c">
 	<!-- 禁止浏览器从本地机的缓存中调阅页面内容 -->
 	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+	<meta http-equiv="expires" content="0">
 	<!-- 用来防止别人在框架里调用你的页面 -->
 	<meta http-equiv="Window-target" content="_top">
 	<!-- content的参数有all，none，index，noindex，follow，nofollow，默认是all -->
@@ -17,23 +21,25 @@
 	<!-- 收藏图标 -->
 	<link rel="Shortcut Icon" href="favicon.ico">
 	<!-- 网页不会被缓存 -->
-	<link rel="stylesheet" href="/resources/web/layui/css/layui.css">
-	<link rel="stylesheet" href="/resources/web/css/common.css">
-	<script src="/resources/web/js/jquery.min.js"></script>
-	<script src="/resources/web/js/jquerysession.js"></script>
-	<script src="/resources/web/layui/layui.js"></script>
-	<script src="/resources/web/js/base.js"></script>
+	<!-- 使用el表达式获取当前时间 -->
+	<% long date = new Date().getTime(); request.setAttribute("date", date); %>
+	<link rel="stylesheet" href="/resources/web/layui/css/layui.css?${date}">
+	<link rel="stylesheet" href="/resources/web/css/common.css?${date}">
+	<script src="/resources/web/js/jquery.min.js?${date}"></script>
+	<script src="/resources/web/js/jquerysession.js?${date}"></script>
+	<script src="/resources/web/layui/layui.js?${date}"></script>
+	<script src="/resources/web/js/base.js?${date}"></script>
 	<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
 	<!--[if lt IE 9]>
-	<script src="/resources/web/js/html5.min.js"></script>
-	<script src="/resources/web/js/respond.min.js"></script>
+	<script src="/resources/web/js/html5.min.js?${date}"></script>
+	<script src="/resources/web/js/respond.min.js?${date}"></script>
 	<![endif]-->
 	<!-- ***************以上是公共部分************ -->
-	<link rel="stylesheet" href="/resources/web/webupload/webuploader.css">
-	<script src="/resources/web/webupload/webuploader.js"></script>
-	<link rel="stylesheet" href="/resources/web/css/article.css">
-	<script src="/resources/web/js/article.js"></script>
-	<link rel="stylesheet" type="text/css" href="/resources/web/site/assets/styles/simditor.css" />
+	<link rel="stylesheet" href="/resources/web/webupload/webuploader.css?${date}">
+	<script src="/resources/web/webupload/webuploader.js?${date}"></script>
+	<link rel="stylesheet" href="/resources/web/css/article.css?${date}">
+	<script src="/resources/web/js/article.js?${date}"></script>
+	<link rel="stylesheet" type="text/css" href="/resources/web/site/assets/styles/simditor.css?${date}" />
 </head>
 <body id="mainBody" class="layui-layout layui-layout-admin" scroll="no" style="overflow-y: hidden;">
 

@@ -138,6 +138,8 @@ public class HrmUtils {
             List<Hrmdepartment> hrmdepartmentList = Services.getHrmdepartmentService().createHelper().getSupdepid().Eq(hrmdepartment.getId()).list();
             if (hrmdepartmentList.size() > 0) {
                 hrmdepartmentMap.put("count", getUserCount(hrmdepartmentList, countUser));
+            }else {
+                hrmdepartmentMap.put("count", countUser);
             }
         }else {
             hrmdepartmentMap.put("count", 0);

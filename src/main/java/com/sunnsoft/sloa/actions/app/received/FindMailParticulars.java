@@ -156,39 +156,39 @@ public class FindMailParticulars extends BaseParameter {
                                     }
                                     map.put("attachmentItemss", itemList);
 
-                                    List<Receive> receiveList = new ArrayList<>();
-                                    List<Receive> receives = mail.getReceives();
-                                    for (Receive receive : receives) {
-                                        Receive receivess = new Receive();
-                                        receivess.setReceiveId(receive.getReceiveId()); // 收件ID
-                                        receivess.setUserId(receive.getUserId()); // 收件人ID
-                                        receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
-                                        receivess.setLastName(receive.getLastName()); // 收件人姓名
-                                        receivess.setLoginId(receive.getLoginId()); // 收件人登录名
-                                        receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
-                                        receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
-                                        receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
-                                        receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
-                                        receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
-                                        receivess.setRemark(receive.getRemark()); // 确认信息备注
-                                        receivess.setMailState(receive.getMailState()); // 传阅筛选状态
-                                        receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
-                                        receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
-                                        receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
-                                        receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
-                                        receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
-                                        receivess.setSerialNum(receive.getSerialNum()); // 序号
-                                        receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
-                                        receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
-                                        receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
-                                        receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
-                                        receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
-                                        receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
-                                        // 存放添加该联系人的用户ID
-                                        receiveList.add(receivess);
-                                    }
-
-                                    map.put("receivess", receiveList);
+//									List<Receive> receiveList = new ArrayList<>();
+//									List<Receive> receives = mail.getReceives();
+//									for (Receive receive : receives) {
+//										Receive receivess = new Receive();
+//										receivess.setReceiveId(receive.getReceiveId()); // 收件ID
+//										receivess.setUserId(receive.getUserId()); // 收件人ID
+//										receivess.setWorkCode(receive.getWorkCode()); // 收件人工作编号
+//										receivess.setLastName(receive.getLastName()); // 收件人姓名
+//										receivess.setLoginId(receive.getLoginId()); // 收件人登录名
+//										receivess.setSubcompanyName(receive.getSubcompanyName()); // 收件人的分部全称
+//										receivess.setDepartmentName(receive.getDepartmentName()); // 收件人的部门全称
+//										receivess.setReceiveTime(receive.getReceiveTime()); // 接收时间
+//										receivess.setAffirmTime(receive.getAffirmTime()); // 确认时间
+//										receivess.setReceiveStatus(receive.getReceiveStatus()); // 收件状态: 0 未开封 1 已开封
+//										receivess.setRemark(receive.getRemark()); // 确认信息备注
+//										receivess.setMailState(receive.getMailState()); // 传阅筛选状态
+//										receivess.setStepStatus(receive.getStepStatus()); // 传阅流程状态
+//										receivess.setReceiveAttention(receive.getReceiveAttention()); // 收件人的关注状态
+//										receivess.setOpenTime(receive.getOpenTime()); // 记录打开传阅的时间
+//										receivess.setIfConfirm(receive.getIfConfirm()); // 是否确认
+//										receivess.setConfirmRecord(receive.getConfirmRecord()); // 确认/标识
+//										receivess.setSerialNum(receive.getSerialNum()); // 序号
+//										receivess.setAfreshConfim(receive.getAfreshConfim());// 是否重新确认
+//										receivess.setAcRecord(receive.getAcRecord()); // (重新)确认/标识
+//										receivess.setAfreshRemark(receive.getAfreshRemark());// (重新)确认信息备注
+//										receivess.setMhTime(receive.getMhTime()); // (重新)确认时间
+//										receivess.setJoinTime(receive.getJoinTime()); // 添加联系人的时间
+//										receivess.setReDifferentiate(receive.getReDifferentiate()); // 区别是谁添加的联系人,
+//										// 存放添加该联系人的用户ID
+//										receiveList.add(receivess);
+//									}
+//
+//									map.put("receivess", receiveList);
                                 }
                             });
 
@@ -309,38 +309,38 @@ public class FindMailParticulars extends BaseParameter {
                             }
                             map.put("attachmentItemss", itemList);
 
-                            List<Receive> receives = mail.getReceives();
-                            List<Receive> receivesList = new ArrayList<>();
-                            for (Receive receive1 : receives) {
-                                // 创建接收人对象
-                                Receive receivess = new Receive();
-                                receivess.setReceiveId(receive1.getReceiveId()); // 收件ID
-                                receivess.setUserId(receive1.getUserId()); // 接收人ID
-                                receivess.setWorkCode(receive1.getWorkCode()); // 接收人工作编号
-                                receivess.setLastName(receive1.getLastName()); // 接收人姓名
-                                receivess.setLoginId(receive1.getLoginId()); // 接收人登录名
-                                receivess.setSubcompanyName(receive1.getSubcompanyName()); // 分部全称
-                                receivess.setDepartmentName(receive1.getDepartmentName()); // 部门全称
-                                receivess.setReceiveTime(receive1.getReceiveTime()); // 接收时间(PS: 和传阅的发送时间一样)
-                                receivess.setJoinTime(receive1.getJoinTime());
-                                receivess.setReceiveStatus(receive1.getReceiveStatus());
-                                receivess.setMailState(receive1.getMailState());
-                                receivess.setStepStatus(receive1.getStepStatus());
-                                receivess.setOpenTime(receive1.getOpenTime());
-                                receivess.setIfConfirm(receive1.getIfConfirm());
-                                receivess.setAffirmTime(receive1.getAffirmTime());
-                                receivess.setRemark(receive1.getRemark());
-                                receivess.setConfirmRecord(receive1.getConfirmRecord());
-                                receivess.setSerialNum(receive1.getSerialNum());
-                                receivess.setAfreshConfim(receive1.getAfreshConfim());
-                                receivess.setAcRecord(receive1.getAcRecord());
-                                receivess.setMhTime(receive1.getMhTime());
-                                receivess.setReceiveAttention(receive1.getReceiveAttention());
-                                receivess.setReDifferentiate(receive1.getReDifferentiate());
-                                receivesList.add(receivess);
-
-                            }
-                            map.put("receivess", receivesList);
+//                            List<Receive> receives = mail.getReceives();
+//                            List<Receive> receivesList = new ArrayList<>();
+//                            for (Receive receive1 : receives) {
+//                                // 创建接收人对象
+//                                Receive receivess = new Receive();
+//                                receivess.setReceiveId(receive1.getReceiveId()); // 收件ID
+//                                receivess.setUserId(receive1.getUserId()); // 接收人ID
+//                                receivess.setWorkCode(receive1.getWorkCode()); // 接收人工作编号
+//                                receivess.setLastName(receive1.getLastName()); // 接收人姓名
+//                                receivess.setLoginId(receive1.getLoginId()); // 接收人登录名
+//                                receivess.setSubcompanyName(receive1.getSubcompanyName()); // 分部全称
+//                                receivess.setDepartmentName(receive1.getDepartmentName()); // 部门全称
+//                                receivess.setReceiveTime(receive1.getReceiveTime()); // 接收时间(PS: 和传阅的发送时间一样)
+//                                receivess.setJoinTime(receive1.getJoinTime());
+//                                receivess.setReceiveStatus(receive1.getReceiveStatus());
+//                                receivess.setMailState(receive1.getMailState());
+//                                receivess.setStepStatus(receive1.getStepStatus());
+//                                receivess.setOpenTime(receive1.getOpenTime());
+//                                receivess.setIfConfirm(receive1.getIfConfirm());
+//                                receivess.setAffirmTime(receive1.getAffirmTime());
+//                                receivess.setRemark(receive1.getRemark());
+//                                receivess.setConfirmRecord(receive1.getConfirmRecord());
+//                                receivess.setSerialNum(receive1.getSerialNum());
+//                                receivess.setAfreshConfim(receive1.getAfreshConfim());
+//                                receivess.setAcRecord(receive1.getAcRecord());
+//                                receivess.setMhTime(receive1.getMhTime());
+//                                receivess.setReceiveAttention(receive1.getReceiveAttention());
+//                                receivess.setReDifferentiate(receive1.getReDifferentiate());
+//                                receivesList.add(receivess);
+//
+//                            }
+//                            map.put("receivess", receivesList);
 
                             // 判断如果是未读
                             if (receive.getMailState() == ConstantUtils.RECEIVE_UNREAD_STATUS) {
@@ -394,7 +394,7 @@ public class FindMailParticulars extends BaseParameter {
                             receive.setMailState(ConstantUtils.RECEIVE_READ_STATUS); // 收件人的传阅筛选状态 6 表示 已读
                             receive.setIfConfirm(true); // true 表示 已确认该传阅
                             receive.setAffirmTime(new Date()); // 设置确认时间
-                            receive.setRemark("传阅已确认.."); // 确认时的 确认信息
+                            receive.setRemark("传阅已确认"); // 确认时的 确认信息
                             // 设置确认/标识
 //							receive.setConfirmRecord(receive.getRemark() + "  确认(" + dateToString(receive.getAffirmTime()) + ")");
                             receive.setConfirmRecord(receive.getRemark() + "  (" + dateToString(receive.getAffirmTime()) + ")");
@@ -473,8 +473,19 @@ public class FindMailParticulars extends BaseParameter {
             msg = "网络繁忙,请稍后再试!";
             json = "null";
             e.printStackTrace();
+
+            // 对静态变量恢复初始值.
+            status = false; // 判断该传阅是否 是未读状态
+            receivedStatus = false; // 判断该传阅是否 是已读状态
+            ifReadStatus = false; // 判断该传阅是否 勾选了 开封已阅确认 这个选项.
+
             return Results.GLOBAL_FORM_JSON;
         }
+
+        // 对静态变量恢复初始值.
+        status = false; // 判断该传阅是否 是未读状态
+        receivedStatus = false; // 判断该传阅是否 是已读状态
+        ifReadStatus = false; // 判断该传阅是否 勾选了 开封已阅确认 这个选项.
 
         if (json != null) {
             return Results.GLOBAL_FORM_JSON;

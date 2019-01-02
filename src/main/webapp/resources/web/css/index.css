@@ -48,6 +48,13 @@
 .content-box>.layui-row + .layui-row{
     border-left: 1px solid #0a6ea3;
 }
+.content-box .layui-short{
+    width:40%;
+}
+.content-box .layui-long{
+    width:60%;
+}
+
 .content-box .layui-row .content-item + .content-item {
     border-left: 1px solid #e9ebec;
 }

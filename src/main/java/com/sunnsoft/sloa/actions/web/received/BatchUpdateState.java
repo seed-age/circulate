@@ -76,10 +76,10 @@ public class BatchUpdateState extends BaseParameter {
 					receive.setMailState(6); // 收件人的传阅筛选状态 6 表示 已读
 					receive.setIfConfirm(true); // true 表示 已确认该传阅
 					receive.setAffirmTime(new Date()); // 设置确认时间
-					receive.setRemark("传阅已确认.."); // 确认时的 确认信息
+					receive.setRemark("传阅已确认"); // 确认时的 确认信息
 					// 设置确认/标识
 					receive.setConfirmRecord(
-							receive.getRemark() + "  确认(" + dateToString(receive.getAffirmTime()) + ")");
+							receive.getRemark() + "  (" + dateToString(receive.getAffirmTime()) + ")");
 					receive.setStepStatus(1); // 修改当前收件人这边的传阅流程状态 1 表示传阅中
 
 					// 更新数据

@@ -393,18 +393,19 @@ function uploaderFile(){
 
     });
     // 重新上传
-    function retry() {
-        uploader.retry();
+    function retry(file) {
+        uploader.retry(file);
     }
     // 上传出错
     uploader.on( 'uploadError', function( file ) {
         layer.msg('上传失败',{time: 2000,icon: 2});
+        console.log(file.id)
         var $li = $('#'+file.id);
         $li.append($('<span class="reset">重新上传</span>'));
         $( '#'+file.id ).find('.state').html('上传失败');
         $li.children('.reset').on('click',function(){
             $(this).remove();
-            retry();
+            retry(file);
         });
     });
 
@@ -565,7 +566,7 @@ function sendData(flg){
         if(!$('.mf_container .mf_list').children().length>0){
             layui.use('layer', function(){
                 var layer = layui.layer;
-                layer.msg('请填写收送人',{time: 2000});
+                layer.msg('请填写收件人',{time: 2000});
             });
             return false;
         };

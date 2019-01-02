@@ -45,7 +45,12 @@ public class BatchDeleteReceived extends BaseParameter {
 			json = "null";
 			return Results.GLOBAL_FORM_JSON;
 		}
-		Receive lastReceive = ress.get(ress.size() - 1);
+
+		Receive lastReceive = null;
+		if (receiveUserId.length > 1) {
+			lastReceive = ress.get(ress.size() - 1);
+		}
+
 		try {
 
 			// 遍历收件人数组
@@ -58,8 +63,10 @@ public class BatchDeleteReceived extends BaseParameter {
 				// 获取要删除的传阅是谁添加的
 				Long reDifferentiate = receive.getReDifferentiate();
 
-				if (lastReceive.getUserId() == receive.getUserId()){
-					continue;
+				if (lastReceive != null) {
+					if (lastReceive.getUserId() == receive.getUserId()){
+						continue;
+					}
 				}
 
 				// 判断 删除传阅对象, 有两种情况 : 一. 是发件人可以删除所有的传阅对象 , 二是 谁添加该传阅对象 谁才有权限删除
@@ -89,7 +96,22 @@ public class BatchDeleteReceived extends BaseParameter {
 				// 获取最新的接收人数据
 				List<Receive> receives = newMail.getReceives();
 				// 遍历
+				boolean flag = false;
 				for (Receive receive : receives) {
+					long userId = receive.getUserId();
+
+					for (Long id : receiveUserId) {
+						// 如果当前ID 和 被删除的ID相同, 则跳过此次循环
+						if (userId == id) {
+							flag = true;
+							continue;
+						}
+					}
+
+					if (flag) {
+						flag = false;
+						continue;
+					}
 					// 取出接收人姓名
 					String lastName = receive.getLastName();
 					// 进行拼接

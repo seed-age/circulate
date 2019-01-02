@@ -20,7 +20,7 @@ public class LoginUser extends BaseParameter {
 		//根据SSO登录获取当前用户的session
 		String loginId = LenovoCloudSDKUtils.getLoginId();
 
-		//String loginId = "zhangluoyun";
+//		String loginId = "xuchunlei";
 //		loginId = "limin5";
 		// 根据loginId查询用户信息
 		json = Services.getUserMssageService().createHelper().getLoginId().Eq(loginId).json().uniqueJson();

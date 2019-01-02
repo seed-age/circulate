@@ -128,10 +128,6 @@ public class FindMailParticulars extends BaseParameter {
 
 								@Override
 								public void each(Mail mail, Map<String, Object> map) {
-
-									// 按照实地徐经理的要求, 把传阅内容去掉 或者设置为  null
-									map.put("mailContent", null);
-
 									List<AttachmentItem> itemList = new ArrayList<>();
 									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
 									for (AttachmentItem attachmentItem : attachmentItems) {
@@ -205,10 +201,6 @@ public class FindMailParticulars extends BaseParameter {
 
 								@Override
 								public void each(Mail mail, Map<String, Object> map) {
-
-									// 按照实地徐经理的要求, 把传阅内容去掉 或者设置为  null
-									map.put("mailContent", null);
-
 									List<AttachmentItem> itemList = new ArrayList<>();
 									List<AttachmentItem> attachmentItems = mail.getAttachmentItems();
 									for (AttachmentItem attachmentItem : attachmentItems) {
@@ -366,7 +358,7 @@ public class FindMailParticulars extends BaseParameter {
 							receive.setMailState(ConstantUtils.RECEIVE_READ_STATUS); // 收件人的传阅筛选状态 6 表示 已读
 							receive.setIfConfirm(true); // true 表示 已确认该传阅
 							receive.setAffirmTime(new Date()); // 设置确认时间
-							receive.setRemark("传阅已确认.."); // 确认时的 确认信息
+							receive.setRemark("传阅已确认"); // 确认时的 确认信息
 							// 设置确认/标识
 //						receive.setConfirmRecord(receive.getRemark() + "  确认(" + dateToString(receive.getAffirmTime()) + ")");
 							receive.setConfirmRecord(receive.getRemark() + "  (" + dateToString(receive.getAffirmTime()) + ")");

@@ -40,7 +40,7 @@ public class HrmUserSchedule {
 	private void init() {
 		LOGGER.warn("初始化OA联系人!");
 		try {
-			this.doJob();
+//			this.doJob();
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.warn("================初始化OA联系人失败=====================");

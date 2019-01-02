@@ -250,6 +250,7 @@ $(document).ready(function(){
         // 收到传阅的确认与重新确认按钮
         $(document).on('click','.btn-all .affirm-btn,.btn-all .anew-btn',function(e){
             layer.prompt({
+                maxlength: 0,
                 formType: 2,
                 skin: 'layui-dialog',
                 title: '确认信息',
@@ -260,8 +261,13 @@ $(document).ready(function(){
                     $(layero).find('.layui-layer-input').attr('placeholder','请输入传阅的确认信息备注')
                 }
             }, function(value, index, elem){
-                if($(elem).val()===''){
+                var value = $.trim($(elem).val());
+                if(value===''){
                     layer.msg('请输入内容',{time: 2000,icon: 2});
+                    return false;
+                }
+                if(value.length>40){
+                    layer.msg('确认内容不能超过40个字',{time: 2000,icon: 2});
                     return false;
                 }
                 $.ajax({
