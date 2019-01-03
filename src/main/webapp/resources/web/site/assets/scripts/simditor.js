@@ -4443,19 +4443,19 @@
                     }
                     $img.addClass('uploading');
                     $img.data('file', file);
-                    return _this.editor.uploader.readImageFile(file.obj, function(img) {
-                        var src;
-                        if (!$img.hasClass('uploading')) {
-                            return;
-                        }
-                        src = img ? img.src : _this.defaultImage;
-                        return _this.loadImage($img, src, function() {
-                            if (_this.popover.active) {
-                                _this.popover.refresh();
-                                return _this.popover.srcEl.val(_this._t('uploading')).prop('disabled', true);
-                            }
-                        });
-                    });
+                    // return _this.editor.uploader.readImageFile(file.obj, function(img) {
+                    //   var src;
+                    //   if (!$img.hasClass('uploading')) {
+                    //     return;
+                    //   }
+                    //   src = img ? img.src : _this.defaultImage;
+                    //   return _this.loadImage($img, src, function() {
+                    //     if (_this.popover.active) {
+                    //       _this.popover.refresh();
+                    //       return _this.popover.srcEl.val(_this._t('uploading')).prop('disabled', true);
+                    //     }
+                    //   });
+                    // });
                 };
             })(this));
             uploadProgress = $.proxy(this.editor.util.throttle(function(e, file, loaded, total) {
@@ -4507,7 +4507,9 @@
                     }
                     if (result.success === false) {
                         msg = result.msg || _this._t('uploadFailed');
-                        alert(msg);
+                        // alert(msg);
+                        layer.msg(msg,{time: 2000,icon: 2});
+                        return false;
                         img_path = _this.defaultImage;
                     } else {
                         img_path = result.file_path;
@@ -4873,7 +4875,7 @@
             return this.button.loadImage(this.target, src, (function(_this) {
                 return function(img) {
                     var blob;
-                    if (!img) {
+                    if (!img && src !== '') {
                         layer.msg('图片上传失败，请查看路径是否正确',{time: 2000,icon: 2});
                         return;
                     }

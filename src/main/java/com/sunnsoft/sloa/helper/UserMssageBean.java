@@ -1,17 +1,25 @@
 package com.sunnsoft.sloa.helper;
 
-import com.sunnsoft.sloa.db.vo.UserMssage;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+
 import org.apache.commons.lang3.StringUtils;
+
 import org.gteam.db.helper.hibernate.Each;
 import org.gteam.db.helper.hibernate.HelperException;
 import org.gteam.db.helper.hibernate.ScrollEach;
 import org.gteam.db.helper.json.EachEntity2Map;
 import org.gteam.util.EntityUtils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
+import com.sunnsoft.sloa.db.vo.*;
 
 /**
  *  
@@ -824,6 +832,68 @@ public class UserMssageBean {
 	    	temp = defaultValue;
 	    }
 	    return setBoxSession(temp);
+	}
+	
+	/**
+	*Name:手机号码
+	*Comment:手机号码
+	*/
+
+	public UserMssageBean setMobile(String mobile){
+		paramTypeMap.put("mobile", String.class);
+		paramValueMap.put("mobile", mobile);
+		if(this.current != null){
+			current.setMobile(mobile);
+		}
+		return this;
+	}
+
+	/**
+	*Name:手机号码
+	*Comment:手机号码
+	*/
+
+	public UserMssageBean setMobileIfNotNull(String mobile){
+	    if(mobile == null){
+	    	return this;
+	    }
+		return setMobile(mobile);
+	}
+	/**
+	*Name:手机号码
+	*Comment:手机号码
+	*/
+
+	public UserMssageBean setMobileWithDefaultValueWhenNull(String mobile,String defaultValue){
+		String temp = mobile;
+	    if(mobile == null){
+	    	temp = defaultValue;
+	    }
+		return setMobile(temp);
+	}
+	
+	/**
+	*Name:手机号码
+	*Comment:手机号码
+	*/
+
+	public UserMssageBean setMobileIfNotNullAndNotEmpty(String mobile){
+		if(StringUtils.isEmpty(mobile)){
+	    	return this;
+	    }
+	    return setMobile(mobile);
+	}
+	/**
+	*Name:手机号码
+	*Comment:手机号码
+	*/
+
+	public UserMssageBean setMobileWithDefaultValueWhenNullOrEmpty(String mobile,String defaultValue){
+		String temp = mobile;
+		if(StringUtils.isEmpty(mobile)){
+	    	temp = defaultValue;
+	    }
+	    return setMobile(temp);
 	}
 	
 	/**

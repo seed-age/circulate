@@ -5,7 +5,7 @@
 	<display-name>sola</display-name>
 	<description>sola</description>
 
-	<!--SSO生产环境 过滤器 配置开始 -->
+	<!--SSO生产环境 过滤器 配置开始
 	<filter>
 		<filter-name>checkLoginFilter</filter-name>
 		<filter-class>
@@ -21,13 +21,13 @@
 		</init-param>
 	</filter>
 	<filter-mapping>
-		<filter-name>checkLoginFilter</filter-name>
-		<!-- 需要过滤 可以再添加 -->
+		<filter-name>checkLoginFilter</filter-name> -->
+		<!-- 需要过滤 可以再添加
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping>-->
 	<!--SSO 过滤器 配置结束 -->
 
-	<!--SSO API配置开始 -->
+	<!--SSO API配置开始
 	<servlet>
 		<servlet-name>checkLoginServlet</servlet-name>
 		<servlet-class>com.pactera.sso.client.servlet.CheckLoginServlet</servlet-class>
@@ -43,10 +43,10 @@
 	<servlet-mapping>
 		<servlet-name>checkLoginServlet</servlet-name>
 		<url-pattern>/checkLoginAPI</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping>-->
 	<!--SSO API配置结束-->
 
-	<!--SSO 监听器 配置开始-->
+	<!--SSO 监听器 配置开始
 	<servlet>
 		<servlet-name>ssoLogoutServlet</servlet-name>
 		<servlet-class>com.pactera.sso.client.servlet.SsoLocalModelLogoutServlet</servlet-class>
@@ -108,7 +108,7 @@
 	<servlet-mapping>
 		<servlet-name>ssoForbiddenSystemServlet</servlet-name>
 		<url-pattern>/updateIsForbidden.axd</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping>-->
 
 	<!--SSO生产环境 监听器 配置结束-->
 

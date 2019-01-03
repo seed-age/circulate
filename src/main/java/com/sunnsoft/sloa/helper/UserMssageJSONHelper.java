@@ -1,25 +1,34 @@
 package com.sunnsoft.sloa.helper;
 
-import com.alibaba.fastjson.serializer.NameFilter;
-import com.alibaba.fastjson.serializer.ValueFilter;
-import com.sunnsoft.sloa.db.vo.UserMssage;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+
+import java.lang.reflect.InvocationTargetException;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.gteam.db.dao.PageList;
-import org.gteam.db.dao.PageScroll;
+
+import com.alibaba.fastjson.serializer.NameFilter;
+import com.alibaba.fastjson.serializer.ValueFilter;
 import org.gteam.db.dao.TransactionalCallBack;
 import org.gteam.db.helper.hibernate.Each;
 import org.gteam.db.helper.hibernate.HelperException;
-import org.gteam.db.helper.json.EachEntity2Map;
 import org.gteam.db.helper.json.EachJSON;
 import org.gteam.db.helper.json.FilterValue;
+import com.sunnsoft.sloa.db.vo.*;
 import org.gteam.service.IService;
-import org.gteam.util.EntityUtils;
 import org.gteam.util.FastJSONUtils;
 import org.gteam.util.JSONUtils;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import org.gteam.db.dao.PageList;
+import org.gteam.db.dao.PageScroll;
+import org.gteam.db.helper.json.EachEntity2Map;
+import org.gteam.util.EntityUtils;
 
 @SuppressWarnings("unchecked")
 public class UserMssageJSONHelper {
@@ -864,6 +873,25 @@ public class UserMssageJSONHelper {
 		return this;
 	}
 	/**
+	 * 序列化json时候，包含 mobile (手机号码)字段
+	 * @return
+	 */
+	public UserMssageJSONHelper includeMobile(){
+		this.excludeAll = true;
+		this.includes.add("mobile");
+		return this;
+	}
+	
+	/**
+	 * 序列化json时候，排除 mobile (手机号码)字段
+	 * @return
+	 */
+	public UserMssageJSONHelper excludeMobile(){
+		this.excludeAll = false;
+		this.excludes.add("mobile");
+		return this;
+	}
+	/**
 	 * 序列化json时候，包含 createTime (创建时间)字段
 	 * @return
 	 */
@@ -1048,6 +1076,18 @@ public class UserMssageJSONHelper {
 	}
 	
 	/**
+	 * 序列化json时候， 替换 key mobile 为 指定的keyName
+	 * @param keyName
+	 * @return
+	 */
+	public UserMssageJSONHelper replaceKeyForMobile(String keyName){
+		this.enableNameFilter = true;
+		this.replaceMap.put("mobile", keyName);
+		FastJSONUtils.addNameFilterToJsonHelper(nameFilters, UserMssage.class, "mobile", keyName);
+		return this;
+	}
+	
+	/**
 	 * 序列化json时候， 替换 key createTime 为 指定的keyName
 	 * @param keyName
 	 * @return
@@ -1227,6 +1267,19 @@ public class UserMssageJSONHelper {
 		this.enableValueFilter = true;
 		filterValue.setFieldReplaceMap(this.replaceMap);
 		FastJSONUtils.addValueFilterToJsonHelper(valueFilters, UserMssage.class, String.class, filterValue, "boxSession");
+		return this;
+	}
+	
+	/**
+	 * 序列化json时候， 替换 mobile 的值为其他值
+	 * @param filterValue
+	 * @return
+	 */
+	
+	public UserMssageJSONHelper filterMobile(FilterValue<String> filterValue){
+		this.enableValueFilter = true;
+		filterValue.setFieldReplaceMap(this.replaceMap);
+		FastJSONUtils.addValueFilterToJsonHelper(valueFilters, UserMssage.class, String.class, filterValue, "mobile");
 		return this;
 	}
 	

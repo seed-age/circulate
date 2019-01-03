@@ -64,6 +64,11 @@
         <comment>ç½çsession</comment>
       </column>
     </property>
+    <property name="mobile" type="string" unique="false" optimistic-lock="true" lazy="false" generated="never">
+      <column name="mobile" length="64">
+        <comment>ææºå·ç </comment>
+      </column>
+    </property>
     <property name="createTime" type="java.util.Date" unique="false" optimistic-lock="true" lazy="false" generated="never">
       <column name="create_time" length="19">
         <comment>åå»ºæ¶é´</comment>

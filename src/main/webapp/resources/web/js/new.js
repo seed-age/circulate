@@ -85,7 +85,7 @@ $(document).ready(function(){
             upload :{
                 url : '/web/createmail/insert-upload-image.htm', //文件上传的接口地址
                 params: null, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交
-                fileKey: 'imageFileName', //服务器端获取文件数据的参数名
+                fileKey: 'fileData', //服务器端获取文件数据的参数名
                 connectionCount: 3,
                 leaveConfirm: '正在上传文件'
             }
@@ -399,7 +399,6 @@ function uploaderFile(){
     // 上传出错
     uploader.on( 'uploadError', function( file ) {
         layer.msg('上传失败',{time: 2000,icon: 2});
-        console.log(file.id)
         var $li = $('#'+file.id);
         $li.append($('<span class="reset">重新上传</span>'));
         $( '#'+file.id ).find('.state').html('上传失败');

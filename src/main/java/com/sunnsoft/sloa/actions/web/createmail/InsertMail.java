@@ -1,14 +1,21 @@
 package com.sunnsoft.sloa.actions.web.createmail;
 
+import cc.seedland.sdk.exceptions.ClientException;
+import cc.seedland.sdk.urm.UrmClient;
+import cc.seedland.sdk.urm.model.SendSmsResponse;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
+import com.sunnsoft.sloa.config.Config;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.*;
 import com.sunnsoft.sloa.helper.ReceiveBean;
 import com.sunnsoft.sloa.util.ConstantUtils;
 import com.sunnsoft.sloa.util.HrmMessagePushUtils;
 import com.sunnsoft.sloa.util.HrmUtils;
+import com.sunnsoft.sloa.util.UrmClientUtils;
 import com.sunnsoft.sloa.util.mail.MessageUtils;
+import com.sunnsoft.util.DateUtils;
 import com.sunnsoft.util.struts2.Results;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.gteam.db.dao.TransactionalCallBack;
@@ -16,6 +23,7 @@ import org.gteam.service.IService;
 import org.springframework.util.Assert;
 import org.apache.log4j.Logger;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -53,6 +61,9 @@ public class InsertMail extends BaseParameter {
 	private Boolean ifSecrecy = false; // 传阅密送
 	private Boolean ifAdd = false; // 允许新添加人员
 	private Boolean ifSequence = false; // 有序确认
+
+	@Resource
+	private Config config;
 
 	@Override
 	public String execute() throws Exception {
@@ -101,11 +112,10 @@ public class InsertMail extends BaseParameter {
 
 		// 把接收人的名称拼接成一个字符串
 		Set<UserMssage> userMssageSet = new HashSet<>();
-//        List<UserMssage> userMssages = null;
+		StringBuilder sb = new StringBuilder();
 		String allName = "";
 
 		try {
-			StringBuilder sb = new StringBuilder();
 
 			if (subcompanyIds != null) { // 不为 null, 表示添加了分部
 				// 根据分部ID查询信息
@@ -149,15 +159,7 @@ public class InsertMail extends BaseParameter {
 
 			}
 
-			if(userMssageSet.size() == 0){
-				msg = "请选择联系人!";
-				success = false;
-				code = "205";
-				json = "null";
-				return Results.GLOBAL_FORM_JSON;
-			}
 
-			allName = sb.toString().substring(0, sb.toString().length() - 1);
 		} catch (Exception e) {
 			e.printStackTrace();
 			msg = "请添加存在的联系人!";
@@ -179,6 +181,7 @@ public class InsertMail extends BaseParameter {
 
 		// 转义
 		String string = StringEscapeUtils.unescapeHtml4(mailContent);
+		title = StringEscapeUtils.unescapeHtml4(title);
 
 		// 根据当前用户ID 查询该用户的信息
 		UserMssage mssage = Services.getUserMssageService().createHelper().getUserId().Eq((int) userId).uniqueResult();
@@ -196,6 +199,16 @@ public class InsertMail extends BaseParameter {
 		 */
 		// 如果是true 表示发送传阅
 		if (transmission) {
+
+			if(userMssageSet.size() == 0){
+				msg = "请填写收件人";
+				success = false;
+				code = "205";
+				json = "null";
+				return Results.GLOBAL_FORM_JSON;
+			}
+
+			allName = sb.toString().substring(0, sb.toString().length() - 1);
 
 			Assert.notNull(userMssageSet, "接收人ID不能为空");
 			Assert.notNull(title, "传阅主题不能为空");
@@ -276,6 +289,8 @@ public class InsertMail extends BaseParameter {
 
 			// 拼接收件人的loginId
 			String receiverIds = "";
+			// 短信接收人的手机号码(手机号码以英文逗号分隔，不超过50个号码)
+			List<String> phoneList = new ArrayList<>();
 
 			int num = 0;
 			ReceiveBean bean = Services.getReceiveService().createHelper().bean();
@@ -284,6 +299,11 @@ public class InsertMail extends BaseParameter {
 				num++;
 				// 拼接
 				receiverIds += userMssage.getUserId()+ ",";
+
+				if (userMssage.getMobile() != null && !userMssage.getMobile().equals("")) {
+					phoneList.add(userMssage.getMobile());
+				}
+
 
 				try {
 					// 新增收件人记录
@@ -330,6 +350,19 @@ public class InsertMail extends BaseParameter {
 
 				// 推送消息 --> (APP)
 				MessageUtils.pushEmobile(ids, 1, mail.getMailId(), null);
+
+				if (mail.getIfNotify()) {
+					// 发送短信
+					LOGGER.warn("========================开始进行发送短信========================================");
+					// 1. 初始化
+					UrmClient urmClient = UrmClientUtils.getUrmClient(config);
+					// 2. 发送
+					Map<String, String> smsResult = new HashMap<>();
+					smsResult.put("title", mail.getTitle());
+					smsResult.put("time", DateUtils.dateToString(mail.getSendTime(), null));
+					smsResult.put("name", mail.getLastName());
+					UrmClientUtils.getSendSms(urmClient, phoneList, config, JSON.toJSONString(smsResult));
+				}
 
 				msg = "发送新建传阅成功!";
 				success = true;
@@ -384,7 +417,8 @@ public class InsertMail extends BaseParameter {
 						.setLoginId(mssage.getLoginId()).setSubcompanyName(mssage.getFullName())
 						.setDepartmentName(mssage.getDeptFullname()).setAllReceiveName(allName).setTitle(title)
 						.setMailContent(string).setCreateTime(new Date()).setSendTime(new Date())
-						.setCompleteTime(new Date()).setStatus(1).setIfImportant(ifImportant).setIfUpdate(ifUpdate)
+						.setCompleteTime(new Date()).setStatus(ConstantUtils.MAIL_HALFWAY_STATUS)
+						.setIfImportant(ifImportant).setIfUpdate(ifUpdate)
 						.setIfUpload(ifUpload).setIfRead(ifRead).setIfNotify(ifNotify).setIfRemind(ifRemind)
 						.setIfRemindAll(ifRemindAll).setIfSecrecy(ifSecrecy).setIfAdd(ifAdd).setIfSequence(ifSequence)
 						.setHasAttachment(hasAttachment).setEnabled(false).setAttention(false).setRuleName(ruleName)
@@ -413,7 +447,7 @@ public class InsertMail extends BaseParameter {
 			// 定义标识
 			boolean receiveStr = false;
 
-			if (receiveUserId != null) {
+			if (userMssageSet != null && userMssageSet.size() > 0) {
 
 				// 更新接收人数据
 				List<Receive> receives = mail.getReceives();

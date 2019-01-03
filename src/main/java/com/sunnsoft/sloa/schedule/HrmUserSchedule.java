@@ -149,8 +149,8 @@ public class HrmUserSchedule {
 					.setSubcompanyId1(userBean.getSubcompanyid1().getValue())
 					.setDsporder(userBean.getDsporder().floatValue())
 					.setFullName(userBean.getSubcompanyname().getValue()).setStatus(userBean.getStatus().getValue())
+					.setMobile(userBean.getMobile().getValue())
 					.insertUnique();
-
 			if (userMssage != null) {
 				count++;
 			}

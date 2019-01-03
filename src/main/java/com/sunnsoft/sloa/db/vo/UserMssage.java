@@ -75,6 +75,11 @@ public class UserMssage  implements java.io.Serializable {
 	*/
      private String boxSession;
 	/**
+	*Name:手机号码
+	*Comment:手机号码
+	*/
+     private String mobile;
+	/**
 	*Name:创建时间
 	*Comment:创建时间
 	*/
@@ -88,7 +93,7 @@ public class UserMssage  implements java.io.Serializable {
     public UserMssage() {
     }
 
-    public UserMssage(Integer userId, String workCode, String lastName, String loginId, String deptFullname, String fullName, String departmentId, String subcompanyId1, String status, Float dsporder, String boxSession, Date createTime, Date updateTime) {
+    public UserMssage(Integer userId, String workCode, String lastName, String loginId, String deptFullname, String fullName, String departmentId, String subcompanyId1, String status, Float dsporder, String boxSession, String mobile, Date createTime, Date updateTime) {
        this.userId = userId;
        this.workCode = workCode;
        this.lastName = lastName;
@@ -100,6 +105,7 @@ public class UserMssage  implements java.io.Serializable {
        this.status = status;
        this.dsporder = dsporder;
        this.boxSession = boxSession;
+       this.mobile = mobile;
        this.createTime = createTime;
        this.updateTime = updateTime;
     }
@@ -283,6 +289,21 @@ public class UserMssage  implements java.io.Serializable {
 	*/
     public void setBoxSession(String boxSession) {
         this.boxSession = boxSession;
+    }
+	/**
+	*Name:手机号码
+	*Comment:手机号码
+	*/
+    public String getMobile() {
+        return this.mobile;
+    }
+    
+	/**
+	*Name:手机号码
+	*Comment:手机号码
+	*/
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 	/**
 	*Name:创建时间

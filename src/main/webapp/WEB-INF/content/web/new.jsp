@@ -166,10 +166,10 @@
 										<div class="checked-item">
 											<input type="checkbox" id="ifAdd" value="允许添加新人员" title="允许添加新人员" lay-skin="primary" checked>
 										</div>
-										<a class="more" href="javascript:void(0)">更多发送选项</a>
+										<a class="more" href="javascript:void(0);">更多发送选项</a>
 									</div>
 									<div class="form-checked form-checked-pact" style="display:none;">
-										<div style="display:none;" class="checked-item">
+										<div class="checked-item">
 											<input type="checkbox" id="ifNotify" value="短信提醒" title="短信提醒" lay-skin="primary">
 										</div>
 										<div class="checked-item">

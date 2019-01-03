@@ -1,23 +1,29 @@
 package com.sunnsoft.sloa.helper;
 
-import com.sunnsoft.sloa.db.vo.UserMssage;
-import com.sunnsoft.sloa.service.UserMssageService;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.gteam.constants.SystemConstants;
-import org.gteam.db.dao.BaseDAO;
-import org.gteam.db.dao.PageList;
-import org.gteam.db.dao.PageScroll;
-import org.gteam.db.dao.TransactionalCallBack;
-import org.gteam.db.helper.hibernate.*;
-import org.gteam.service.IService;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-import java.util.*;
+import org.gteam.constants.SystemConstants;
+import org.gteam.db.dao.*;
+import org.gteam.db.helper.hibernate.*;
+import com.sunnsoft.sloa.db.vo.*;
+import com.sunnsoft.sloa.service.*;
+import org.gteam.service.IService;
 
 @SuppressWarnings("unchecked")
 public class UserMssageHelper extends HelperAbstract<UserMssage>{
@@ -58,6 +64,7 @@ public class UserMssageHelper extends HelperAbstract<UserMssage>{
 		titles.put("status", "用户状态");
 		titles.put("dsporder", "显示顺序");
 		titles.put("boxSession", "网盘session");
+		titles.put("mobile", "手机号码");
 		titles.put("createTime", "创建时间");
 		titles.put("updateTime", "更新时间");
 		Collections.unmodifiableMap(titles);
@@ -645,6 +652,16 @@ public class UserMssageHelper extends HelperAbstract<UserMssage>{
 	
 	
 	/**
+	*Name:手机号码
+	*Comment:手机号码
+	*/
+
+	public UserMssageStringProperty getMobile(){
+		return new UserMssageStringProperty("mobile",this);
+	}
+	
+	
+	/**
 	*Name:创建时间
 	*Comment:创建时间
 	*/
@@ -688,6 +705,7 @@ public class UserMssageHelper extends HelperAbstract<UserMssage>{
 			getSubcompanyId1().Eq(value);
 			getStatus().Eq(value);
 			getBoxSession().Eq(value);
+			getMobile().Eq(value);
 		} else {
 			getWorkCode().Like(value);
 			getLastName().Like(value);
@@ -698,6 +716,7 @@ public class UserMssageHelper extends HelperAbstract<UserMssage>{
 			getSubcompanyId1().Like(value);
 			getStatus().Like(value);
 			getBoxSession().Like(value);
+			getMobile().Like(value);
 		}
 		this.stopOr();
 		return this;
