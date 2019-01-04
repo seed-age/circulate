@@ -366,10 +366,10 @@ public class InsertMail extends BaseParameter {
 				map.put("userId", mail.getUserId());
 
 				// 调用消息推送的方法 --> (web)
-//				HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, mail.getUserId(),1 , mail.getMailId());
+				HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, mail.getUserId(),1 , mail.getMailId());
 
 				// 推送消息 --> (APP)
-//				MessageUtils.pushEmobile(ids, 1, mail.getMailId(), null);
+				MessageUtils.pushEmobile(ids, 1, mail.getMailId(), null);
 
 				if (mail.getIfNotify()) {
 					// 发送短信
