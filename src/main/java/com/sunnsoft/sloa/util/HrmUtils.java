@@ -28,21 +28,21 @@ public class HrmUtils {
      * @Param
      * @return
      **/
-    public static void getSubcompanyUserMssage(Integer subcompanyId, List<Hrmdepartment> departments, Set<UserMssage> userMssageSet, StringBuilder sb){
+    public static void getSubcompanyUserMssage(Integer subcompanyId, List<Hrmdepartment> departments, Set<UserMssage> userMssageSet, StringBuilder sb, int userId){
 
         if(subcompanyId != null && departments == null){
             // 获取当前分部下的所属部门
             List<Hrmdepartment> hrmdepartmentList = Services.getHrmdepartmentService().createHelper().getSubcompanyid1().Eq(subcompanyId).list();
-            getHrmdepartmentData(hrmdepartmentList, userMssageSet, sb);
+            getHrmdepartmentData(hrmdepartmentList, userMssageSet, sb, userId);
         }else {
 
-            getHrmdepartmentData(departments, userMssageSet, sb);
+            getHrmdepartmentData(departments, userMssageSet, sb, userId);
         }
 
     }
 
     // 抽取重复代码
-    private static void getHrmdepartmentData(List<Hrmdepartment> hrmdepartmentList, Set<UserMssage> userMssageSet, StringBuilder sb) {
+    private static void getHrmdepartmentData(List<Hrmdepartment> hrmdepartmentList, Set<UserMssage> userMssageSet, StringBuilder sb, int userId) {
 
         for (Hrmdepartment hrmdepartment : hrmdepartmentList) {
 
@@ -57,6 +57,11 @@ public class HrmUtils {
                     .list();
             if (userMssageList.size() > 0) {
                 for (UserMssage user : userMssageList) {
+
+                    if (user.getUserId() == userId) { // 如果接受人中有发件人, 直接跳过
+                        continue;
+                    }
+
                     userMssageSet.add(user); // 重复的不可以添加
                     if (sb != null) {
                         sb.append(user.getLastName()).append(";");
@@ -67,7 +72,7 @@ public class HrmUtils {
             // 获取当前部门所属的下级部门
             List<Hrmdepartment> hrmdepartments = Services.getHrmdepartmentService().createHelper().getSupdepid().Eq(hrmdepartment.getId()).list();
             if(hrmdepartments.size() > 0 ){
-                getSubcompanyUserMssage(null, hrmdepartments, userMssageSet, sb);
+                getSubcompanyUserMssage(null, hrmdepartments, userMssageSet, sb, userId);
             }
         }
     }

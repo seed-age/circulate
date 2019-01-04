@@ -77,7 +77,7 @@
                                 <th><input type="checkbox" name="all-checked" lay-skin="primary" lay-filter="all-checked"></th>
                                 <th>
                                     <!-- <img src="/resources/web/images/main-icon9.png" style="margin:0 3px;" alt=""> -->
-                                    <img src="/resources/web/images/main-icon9-cur.png" style="margin:0 3px;" alt="">
+                                    <img src="/resources/web/images/accessory-icon9.png" style="margin:0 3px;" alt="">
                                 </th>
                                 <th>传阅主题</th>
                                 <th>发起人</th>

@@ -48,33 +48,35 @@ public class UrmClientUtils {
     public static void getSendSms(UrmClient urmClient, List<String> phoneList, Config config, String param){
         try {
             if (phoneList.size() > 0) {
-                String mobiles = "";
-                int num = 0;
+//                String mobiles = "";
+//                int num = 0;
                 for (String mobile : phoneList) {
-                    num++;
-                    mobiles += mobile + ",";
-                    if (num == 50) {
-                        LOGGER.warn("================================== 调用发送短信的接口  进行批量发送短信 =========================================");
-                        LOGGER.warn("num: " + num);
-                        LOGGER.warn("mobiles: " + mobiles);
-                        mobiles = mobiles.substring(0, mobiles.length() - 1);
-                        getSendUrm(urmClient, mobiles, config, param);
-                        num = 0;
-                        mobiles = "";
-                        LOGGER.warn("================================== 批量发送短信完成 =========================================");
-                        LOGGER.warn("num: " + num);
-                        LOGGER.warn("mobiles: " + mobiles);
-                    }
+//                    num++;
+                    getSendUrm(urmClient, mobile, config, param);
+
+//                    mobiles += mobile + ",";
+//                    if (num == 50) {
+//                        LOGGER.warn("================================== 调用发送短信的接口  进行批量发送短信 =========================================");
+//                        LOGGER.warn("num: " + num);
+//                        LOGGER.warn("mobiles: " + mobiles);
+//                        mobiles = mobiles.substring(0, mobiles.length() - 1);
+//                        getSendUrm(urmClient, mobiles, config, param);
+//                        num = 0;
+//                        mobiles = "";
+//                        LOGGER.warn("================================== 批量发送短信完成 =========================================");
+//                        LOGGER.warn("num: " + num);
+//                        LOGGER.warn("mobiles: " + mobiles);
+//                    }
                 }
 
-                if (num > 0) {
-                    LOGGER.warn("================================== 一次发送短信不足五十个 =========================================");
-                    LOGGER.warn("mobiles: " + mobiles);
-                    mobiles = mobiles.substring(0, mobiles.length() - 1);
-                    getSendUrm(urmClient, mobiles, config, param);
-                    LOGGER.warn("================================== 发送短信完成 =========================================");
-                    LOGGER.warn("mobiles: " + mobiles);
-                }
+//                if (num > 0) {
+//                    LOGGER.warn("================================== 一次发送短信不足五十个 =========================================");
+//                    LOGGER.warn("mobiles: " + mobiles);
+//                    mobiles = mobiles.substring(0, mobiles.length() - 1);
+//                    getSendUrm(urmClient, mobiles, config, param);
+//                    LOGGER.warn("================================== 发送短信完成 =========================================");
+//                    LOGGER.warn("mobiles: " + mobiles);
+//                }
             }
         } catch (ClientException e) {
             e.printStackTrace();

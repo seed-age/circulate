@@ -108,12 +108,12 @@ public class InsertMailObject extends BaseParameter {
 					// 根据分部ID查询信息
 					List<Hrmsubcompany> hrmsubcompanyList = Services.getHrmsubcompanyService().findByIds(subcompanyIds);
 					for (Hrmsubcompany hrmsubcompany : hrmsubcompanyList) {
-						HrmUtils.getSubcompanyUserMssage(hrmsubcompany.getId(), null, userMssageSet, null);
+						HrmUtils.getSubcompanyUserMssage(hrmsubcompany.getId(), null, userMssageSet, null, userId.intValue());
 					}
 				}else if(departmentIds != null){
 
 					List<Hrmdepartment> hrmdepartmentList = Services.getHrmdepartmentService().findByIds(departmentIds);
-					HrmUtils.getSubcompanyUserMssage(null, hrmdepartmentList, userMssageSet, null);
+					HrmUtils.getSubcompanyUserMssage(null, hrmdepartmentList, userMssageSet, null, userId.intValue());
 
 				}else if(receiveUserIds != null) {
 
@@ -122,6 +122,9 @@ public class InsertMailObject extends BaseParameter {
 							.list();
 
 					for (UserMssage userMssage : userMssages) {
+						if (userMssage.getUserId() == userId.intValue()) { // 如果接受人中有发件人, 直接跳过
+							continue;
+						}
 						userMssageSet.add(userMssage);
 					}
 
@@ -132,6 +135,9 @@ public class InsertMailObject extends BaseParameter {
 							.getStatus().Eq(ConstantUtils.OA_USER_PROBATION_DELAY_STATUS)
 							.stopOr().list();
 					for (UserMssage userMssage : mssageList) {
+						if (userMssage.getUserId() == userId.intValue()) { // 如果接受人中有发件人, 直接跳过
+							continue;
+						}
 						userMssageSet.add(userMssage);
 					}
 
@@ -237,24 +243,25 @@ public class InsertMailObject extends BaseParameter {
 
 			if (res) { // true 表示联系人增加成功
 
+//				根据需求: 重新确认只有在添加附件的时候才会有 (2019-1-4 10:55  徐经理)
 				// 取出该传阅的联系人
-				List<Receive> receives = mail.getReceives();
-				int count = 0;
+//				List<Receive> receives = mail.getReceives();
+//				int count = 0;
 				// 遍历
-				for (Receive receive : receives) {
-					// 判断,只要是已经确认该传阅的联系人, 就需要重新确认
-					if (receive.getIfConfirm() == true) {
-						count++;
-						// 设置开启重新确认
-						receive.setAfreshConfim(true); // true 为开启重新确认
-						// 更新
-						Services.getReceiveService().update(receive);
-
-						if (count == 1) {
-							msg = msg + "  已经开启重新确认!";
-						}
-					}
-				}
+//				for (Receive receive : receives) {
+//					// 判断,只要是已经确认该传阅的联系人, 就需要重新确认
+//					if (receive.getIfConfirm() == true) {
+//						count++;
+//						// 设置开启重新确认
+//						receive.setAfreshConfim(true); // true 为开启重新确认
+//						// 更新
+//						Services.getReceiveService().update(receive);
+//
+//						if (count == 1) {
+//							msg = msg + "  已经开启重新确认!";
+//						}
+//					}
+//				}
 
 				String allReceiveName = mail.getAllReceiveName();
 				String allName = sb.toString();

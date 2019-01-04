@@ -40,8 +40,8 @@ public class ContStateNumber extends BaseParameter {
 			.initialCapacity(10)
 			// 设置并发数为5，即同一时间最多只能有5个线程往cache执行写入操作
 			.concurrencyLevel(20)
-			// 设置cache中的数据在访问之后的存活时间为20秒
-			.expireAfterAccess(10, TimeUnit.SECONDS)
+			// 设置cache中的数据在访问之后的存活时间为2秒
+			.expireAfterAccess(2, TimeUnit.SECONDS)
 			// 构建cache实例
 			.build();
 
@@ -113,7 +113,7 @@ public class ContStateNumber extends BaseParameter {
 		List<Receive> receiveList = Services.getReceiveService().createHelper().getUserId().Eq(userId).list();
 		for(Receive receive : receiveList){
 
-			Integer stepStatus = receive.getStepStatus();
+			int stepStatus = receive.getStepStatus();
 			if(stepStatus == 1){ // 1 发阅中 2 待办传阅 3 已完成
 				receiveHalfwayCount++;
 			}else if(stepStatus == 2){
@@ -122,10 +122,11 @@ public class ContStateNumber extends BaseParameter {
 				receiveCompleteCount++;
 			}
 
-			if(receive.getMailState() == 5){ // 5 未读 6 已读
+			int mailState = receive.getMailState();
+			if(mailState == 5){ // 5 未读 6 已读
 				receiveUnreadCount++;
 				continue;
-			}else if(receive.getMailState() == 6){
+			}else if(mailState == 6){
 				receiveReadCount++;
 				continue;
 			}

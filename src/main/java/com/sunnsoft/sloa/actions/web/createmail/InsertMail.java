@@ -117,18 +117,20 @@ public class InsertMail extends BaseParameter {
 
 		try {
 
+			int id = (int)userId;
+
 			if (subcompanyIds != null) { // 不为 null, 表示添加了分部
 				// 根据分部ID查询信息
 				List<Hrmsubcompany> hrmsubcompanyList = Services.getHrmsubcompanyService().findByIds(subcompanyIds);
 				for (Hrmsubcompany hrmsubcompany : hrmsubcompanyList) {
-					HrmUtils.getSubcompanyUserMssage(hrmsubcompany.getId(), null, userMssageSet, sb);
+					HrmUtils.getSubcompanyUserMssage(hrmsubcompany.getId(), null, userMssageSet, sb, id);
 				}
 			}
 
 			if(departmentIds != null){
 
 				List<Hrmdepartment> hrmdepartmentList = Services.getHrmdepartmentService().findByIds(departmentIds);
-				HrmUtils.getSubcompanyUserMssage(null, hrmdepartmentList, userMssageSet, sb);
+				HrmUtils.getSubcompanyUserMssage(null, hrmdepartmentList, userMssageSet, sb, id);
 
 			}
 
@@ -139,10 +141,23 @@ public class InsertMail extends BaseParameter {
 						.list();
 
 				for (UserMssage userMssage : userMssages) {
+
+					if (userMssage.getUserId() == id) { // 如果接受人中有发件人, 直接跳过
+						continue;
+					}
+
 					userMssageSet.add(userMssage);
 					sb.append(userMssage.getLastName()).append(";");
 				}
 
+				System.out.println(receiveUserId.length);
+				if (receiveUserId.length == 1 && userMssageSet.size() == 0) {
+					msg = "不可以自己对自己发送传阅";
+					success = false;
+					code = "205";
+					json = "null";
+					return Results.GLOBAL_FORM_JSON;
+				}
 
 			}
 
@@ -151,7 +166,12 @@ public class InsertMail extends BaseParameter {
 						.getStatus().Eq(ConstantUtils.OA_USER_OFFICIAL_STATUS).getStatus().Eq(ConstantUtils.OA_USER_TEMPORARY_STATUS)
 						.getStatus().Eq(ConstantUtils.OA_USER_PROBATION_DELAY_STATUS)
 						.stopOr().list();
+
 				for (UserMssage userMssage : mssageList) {
+
+					if (userMssage.getUserId() == id) { // 如果接受人中有发件人, 直接跳过
+						continue;
+					}
 					userMssageSet.add(userMssage);
 					sb.append(userMssage.getLastName()).append(";");
 				}
@@ -346,10 +366,10 @@ public class InsertMail extends BaseParameter {
 				map.put("userId", mail.getUserId());
 
 				// 调用消息推送的方法 --> (web)
-				HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, mail.getUserId(),1 , mail.getMailId());
+//				HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, mail.getUserId(),1 , mail.getMailId());
 
 				// 推送消息 --> (APP)
-				MessageUtils.pushEmobile(ids, 1, mail.getMailId(), null);
+//				MessageUtils.pushEmobile(ids, 1, mail.getMailId(), null);
 
 				if (mail.getIfNotify()) {
 					// 发送短信
@@ -380,6 +400,11 @@ public class InsertMail extends BaseParameter {
 
 			// 如果是false , 表示保存新建传阅
 		} else {
+
+			if (sb.toString() != null && !sb.toString().equals("")) {
+
+				allName = sb.toString().substring(0, sb.toString().length() - 1);
+			}
 
 			Mail mail = null;
 			if (mailId > 0) { // 如果mailId 大于 0 说明是第二次保存或是 N次
@@ -468,7 +493,7 @@ public class InsertMail extends BaseParameter {
 								.setMail(mail).setUserId(userMssage.getUserId()).setLastName(userMssage.getLastName()).setLoginId(userMssage.getLoginId())
 								.setReceiveStatus(ConstantUtils.RECEIVE_NOTOPEN_STATUS).setWorkCode(userMssage.getWorkCode()).setReceiveTime(mail.getSendTime())
 								.setSubcompanyName(userMssage.getFullName()).setDepartmentName(userMssage.getDeptFullname())
-								.setStepStatus(ConstantUtils.RECEIVE_AWAIT_STATUS).setMailState(ConstantUtils.RECEIVE_UNREAD_STATUS)
+								.setStepStatus(ConstantUtils.RECEIVE_NOTOPEN_STATUS).setMailState(ConstantUtils.RECEIVE_WAIT_STATUS)
 								.setJoinTime(mail.getCreateTime()).setIfConfirm(false)
 								.setReDifferentiate(userId);
 
@@ -496,6 +521,11 @@ public class InsertMail extends BaseParameter {
 
 			}else {
 				receiveStr = true;
+				// 更新接收人数据
+				List<Receive> receives = mail.getReceives();
+				if(receives.size() > 0 && receives != null) {
+					Services.getReceiveService().deleteList(receives);
+				}
 			}
 
 			// 判断

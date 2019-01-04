@@ -4,9 +4,11 @@ import com.sunnsoft.sloa.actions.common.BaseParameter;
 import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
+import com.sunnsoft.sloa.util.ConstantUtils;
 import com.sunnsoft.util.struts2.Results;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,6 +55,8 @@ public class BatchDeleteReceived extends BaseParameter {
 
 		try {
 
+			List<Long> delIds = new ArrayList<>();
+
 			// 遍历收件人数组
 			for (Long l : receiveUserId) {
 
@@ -71,10 +75,9 @@ public class BatchDeleteReceived extends BaseParameter {
 
 				// 判断 删除传阅对象, 有两种情况 : 一. 是发件人可以删除所有的传阅对象 , 二是 谁添加该传阅对象 谁才有权限删除
 				if (reDifferentiate.equals(userId) || mail.getUserId() == userId) {
-
+					delIds.add(receive.getUserId());
 					// 执行删除
 					Services.getReceiveService().delete(receive);
-
 					// 删除成功 + 1
 					count++;
 				} else {
@@ -100,8 +103,8 @@ public class BatchDeleteReceived extends BaseParameter {
 				for (Receive receive : receives) {
 					long userId = receive.getUserId();
 
-					for (Long id : receiveUserId) {
-						// 如果当前ID 和 被删除的ID相同, 则跳过此次循环
+					// 如果当前ID 和 被删除的ID相同, 则跳过此次循环
+					for (Long id : delIds) {
 						if (userId == id) {
 							flag = true;
 							continue;
@@ -129,16 +132,43 @@ public class BatchDeleteReceived extends BaseParameter {
 				// 如果当前传阅在删除传阅对象后, 只剩下一个传阅对象并且还是已确认的. 那么这封传阅则要变成已完成的.
 				// 查询当前传阅最新的数据
 				Mail mail1 = Services.getMailService().createHelper().getMailId().Eq(mailId).uniqueResult();
-				List<Receive> receives1 = mail1.getReceives();
-				if(receives1.size() == 1){
-					Receive receive1 = receives1.get(0);
-					if(receive1.getIfConfirm() && !receive1.getAfreshConfim()){ // 如果已确认, 则改变传阅状态
-						receive1.setStepStatus(3);
-						Services.getReceiveService().update(receive1);
-						mail1.setStepStatus(3);
-						Services.getMailService().update(mail1);
+				List<Receive> receiveList = mail1.getReceives();
+				List<Long> updateReceiveIdList = new ArrayList<>();
+				int sum = 0; // 统计收件人,确认传阅的数量
+				for (Receive receive : receiveList){
+
+					if(receive.getIfConfirm() && !receive.getAfreshConfim()){
+						sum++;
+						updateReceiveIdList.add(receive.getUserId());
+						continue;
 					}
+
+					// 如果当前ID 和 被删除的ID相同
+					for (Long id : delIds) {
+						if (receive.getUserId() == id) {
+							sum++;
+						}
+					}
+
 				}
+
+				// 如果确认数量相等于, 则改变传阅的流程状态
+				if (sum == receiveList.size()) {
+					Services.getReceiveService().createHelper().getUserId().In(updateReceiveIdList)
+							.bean().setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS).update();
+
+					mail1.setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS);
+					Services.getMailService().update(mail1);
+				}
+//				if(receives1.size() == 1){
+//					Receive receive1 = receives1.get(0);
+//					if(receive1.getIfConfirm() && !receive1.getAfreshConfim()){ // 如果已确认, 则改变传阅状态
+//						receive1.setStepStatus(3);
+//						Services.getReceiveService().update(receive1);
+//						mail1.setStepStatus(3);
+//						Services.getMailService().update(mail1);
+//					}
+//				}
 
 				success = true;
 				code = "200";

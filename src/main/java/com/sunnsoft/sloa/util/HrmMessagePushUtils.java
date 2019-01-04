@@ -6,6 +6,7 @@ import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.sloa.db.vo.UserMssage;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.struts2.ServletActionContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -75,7 +76,6 @@ public class HrmMessagePushUtils {
 					obj.element("title", java.net.URLEncoder.encode("", "utf-8"));
 					obj.element("requesttitle", java.net.URLEncoder.encode(message, "utf-8"));
 					obj.element("requestdetails", java.net.URLEncoder.encode("创建人: " + userName, "utf-8"));
-
 					obj.element("requesturl", java.net.URLEncoder.encode(path, "utf-8"));
 				} catch (UnsupportedEncodingException e1) {
 					// TODO Auto-generated catch block
@@ -160,7 +160,7 @@ public class HrmMessagePushUtils {
 
 		if(requesttitle == send) {
 //			String message = "收到一封新的传阅，请及时查看。";   张三-传阅标题-2018年11月29日 web
-			String message = mail.getLastName() + "-" + mail.getTitle() + "-" + dateToString(mail.getSendTime()) + "";; // 推送消息标题
+			String message = mail.getLastName() + "-" + StringEscapeUtils.unescapeHtml4(mail.getTitle()) + "-" + dateToString(mail.getSendTime()) + "";; // 推送消息标题
 			int type = 3; // 标识
 			String[] ids = receiverIds.split(",");
 			for (int i = 0; i < ids.length; i++) {
@@ -232,7 +232,7 @@ public class HrmMessagePushUtils {
 		switch (requesttitle) {
 			case 1:
 //			message = "收到一封新的传阅，请及时查看。";
-				message = mail.getLastName() + "-" + mail.getTitle() + "-" + dateToString(mail.getSendTime()) + "";
+				message = mail.getLastName() + "-" + StringEscapeUtils.unescapeHtml4(mail.getTitle()) + "-" + dateToString(mail.getSendTime()) + "";
 				type = 3;
 				break;
 			case 2:
@@ -246,7 +246,7 @@ public class HrmMessagePushUtils {
 					e.printStackTrace();
 					System.out.println("=========== web 消息推送失败============");
 				}
-				message = mail.getLastName() + "-" + mail.getTitle() + confirmDate + "被" + userMssage1.getLastName() + "确认";
+				message = mail.getLastName() + "-" + StringEscapeUtils.unescapeHtml4(mail.getTitle()) + confirmDate + "被" + userMssage1.getLastName() + "确认";
 				type = 1;
 				break;
 			case 3:
@@ -260,7 +260,7 @@ public class HrmMessagePushUtils {
 					e.printStackTrace();
 					System.out.println("=========== web 消息推送失败============");
 				}
-				message = mail.getLastName() + "-" + mail.getTitle() + openDate + "被" + userMssage.getLastName() + "开封";
+				message = mail.getLastName() + "-" + StringEscapeUtils.unescapeHtml4(mail.getTitle()) + openDate + "被" + userMssage.getLastName() + "开封";
 				type = 1;
 				break;
 			default:

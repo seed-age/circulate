@@ -53,16 +53,15 @@ public class GridReceiveList extends BaseParameter {
 		// 选择状态
 		switch (status) {
 			case 0: // 表示 展示所有收到的传阅
-
-				helper.getStepStatus().Ne(ConstantUtils.MAIL_STATUS);
+				helper.getMailState().Ne(ConstantUtils.RECEIVE_WAIT_STATUS);
 
 				break;
 
-//            case 1: // 1 传阅中
-//
-//                helper.getStepStatus().Eq(ConstantUtils.MAIL_HALFWAY_STATUS);
-//
-//                break;
+			case 1: // 1 传阅中
+
+				helper.getStepStatus().Eq(ConstantUtils.MAIL_HALFWAY_STATUS);
+
+				break;
 
 			case 2: // 待办传阅
 
@@ -70,11 +69,11 @@ public class GridReceiveList extends BaseParameter {
 
 				break;
 
-//            case 3: // 已完成
-//
-//                helper.getStepStatus().Eq(ConstantUtils.MAIL_COMPLETE_STATUS);
-//
-//                break;
+			case 3: // 已完成
+
+				helper.getStepStatus().Eq(ConstantUtils.MAIL_COMPLETE_STATUS);
+
+				break;
 
 			case 5: // 未读
 
@@ -86,13 +85,6 @@ public class GridReceiveList extends BaseParameter {
 
 				helper.getStepStatus().Eq(ConstantUtils.MAIL_HALFWAY_STATUS);
 
-				break;
-
-			default:
-				success = false;
-				msg = "没有你要查询的数据..";
-				code = "405";
-				json = "null";
 				break;
 		}
 

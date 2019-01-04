@@ -12,6 +12,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -45,21 +46,21 @@ public class MessageUtils {
 		switch (type) {
 			case 1:
 //			message = "收到一封新的传阅，请及时查看。"; 张三-传阅标题-2018年11月29日
-				message = mail.getLastName() + "-" + mail.getTitle() + "-" + dateToString(mail.getSendTime()) + "";
+				message = mail.getLastName() + "-" + StringEscapeUtils.unescapeHtml4(mail.getTitle()) + "-" + dateToString(mail.getSendTime()) + "";
 				status = 3;
 				break;
 			case 2:
 //			message = "一封传阅被确认，请及时查看。";  张三-传阅标题-2018年11月29日被xxx确认
 				UserMssage userMssage1 = Services.getUserMssageService().createHelper().getUserId().Eq(userId).uniqueResult();
 				String confirmDate = getDate(userId, mail);
-				message = mail.getLastName() + "-" + mail.getTitle() + confirmDate + "被" + userMssage1.getLastName() + "确认";
+				message = mail.getLastName() + "-" + StringEscapeUtils.unescapeHtml4(mail.getTitle()) + confirmDate + "被" + userMssage1.getLastName() + "确认";
 				status = 1;
 				break;
 			case 3:
 //			message = "一封传阅被开封并确认，请及时查看。";
 				UserMssage userMssage = Services.getUserMssageService().createHelper().getUserId().Eq(userId).uniqueResult();
 				String openDate = getDate(userId, mail);
-				message = mail.getLastName() + "-" + mail.getTitle() + openDate + "被" + userMssage.getLastName() + "开封";
+				message = mail.getLastName() + "-" + StringEscapeUtils.unescapeHtml4(mail.getTitle()) + openDate + "被" + userMssage.getLastName() + "开封";
 				status = 1;
 				break;
 			default:

@@ -12,6 +12,7 @@ $(document).ready(function(){
         var form = layui.form;
         var $ = layui.jquery;
         var storageData = {};
+        var commentPage = null;
         if(getQueryString('userId') && getQueryString('mailStatus') && getQueryString('article')){
             // $.session.set('userId',getQueryString('userId'));
             // $.session.set('mailStatus',getQueryString('mailStatus'));
@@ -32,9 +33,127 @@ $(document).ready(function(){
             }else{
                 $('.oa-receive-right').removeClass('active')
             }
-        })
+        });
+        // 继承
+        function extend(Child,Parent){
+            var F = function(){};
+            F.prototype = Parent.prototype;
+            Child.prototype = new F();
+            Child.prototype.constructor = Child;
+            Child.uber = Parent.prototype;
+        };
+        // 加载传阅对象
+        function ArticleObjext(options){
+            this.type = options.type;
+            this.url = options.url;
+            this.data = options.data;
+            this.pageRows;
+            this.totalRecord;//总记录数
+            this.curPage = 1;//当前页
+            this.templateTag = $(options.templateTag);
+        };
+        extend(ArticleObjext,Pages);
+        ArticleObjext.prototype.templateHTML = function(that,data){
+            layui.use(['form','table'], function(){
+                $('.object-tab .title-left').html('传阅对象（'+this.totalRecord+'个）');
+                $('input[name="object-total"]').val(this.totalRecord);
+                var form = layui.form;
+                this.templateTag.empty();//清空上次内容
+                var string = '';
+                if(data.length>0){
+                    for(var i=0;i<data.length;i++){
+                        string += '<tr>';
+                        string += '	<td><input value="'+data[i].userId+'" type="checkbox" name="choice" lay-filter="choice" lay-skin="primary"></td>';
+                        string += '	<td>'+data[i].lastName+'</td>';
+                        if(data[i].confirmRecord == null || data[i].confirmRecord == ''){
+                            string += '	<td>暂无记录</td>';
+                        }else{
+                            var remark = data[i].acRecord===null?data[i].confirmRecord:data[i].acRecord;
+                            string += '	<td>'+remark+'</td>';
+                        };
+                        string += '	<td>'+data[i].sendTime+'</td>';
+
+                        if(data[i].openTime == null || data[i].openTime == ''){
+                            string += '	<td>暂无记录</td>';
+                        }else{
+                            string += '	<td>'+data[i].openTime+'</td>';
+                        };
+                        //string += '	<td>'+data[i].openTime == null ? '暂无' : data[i].openTime +'</td>';
+
+                        if(data[i].mailStatusss===0){
+                            string += '	<td>未读</td>';
+                        }else if(data[i].mailStatusss===1){
+                            string += '	<td>已读</td>';
+                        }else if(data[i].mailStatusss===2){
+                            string += '	<td>确认</td>';
+                        }
+                        string += '	<td style="text-align:right;">';
+                        if(data[i].authority === true){
+                            if(storageData.mailStatus==='2' || stepStatus===3){
+
+                                string += '		<button type="button" title="删除" class="tab-icon tab-dele layui-disabled" disabled ><img src="/resources/web/images/handle04.png" alt=""></button>';
+                            }else{
+                                string += '		<button type="button" title="删除" class="tab-icon tab-dele "><img src="/resources/web/images/handle04.png" alt=""></button>';
+                            }
+                        }
+                        string += '	</td>';
+                        string += '</tr>';
+                    }
+                }else{
+                    string += '<tr>';
+                    string += '    <td colspan="7" style="text-align: center;">';
+                    string += '       暂无传阅对象！';
+                    string += '    </td>';
+                    string += '</tr>';
+                }
+                var colgroup = '<colgroup>\
+                                        <col width="50">\
+                                        <col width="100">\
+                                        <col>\
+                                        <col width="170">\
+                                        <col width="170">\
+                                        <col width="80">\
+                                        <col width="80">\
+                                    </colgroup>'
+                this.templateTag.append(colgroup+'<tbody>'+string+'</tbody>');
+                form.render();
+                objTable();
+                $(window).resize(function(){
+                    objTable();
+                });
+                // 取消全选按钮
+                form.on('checkbox(choice)', function(data){
+                    var allObject = $(data.elem).parents('.layui-table-body').siblings('.layui-table-header').find('input[name="all-object"]');
+                    var checkedTag = $(data.elem).parents('.layui-table-body').siblings('.layui-table-header').find('.layui-unselect');
+                    checkedTag.removeClass('layui-form-checked');
+                    allObject.prop('checked',false);
+                });
+                // 单个删除
+                var totalRecord = data.length;
+                $('.object-tab .layui-table .tab-icon').on('click',{totalRecord:totalRecord},function(e){
+                    // debugger
+                    // if(e.data.totalRecord>1){
+                    var arr = [$(this).parent().siblings().children('input[name="choice"]').val()];
+                    layer.confirm(
+                        '您确定要删除该传阅对象吗？',
+                        {
+                            btn: ['是','否'],
+                            title:'删除提示'
+                        }, //按钮
+                        function(index, layero){
+                            //按钮【按钮一】的回调
+                            deleObjext(arr);
+                        }
+                    );
+                    // }else{
+                    //     //layer.msg('删除失败，传阅对象不能为空',{time: 2000});
+                    //     layer.msg('传阅对象只有一个用户时，不允许删除',{time: 2000});
+                    // }
+                })
+            }.bind(that));
+        };
         // 页面进来加载
-        function getLoading(){
+        function getLoading(isUpdate){
             $.ajax({
                 type:'post',
                 url:'/web/received/find-mail-particulars.htm',
@@ -56,6 +175,20 @@ $(document).ready(function(){
                     layer.close(layer_del);
                     if(res.code === '200'){
                         getArticle(res.data);
+                        if(isUpdate === false)return;
+                        articleObjext = new ArticleObjext({
+                            type:'post',
+                            url:'/web/received/find-mail-object.htm',
+                            dataType:'json',
+                            data:{
+                                userId:storageData.userId,
+                                mailId:storageData.article,
+                                page:$('.layui-table-footer .layui-laypage input').val(),
+                                pageRows:$('.layui-table-footer .layui-form-select .layui-input').val()
+                            },
+                            templateTag:'.object-tab .layui-table-body table'
+                        });
+                        articleObjext.getData();
                     }else{
                         layer.msg('数据加载出错',{time: 2000,icon: 2});
                     }
@@ -75,7 +208,7 @@ $(document).ready(function(){
                             if(data.afreshConfimss === true){
                                 $('.btn-all').html('<button type="button" class="layui-btn layui-btn-primary anew-btn" data-confirm="false">重新确认</button><button type="button" class="layui-btn layui-btn-primary goback-btn" onclick="javascript:history.go(-1);">返回</button>');
                             }else{
-                                $('.btn-all').html('<button type="button" class="layui-btn layui-btn-primary goback-btn" onclick="javascript:history.go(-1);">返回</button>');
+                                $('.btn-all').html('<button type="button" class="layui-btn layui-btn-primary goback-btn" onclick="window.location.href = document.referrer;">返回</button>');
                             };
                         }else{
                             $('.btn-all').html('<button type="button" class="layui-btn layui-btn-primary affirm-btn" data-confirm="true">确认</button><button type="button" class="layui-btn layui-btn-primary goback-btn" onclick="javascript:history.go(-1);">返回</button>');
@@ -85,13 +218,13 @@ $(document).ready(function(){
                         attention = data.receiveAttention;
                         break;
                     case '1':
-                        $('.btn-all').html('<button type="button" class="layui-btn layui-btn-primary goback-btn" onclick="javascript:history.go(-1);">返回</button>');
+                        $('.btn-all').html('<button type="button" class="layui-btn layui-btn-primary goback-btn" onclick="window.location.href = document.referrer;">返回</button>');
                         $('.layui-body .content-body h1').html('已发传阅');
                         sendUrl = '/web/send/insert-send-discuss.htm';
                         attention = data.attention;
                         break;
                     case '2':
-                        $('.btn-all').html('<button type="button" class="layui-btn layui-btn-primary goback-btn" onclick="javascript:history.go(-1);">返回</button>');
+                        $('.btn-all').html('<button type="button" class="layui-btn layui-btn-primary goback-btn" onclick="window.location.href = document.referrer;">返回</button>');
                         $('.layui-body .content-body h1').html('已删除');
                         $('.oa-receive-table .title-right').empty();
                         $('.oa-receive-right .input-addon').attr('disabled','disabled').addClass('layui-disabled');
@@ -479,147 +612,7 @@ $(document).ready(function(){
                 }
             })
         }
-        // 继承
-        function extend(Child,Parent){
-            var F = function(){};
-            F.prototype = Parent.prototype;
-            Child.prototype = new F();
-            Child.prototype.constructor = Child;
-            Child.uber = Parent.prototype;
-        };
-        // 加载传阅对象
-        function ArticleObjext(options){
-            this.type = options.type;
-            this.url = options.url;
-            this.data = options.data;
-            this.pageRows;
-            this.totalRecord;//总记录数
-            this.curPage = 1;//当前页
-            this.templateTag = $(options.templateTag);
-        };
-        extend(ArticleObjext,Pages);
-        // ArticleObjext.prototype = new Pages({
-        // 	type:'post',
-        // 	url:'/web/received/find-mail-object.htm',
-        // 	dataType:'json',
-        // 	data:{
-        // 		// userId:$.session.get('userId'),
-        // 		mailId:storageData.article
-        // 	},
-        // 	templateTag:'.object-tab .layui-table-body tbody'
-        // });
-        ArticleObjext.prototype.templateHTML = function(that,data){
-            layui.use(['form','table'], function(){
-                $('.object-tab .title-left').html('传阅对象（'+this.totalRecord+'个）');
-                $('input[name="object-total"]').val(this.totalRecord);
-                var form = layui.form;
-                this.templateTag.empty();//清空上次内容
-                var string = '';
-                if(data.length>0){
-                    for(var i=0;i<data.length;i++){
-                        string += '<tr>';
-                        string += '	<td><input value="'+data[i].userId+'" type="checkbox" name="choice" lay-filter="choice" lay-skin="primary"></td>';
-                        string += '	<td>'+data[i].lastName+'</td>';
-                        if(data[i].confirmRecord == null || data[i].confirmRecord == ''){
-                            string += '	<td>暂无记录</td>';
-                        }else{
-                            var remark = data[i].acRecord===null?data[i].confirmRecord:data[i].acRecord;
-                            string += '	<td>'+remark+'</td>';
-                        };
-                        string += '	<td>'+data[i].sendTime+'</td>';
 
-                        if(data[i].openTime == null || data[i].openTime == ''){
-                            string += '	<td>暂无记录</td>';
-                        }else{
-                            string += '	<td>'+data[i].openTime+'</td>';
-                        };
-                        //string += '	<td>'+data[i].openTime == null ? '暂无' : data[i].openTime +'</td>';
-
-                        if(data[i].mailStatusss===0){
-                            string += '	<td>未读</td>';
-                        }else if(data[i].mailStatusss===1){
-                            string += '	<td>已读</td>';
-                        }else if(data[i].mailStatusss===2){
-                            string += '	<td>确认</td>';
-                        }
-                        string += '	<td style="text-align:right;">';
-                        if(data[i].authority === true){
-                            if(storageData.mailStatus==='2' || stepStatus===3){
-
-                                string += '		<button type="button" title="删除" class="tab-icon tab-dele layui-disabled" disabled ><img src="/resources/web/images/handle04.png" alt=""></button>';
-                            }else{
-                                string += '		<button type="button" title="删除" class="tab-icon tab-dele "><img src="/resources/web/images/handle04.png" alt=""></button>';
-                            }
-                        }
-                        string += '	</td>';
-                        string += '</tr>';
-                    }
-                }else{
-                    string += '<tr>';
-                    string += '    <td colspan="7" style="text-align: center;">';
-                    string += '       暂无传阅对象！';
-                    string += '    </td>';
-                    string += '</tr>';
-                }
-                var colgroup = '<colgroup>\
-                                    <col width="50">\
-                                    <col width="100">\
-                                    <col>\
-                                    <col width="170">\
-                                    <col width="170">\
-                                    <col width="80">\
-                                    <col width="80">\
-                                </colgroup>'
-                this.templateTag.append(colgroup+'<tbody>'+string+'</tbody>');
-                form.render();
-                objTable();
-                $(window).resize(function(){
-                    objTable();
-                });
-                // 取消全选按钮
-                form.on('checkbox(choice)', function(data){
-                    var allObject = $(data.elem).parents('.layui-table-body').siblings('.layui-table-header').find('input[name="all-object"]');
-                    var checkedTag = $(data.elem).parents('.layui-table-body').siblings('.layui-table-header').find('.layui-unselect');
-                    checkedTag.removeClass('layui-form-checked');
-                    allObject.prop('checked',false);
-                });
-                // 单个删除
-                var totalRecord = data.length;
-                $('.object-tab .layui-table .tab-icon').on('click',{totalRecord:totalRecord},function(e){
-                    // debugger
-                    // if(e.data.totalRecord>1){
-                    var arr = [$(this).parent().siblings().children('input[name="choice"]').val()];
-                    layer.confirm(
-                        '您确定要删除该传阅对象吗？',
-                        {
-                            btn: ['是','否'],
-                            title:'删除提示'
-                        }, //按钮
-                        function(index, layero){
-                            //按钮【按钮一】的回调
-                            deleObjext(arr);
-                        }
-                    );
-                    // }else{
-                    //     //layer.msg('删除失败，传阅对象不能为空',{time: 2000});
-                    //     layer.msg('传阅对象只有一个用户时，不允许删除',{time: 2000});
-                    // }
-                })
-            }.bind(that));
-        };
-        articleObjext = new ArticleObjext({
-            type:'post',
-            url:'/web/received/find-mail-object.htm',
-            dataType:'json',
-            data:{
-                userId:storageData.userId,
-                mailId:storageData.article,
-                page:$('.layui-table-footer .layui-laypage input').val(),
-                pageRows:$('.layui-table-footer .layui-form-select .layui-input').val()
-            },
-            templateTag:'.object-tab .layui-table-body table'
-        });
-        articleObjext.getData();
         // 每页显示几条
         form.on('select(item-num)', function(data){
             articleObjext = new ArticleObjext({
@@ -707,8 +700,9 @@ $(document).ready(function(){
                         setTimeout(function(){
                             layer.msg('联系人删除成功',{time: 2000,icon: 1});
                         },200)
+                        getLoading(false)
                         $('input[name="all-object"]').prop('checked',false);
-                        var objCurrPage = $('.layui-table-page .layui-laypage input').val();
+                        var objCurrPage = $('.object-tab .layui-laypage input').val();
                         articleObjext.getData(parseInt(objCurrPage));
                     }else if(res.code === '205'){
                         layer.msg('删除传阅对象失败!,你没有权限删除',{time: 2000});
@@ -736,7 +730,7 @@ $(document).ready(function(){
         });
 
         // 评论加载
-        var commentPage = new CommentPage({
+        commentPage = new CommentPage({
             type:'post',
             url:'/web/send/grid-discuss.htm',
             dataType:'json',
@@ -746,7 +740,6 @@ $(document).ready(function(){
                 page:1
             }
         });
-
         setTimeout(function(){
             try{
                 commentPage.getPage();
@@ -758,7 +751,6 @@ $(document).ready(function(){
             }
 
         },100)
-
         // 评论发送
         $('.oa-receive-right .input-addon').on('click',function(){
             var discussContent = $(this).siblings('input[name=discussContent]');
@@ -970,8 +962,9 @@ $(document).ready(function(){
                             if(res.code === '200'){
                                 layer.close(index);
                                 layer.msg('添加成功',{time: 2000});
+                                getLoading()
                                 // articleObjext = new ArticleObjext();
-                                articleObjext.getData(1);
+                                // articleObjext.getData(1);
                             }else{
                                 layer.msg(res.msg,{time: 2000,icon: 2});
                             }

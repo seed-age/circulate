@@ -58,7 +58,7 @@ public class GridUnreadStateList extends BaseParameter {
 
 			ReceiveHelper helper = Services.getReceiveService().createHelper().getUserId().Eq(userId);
 
-			helper.enterMail().getEnabled().Eq(Boolean.FALSE).getStepStatus().In(1,3).ignoreEmptyValueCondiction()
+			helper.enterMail().getEnabled().Eq(Boolean.FALSE).ignoreEmptyValueCondiction()
 					.startOr().getTitle().Like(likeName).getAllReceiveName().Like(likeName)
 					.getLastName().Like(likeName).getMailContent().Like(likeName).stopOr()
 					.back2Receives();
@@ -96,11 +96,6 @@ public class GridUnreadStateList extends BaseParameter {
 				helper.getReceiveTime().Asc();
 			}
 
-			// 1. 查询该用户的已收传阅
-//			json = Services.getReceiveService().createHelper().getUserId().Eq(userId)
-//					.enterMail().getEnabled().Eq(Boolean.FALSE).getStepStatus().In(1,3).back2Receives()
-//					.getReceiveTime().Desc().json().listPageJson(page, pageRows, new EachEntity2Map<Receive>() {
-//
 			json = helper.json().listPageJson(page, pageRows, new EachEntity2Map<Receive>() {
 				@Override
 				public void each(Receive receive, Map<String, Object> map) {
