@@ -94,7 +94,7 @@ public class InsertMailObject extends BaseParameter {
 				// 遍历接收人集合
 				for (Receive receive : receivesList) {
 					// 取出接收人userId, 进行判断
-					if (next.equals(receive.getUserId())) {
+					if (next.equals(receive.getUserId()) || next.equals(mail.getUserId())) {
 						// 如果相同, 就把这个元素删除
 						it.remove();
 					}
@@ -140,24 +140,24 @@ public class InsertMailObject extends BaseParameter {
 
 			if (res) { // true 表示联系人增加成功
 
-				// 取出该传阅的联系人
-				List<Receive> receives = mail.getReceives();
-				int count = 0;
-				// 遍历
-				for (Receive receive : receives) {
-					// 判断,只要是已经确认该传阅的联系人, 就需要重新确认
-					if (receive.getIfConfirm() == true) {
-						count++;
-						// 设置开启重新确认
-						receive.setAfreshConfim(true); // true 为开启重新确认
-						// 更新
-						Services.getReceiveService().update(receive);
-
-						if (count == 1) {
-							msg = msg + "  已经开启重新确认!";
-						}
-					}
-				}
+//				// 取出该传阅的联系人
+//				List<Receive> receives = mail.getReceives();
+//				int count = 0;
+//				// 遍历
+//				for (Receive receive : receives) {
+//					// 判断,只要是已经确认该传阅的联系人, 就需要重新确认
+//					if (receive.getIfConfirm() == true) {
+//						count++;
+//						// 设置开启重新确认
+//						receive.setAfreshConfim(true); // true 为开启重新确认
+//						// 更新
+//						Services.getReceiveService().update(receive);
+//
+//						if (count == 1) {
+//							msg = msg + "  已经开启重新确认!";
+//						}
+//					}
+//				}
 
 				String allReceiveName = mail.getAllReceiveName();
 				String allName = sb.toString();

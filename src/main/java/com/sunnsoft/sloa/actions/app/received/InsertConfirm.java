@@ -56,7 +56,7 @@ public class InsertConfirm extends BaseParameter {
             for (Receive receive : receives) {
                 // 一旦该传阅的全部接收人对该传阅进行了确认, 那么该传阅的流程状态是 3 (已完成)
                 // 进行判断, 如果其余的接收人 都已经确认传阅的话, 就进来
-                if (receive.getIfConfirm() == true) {
+                if (receive.getIfConfirm()) {
                     // 再次判断, 如果 确认/标识 为 null, 证明传阅没有确认
                     if (receive.getConfirmRecord() != null) {
                         count++; // 表示已经确认传阅的接收人 +1
@@ -64,7 +64,7 @@ public class InsertConfirm extends BaseParameter {
                 }
 
                 // 通过userId(页面传过来的当前用户ID)和查找到的收件人ID进行比较, 如果相等 和 是否确认为 false,就修改该收件人数据
-                if (receive.getUserId() == userId && receive.getIfConfirm() == false) {
+                if (receive.getUserId() == userId && !receive.getIfConfirm()) {
 
                     lastName = receive.getLastName();
                     // 如果相等, 证明就是该用户的收到传阅的记录. 进行修改收到传阅记录
@@ -116,8 +116,11 @@ public class InsertConfirm extends BaseParameter {
                 msg = "该传阅还有其他收件人没有确认!";
             }
 
-            // 消息推送
-            getPush(mail, lastName, ids, userIds);
+            if (mail.getIfRemind() || mail.getIfRemindAll()) {
+
+                // 消息推送
+                getPush(mail, lastName, ids, userIds);
+            }
 
             success = true;
             msg = "确认传阅成功! " + msg;
@@ -150,7 +153,6 @@ public class InsertConfirm extends BaseParameter {
                     // 更新数据
                     Services.getReceiveService().update(receive);
                     code = "200";
-                    count++; // 当前用户也已经确认该传阅 , 所有要 + 1
                 }
             }
 

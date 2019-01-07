@@ -104,16 +104,18 @@ public class InsertMailObject extends BaseParameter {
 			Set<UserMssage> userMssageSet = new HashSet<>();
 			try {
 
+				int id = (int)mail.getUserId();
+
 				if (subcompanyIds != null) { // 不为 null, 表示添加了分部
 					// 根据分部ID查询信息
 					List<Hrmsubcompany> hrmsubcompanyList = Services.getHrmsubcompanyService().findByIds(subcompanyIds);
 					for (Hrmsubcompany hrmsubcompany : hrmsubcompanyList) {
-						HrmUtils.getSubcompanyUserMssage(hrmsubcompany.getId(), null, userMssageSet, null, userId.intValue());
+						HrmUtils.getSubcompanyUserMssage(hrmsubcompany.getId(), null, userMssageSet, null, id);
 					}
 				}else if(departmentIds != null){
 
 					List<Hrmdepartment> hrmdepartmentList = Services.getHrmdepartmentService().findByIds(departmentIds);
-					HrmUtils.getSubcompanyUserMssage(null, hrmdepartmentList, userMssageSet, null, userId.intValue());
+					HrmUtils.getSubcompanyUserMssage(null, hrmdepartmentList, userMssageSet, null, id);
 
 				}else if(receiveUserIds != null) {
 
@@ -122,7 +124,7 @@ public class InsertMailObject extends BaseParameter {
 							.list();
 
 					for (UserMssage userMssage : userMssages) {
-						if (userMssage.getUserId() == userId.intValue()) { // 如果接受人中有发件人, 直接跳过
+						if (userMssage.getUserId() == id) { // 如果接受人中有发件人, 直接跳过
 							continue;
 						}
 						userMssageSet.add(userMssage);
@@ -135,7 +137,7 @@ public class InsertMailObject extends BaseParameter {
 							.getStatus().Eq(ConstantUtils.OA_USER_PROBATION_DELAY_STATUS)
 							.stopOr().list();
 					for (UserMssage userMssage : mssageList) {
-						if (userMssage.getUserId() == userId.intValue()) { // 如果接受人中有发件人, 直接跳过
+						if (userMssage.getUserId() == id) { // 如果接受人中有发件人, 直接跳过
 							continue;
 						}
 						userMssageSet.add(userMssage);
@@ -158,6 +160,13 @@ public class InsertMailObject extends BaseParameter {
 				return Results.GLOBAL_FORM_JSON;
 			}
 
+			if (userMssageSet.size() == 0 && userMssageSet.isEmpty()) {
+				msg = "传阅对象不能是发件人";
+				success = false;
+				code = "205";
+				json = "null";
+				return Results.GLOBAL_FORM_JSON;
+			}
 
 
 			// 创建list集合, 用于存储user

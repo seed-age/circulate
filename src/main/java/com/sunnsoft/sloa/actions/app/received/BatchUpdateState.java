@@ -66,6 +66,7 @@ public class BatchUpdateState extends BaseParameter {
 					// 再次判断, 如果 确认/标识 为 null, 证明传阅没有确认
 					if (receive.getConfirmRecord() != null) {
 						count++; // 表示 有其他接收人已经确认传阅了 +1
+						mailCount++;
 						continue;
 					}
 				}
@@ -131,15 +132,18 @@ public class BatchUpdateState extends BaseParameter {
 					msg = "该传阅已完成!";
 				}
 
-				if (confirmCount == 0){
-					try {
-						// 推送消息 --> (app)
-						MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue());
-						// 推送消息 --> (web)
-						HrmMessagePushUtils.getSendPush(lastName, 2, mail.getUserId()+"", receiveUserId, 3, mail.getMailId());
-					} catch (Exception e) {
-						e.printStackTrace();
-						System.out.println("=========== web 消息推送失败============");
+				if (mail.getIfRemind() || mail.getIfRemindAll()) {
+					if (confirmCount == 0){
+						try {
+
+							// 推送消息 --> (app)
+							MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue());
+							// 推送消息 --> (web)
+							HrmMessagePushUtils.getSendPush(lastName, 2, mail.getUserId()+"", receiveUserId, 3, mail.getMailId());
+						} catch (Exception e) {
+							e.printStackTrace();
+							System.out.println("=========== web 消息推送失败============");
+						}
 					}
 				}
 
@@ -158,7 +162,7 @@ public class BatchUpdateState extends BaseParameter {
 
 			}
 
-			msg = "标识传阅为已读状态成功!";
+			msg = "您已经确认这些传阅";
 			success = true;
 			code = "200";
 			json = "null";
@@ -166,7 +170,7 @@ public class BatchUpdateState extends BaseParameter {
 
 		} else {
 
-			msg = "标识传阅为已读状态失败!";
+			msg = "确认失败，请您稍后再试～";
 			success = false;
 			code = "404";
 			json = "null";
