@@ -48,14 +48,14 @@
 	<!-- <script src="/resources/web/ueditor/ueditor.config.js"></script>
 	<script src="/resources/web/ueditor/ueditor.all.js"></script>
 	<script src="/resources/web/ueditor/lang/zh-cn/zh-cn.js"></script> -->
-	<link rel="stylesheet" type="text/css" href="/resources/web/site/assets/styles/simditor.css" />
-	<script type="text/javascript" src="/resources/web/site/assets/scripts/module.js"></script>
-	<script type="text/javascript" src="/resources/web/site/assets/scripts/hotkeys.js"></script>
-	<script type="text/javascript" src="/resources/web/site/assets/scripts/uploader.js"></script>
-	<script type="text/javascript" src="/resources/web/site/assets/scripts/simditor.js"></script>
+	<link rel="stylesheet" type="text/css" href="/resources/web/site/assets/styles/simditor.css?${date}" />
+	<script type="text/javascript" src="/resources/web/site/assets/scripts/module.js?${date}"></script>
+	<script type="text/javascript" src="/resources/web/site/assets/scripts/hotkeys.js?${date}"></script>
+	<script type="text/javascript" src="/resources/web/site/assets/scripts/uploader.js?${date}"></script>
+	<script type="text/javascript" src="/resources/web/site/assets/scripts/simditor.js?${date}"></script>
 
-	<link rel="stylesheet" href="/resources/web/css/new.css">
-	<script src="/resources/web/js/new.js"></script>
+	<link rel="stylesheet" href="/resources/web/css/new.css?${date}">
+	<script src="/resources/web/js/new.js?${date}"></script>
 
 </head>
 <body id="mainBody" class="layui-layout layui-layout-admin" scroll="no" style="overflow-y: hidden;">
@@ -109,7 +109,7 @@
 					<div class="lfettArea">
 						<div class="readinfo layui-form">
 							<div class="layui-form-item table-input">
-								<label for="recipients" class="layui-form-label">收件人</label>
+								<label for="recipients" class="layui-form-label">接收人</label>
 								<div class="layui-input-block">
 									<input type="text" name="recipients" required lay-verify="required" id="recipients" placeholder="" autocomplete="off" class="layui-input">
 								</div>
@@ -176,7 +176,7 @@
 											<input type="checkbox" id="ifRemindAll" value="确认时提醒所有传阅对象" title="确认时提醒所有传阅对象" lay-skin="primary">
 										</div>
 										<div class="checked-item">
-											<input type="checkbox" id="ifRead" value="开封即确认" title="开封即确认" lay-skin="primary">
+											<input type="checkbox" id="ifRead" value="已读即确认" title="已读即确认" lay-skin="primary">
 										</div>
 										<div class="checked-item" style="display:none;">
 											<input type="checkbox" id="ifSecrecy" value="传阅密送" title="传阅密送" lay-skin="primary" disabled>

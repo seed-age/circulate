@@ -26,7 +26,6 @@ $(document).ready(function(){
         $('.rightArea .org-branch-one').trigger('click').addClass('cur')
         $('.rightArea').off('click','.org-branch-two').on('click','.org-branch-two',function(){
             if($(this).siblings('.tree-box')[0])return;
-            console.log(132456798)
             var options = {
                 supsubcomid:$(this).data('supsubcomid'),
             }
@@ -79,7 +78,7 @@ $(document).ready(function(){
         }
         editor = new Simditor({
             textarea: $('#editor'),
-            toolbar: ['title', 'bold', 'italic', 'underline', 'strikethrough','|', 'ol', 'ul',  '|', 'link', 'image', 'hr', '|', 'indent', 'outdent'],
+            toolbar: ['title', 'bold', 'italic', 'underline', 'strikethrough','|', 'ol', 'ul',  '|', 'image', 'hr', '|', 'indent', 'outdent'],
             pasteImage: true,//支持通过从剪贴板粘贴图像来上传
             locale:'en-US',//语言
             upload :{
@@ -306,6 +305,7 @@ function uploaderFile(){
             '<span  class="state"></span>'+
             '</li>';
         $list.append($li);
+        $list.scrollTop($list.height());
         $('.layui-all-btn .start-btn,.layui-all-btn .save-btn').attr('disabled',true).addClass('layui-disabled');
     });
     // 上传过程中触发，携带上传进度
@@ -344,6 +344,7 @@ function uploaderFile(){
     // 当文件上传成功时触发。
     uploader.on( 'uploadSuccess', function( file,data ) {
         uploader.options.formData.bulkId = data.data[0].bulkId;
+        $( '#'+file.id ).find('.state').empty()
         $( '#'+file.id ).append($('<span class="dele">删除</span>'));
         $( '#'+file.id ).find('input[name=upload_file]').attr({
             'data-bulkId':data.data[0].bulkId,
@@ -362,29 +363,33 @@ function uploaderFile(){
             }, //按钮
             function(index, layero){
                 //按钮【按钮一】的回调
-                if(urlReg.test(loaduUrl)){
-                    delAttachment({
-                        data:{
-                            userId:$.session.get('userId'),
-                            itemId:delId,
-                            mailId:getQueryString('listId')
-                        },
-                        then:function(res){
-                            if(res.code === '200'){
-                                layer.msg('删除成功',{time: 2000,icon: 1});
-                                awaitLoad();
-                            }else{
-                                layer.msg('删除失败',{time: 2000,icon: 2});
-                            }
-                        },
-                        fail:function(){
-                            layer.msg('网络出错',{time: 2000,icon: 2});
+                // if(delId){
+                delAttachment({
+                    data:{
+                        userId:$.session.get('userId'),
+                        itemId:delId,
+                        mailId:getQueryString('listId')
+                    },
+                    then:function(res){
+                        if(res.code === '200'){
+                            layer.msg('删除成功',{time: 2000,icon: 1});
+                            self.parent().remove();
+                            awaitLoad();
+
+                        }else{
+                            layer.msg('删除失败',{time: 2000,icon: 2});
                         }
-                    });
-                }else{
-                    self.parent().remove();
-                    layer.close(index);
-                }
+                        layer.close(index);
+                    },
+                    fail:function(){
+                        layer.close(index);
+                        layer.msg('网络出错',{time: 2000,icon: 2});
+                    }
+                });
+                // }else{
+                //     self.parent().remove();
+                // }
+                // layer.close(index);
             },
             function(index){
                 //按钮【按钮二】的回调

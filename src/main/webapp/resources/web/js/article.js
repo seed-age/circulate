@@ -3,6 +3,7 @@ var articleObjext;//传阅对象变量
 var commentPage;//评论对象变量
 var sendUrl;//声明评论发送url接口变量
 var stepStatus;//状态
+var createdId;
 //JavaScript代码区域
 $(document).ready(function(){
     layui.use(['element','form','layer','jquery'], function(){
@@ -117,6 +118,8 @@ $(document).ready(function(){
                                     </colgroup>'
                 this.templateTag.append(colgroup+'<tbody>'+string+'</tbody>');
                 form.render();
+                $('.oa-receive-table .layui-table-header thead .layui-unselect').removeClass('layui-form-checked');
+                $('.oa-read-table thead input[name="all-object"]').prop('checked',false);
                 objTable();
                 $(window).resize(function(){
                     objTable();
@@ -200,6 +203,7 @@ $(document).ready(function(){
             });
             function getArticle(data){
                 var attention;
+                createdId = data.userId;
                 stepStatus = data.stepStatus;
                 var statusName = '';
                 switch(storageData.mailStatus){
@@ -1057,15 +1061,15 @@ CommentPage.prototype = {
                         liHTML += '	</div>';
                         liHTML += '	<p>'+res.data.list[k].discussContent+'</p>';
                         liHTML += '</li>';
-                        $('.comment-box .interacts-list').prepend(liHTML);
+                        $('.comment-box .interacts-list').append(liHTML);
                     }
                     // 判断滚动条的位置
-                    var afterUlH = $('.interacts-list').height();
-                    if(res.data.firstPage === true){
-                        $('.comment-box').scrollTop((moreH+afterUlH)-commentH);
-                    }else{
-                        $('.comment-box').scrollTop(afterUlH-beforeUlh+moreH);
-                    }
+                    // var afterUlH = $('.interacts-list').height();
+                    // if(res.data.firstPage === true){
+                    //     $('.comment-box').scrollTop((moreH+afterUlH)-commentH);
+                    // }else{
+                    //     $('.comment-box').scrollTop(afterUlH-beforeUlh+moreH);
+                    // }
                     this.lastPage = res.data.lastPage;
                     this.curPage = res.data.currentPage+1;
                 }else{

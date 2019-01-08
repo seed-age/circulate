@@ -38,7 +38,13 @@ public class HrFrameworkTree extends BaseParameter{
 			List<Hrmdepartment> hrmdepartments = hrmdepartmentHelper
 					.getSubcompanyid1().Eq(supsubcomid).getSupdepid().Eq(0).getShoworder().Asc().getId().Asc().list();
 			for (Hrmdepartment hrmdepartment : hrmdepartments) {
-				listData.add(HrmUtils.departmentData(hrmdepartmentMap, hrmdepartment, openType));
+				hrmdepartmentMap = new HashMap<>();
+				hrmdepartmentMap.put("departmentid", hrmdepartment.getId());
+				hrmdepartmentMap.put("departmentname", hrmdepartment.getDepartmentname());
+				hrmdepartmentMap.put("type", "department");
+				hrmdepartmentMap.put("count", 0);
+				listData.add(hrmdepartmentMap);
+//				listData.add(HrmUtils.departmentData(hrmdepartmentMap, hrmdepartment, openType));
 			}
 
 			hrmsubcompanyHelper.getSupsubcomid().Eq(supsubcomid);
@@ -46,8 +52,12 @@ public class HrFrameworkTree extends BaseParameter{
 			Map<String, Object> hrmsubcompanyMap = null;
 			for (Hrmsubcompany hrmsubcompany : hrmsubcompanys) {
 				hrmsubcompanyMap = new HashMap<>();
-				HrmUtils.subcompanyData(hrmsubcompanyMap, hrmsubcompany, openType);
+				hrmsubcompanyMap.put("subcompanyname", hrmsubcompany.getSubcompanyname());
+				hrmsubcompanyMap.put("supsubcomid", hrmsubcompany.getId());
+				hrmsubcompanyMap.put("type", "subcompany");
+				hrmsubcompanyMap.put("count", 0);
 				listData.add(hrmsubcompanyMap);
+//				HrmUtils.subcompanyData(hrmsubcompanyMap, hrmsubcompany, openType);
 			}
 
 			json = JSON.toJSONString(listData);
@@ -57,7 +67,11 @@ public class HrFrameworkTree extends BaseParameter{
 				public void each(Hrmsubcompany hrmsubcompany, Map<String, Object> map) {
 					if(map != null){
 						map.clear();
-						HrmUtils.subcompanyData(map, hrmsubcompany, openType);
+						map.put("subcompanyname", hrmsubcompany.getSubcompanyname());
+						map.put("supsubcomid", hrmsubcompany.getId());
+						map.put("type", "subcompany");
+						map.put("count", 0);
+//						HrmUtils.subcompanyData(map, hrmsubcompany, openType);
 					}
 				}
 			});
@@ -82,7 +96,14 @@ public class HrFrameworkTree extends BaseParameter{
 			List<Hrmdepartment> hrmdepartments = hrmdepartmentHelper.getSupdepid().Eq(departmentid)
 					.getShoworder().Desc().getId().Asc().list();
 			for (Hrmdepartment hrmdepartment : hrmdepartments) {
-				listData.add(HrmUtils.departmentData(hrmdepartmentMap, hrmdepartment, openType));
+
+				hrmdepartmentMap = new HashMap<>();
+				hrmdepartmentMap.put("departmentid", hrmdepartment.getId());
+				hrmdepartmentMap.put("departmentname", hrmdepartment.getDepartmentname());
+				hrmdepartmentMap.put("type", "department");
+				hrmdepartmentMap.put("count", 0);
+				listData.add(hrmdepartmentMap);
+//				listData.add(HrmUtils.departmentData(hrmdepartmentMap, hrmdepartment, openType));
 			}
 
 			json = JSON.toJSONString(listData);

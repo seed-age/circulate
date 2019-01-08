@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * 传阅首页(APP端): 统计数量 (当前用户所有的传阅, 不管是已发或者是收到)
- * 
+ *
  * @author chenjian
  *
  */
@@ -37,92 +37,86 @@ public class CountMailNumber extends BaseParameter {
 
 		// 参数校验
 		Assert.notNull(userId, "发件人ID不能为空!");
-		
+
 		// 统计收到传阅的 , 待办传阅数量.
-		long todoCount = 0;
+		int todoCount = 0;
 		// 传阅中: 统计收到传阅, 状态为传阅中的数量
-		long receiveInCount = 0;	
+		int receiveInCount = 0;
 		// 传阅完成: 统计收到传阅, 状态为已完成的数量
-		long receiveCompleteCount = 0;
+		int receiveCompleteCount = 0;
 		// 收到传阅: 统计收到传阅, 状态为未读的传阅数量 *
-		long unreadCount = 0;
-		/*		List<Receive> list = Services.getReceiveService().createHelper().getUserId().Eq(userId).getIfConfirm().Eq(false)
-				.getStepStatus().Ne(0).list(); */		
+		int unreadCount = 0;
+		// 已收传阅 -- 已读传阅
+		int receiveReadCount = 0;
+
 		//查询
-		List<Receive> list = Services.getReceiveService().createHelper().getUserId().Eq(userId)
-				.getStepStatus().Ne(0).list();
+		List<Receive> receiveList = Services.getReceiveService().createHelper().getUserId().Eq(userId).list();
+
 		//遍历
-		for (Receive receive : list) {
-			//获取流程状态
-			Integer stepStatus = receive.getStepStatus();
-			//获取传阅状态
-			Integer mailState = receive.getMailState();
-			//判断
-			if(mailState == 5) {
-				unreadCount++;
-			}
-			//判断
-			if(stepStatus == 1) {
+		for (Receive receive : receiveList) {
+
+			int stepStatus = receive.getStepStatus();
+			if(stepStatus == 1){ // 1 发阅中 2 待办传阅 3 已完成
 				receiveInCount++;
-				continue; 
-			}else if(stepStatus == 2) {
+			}else if(stepStatus == 2){
 				todoCount++;
-				continue;
-			}else if(stepStatus == 3) {
+			}else if(stepStatus == 3){
 				receiveCompleteCount++;
+			}
+
+			int mailState = receive.getMailState();
+			if(mailState == 5){ // 5 未读 6 已读
+				unreadCount++;
+				continue;
+			} else if(mailState == 6){
+				receiveReadCount++;
 				continue;
 			}
 		}
-		
+
 		// 收到传阅数等于待办传阅+传阅中+已完成
-		int count = list.size();
+		int count = unreadCount + receiveReadCount;
+
+		// ===================== 已发传阅 ================================
 
 		// 统计已发传阅的数量(所有已发的传阅)
-		long sendCount = 0;
+		int sendCount = 0;
 		// 已发传阅: 统计已发传阅中状态为 传阅中 的数量
-		long sendInCount = 0;
+		int sendInCount = 0;
 		// 已发传阅: 统计已发传阅中状态为 已完成 的数量
-		long completeCount = 0;
-		//查询
-		List<Mail> mailList = Services.getMailService().createHelper().getUserId().Eq(userId).getStatus().Eq(0).startOr()
-				.getStepStatus().Eq(1).getStepStatus().Eq(3).stopOr().list();
-		
-		//遍历
-		for (Mail mail : mailList) {
-			//获取流程状态
-			Integer stepStatus = mail.getStepStatus();
-			//判断
-			if(stepStatus == 1) {
-				sendInCount++;
-				continue;
-			}else if(stepStatus == 3) {
-				completeCount++;
-				continue;
-			}
-		}
-		
-		// 所有已发的传阅的数量
-		sendCount = mailList.size();
-		
+		int completeCount = 0;
 		// 已删除传阅数量
-		long deleteCount = 0;
+		int deleteCount = 0;
 		// 待发传阅: 统计属于当前用户的传阅, 状态为待发的传阅数量
-		long waitSendCount = 0;
+		int waitSendCount = 0;
+
 		//查询
-		List<Mail> lists = Services.getMailService().createHelper().getUserId().Eq(userId).startOr().getStatus().Eq(1).getStatus().Eq(7).stopOr().list();
-		//遍历
-		for (Mail mail : lists) {
-			//获取传阅状态
+		List<Mail> mailList = Services.getMailService().createHelper().getUserId().Eq(userId).list();
+
+		for(Mail mail : mailList){
+			// 待发送
 			Integer status = mail.getStatus();
-			//判断
-			if(status == 1) {
+			if(status == 1){ // 1 待发传阅  7 已删除
 				waitSendCount++;
 				continue;
-			}else if(status == 7) {
-				deleteCount++;
+			}else if(status == 7){
+				deleteCount++; 	// 已删除
 				continue;
 			}
+
+			if(mail.getStepStatus() == 1){ // 1 发阅中  3 已完成
+				sendInCount++; // 传阅中
+				continue;
+			}else {
+				completeCount++;	// 已完成
+				continue;
+			}
+
 		}
+
+		// 所有已发的传阅的数量
+		sendCount = sendInCount + completeCount;
+
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("deleteCount", deleteCount);

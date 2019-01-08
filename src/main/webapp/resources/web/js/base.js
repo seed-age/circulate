@@ -125,13 +125,12 @@ layui.use(['element','laypage','table','form','layer','jquery'], function(){
     $('.contacts-content').off('click','.org-branch-one').on('click','.org-branch-one',function(){
         if($(this).siblings('.tree-box')[0])return;
         if($(this).hasClass('layui-disabled'))return;
-        $.getContact(this,{openType:true},'article')
+        $.getContact(this,{},'article')
     });
     $('.contacts-content').off('click','.org-branch-two').on('click','.org-branch-two',function(){
         if($(this).siblings('.tree-box')[0])return;
         var options = {
-            supsubcomid:$(this).data('supsubcomid'),
-            openType:true
+            supsubcomid:$(this).data('supsubcomid')
         }
         var flag = true;
         var departmentArr = $('.dialog-contacts .contacts-box-r .contacts-table').find('[data-supsubcomid]');
@@ -149,8 +148,7 @@ layui.use(['element','laypage','table','form','layer','jquery'], function(){
     $('.contacts-content').off('click','.org-branch-three').on('click','.org-branch-three',function(){
         if($(this).siblings('.tree-box')[0])return;
         var options = {
-            departmentid:$(this).data('departmentid'),
-            openType:true
+            departmentid:$(this).data('departmentid')
         };
         var flag = true;
         var departmentArr = $('.dialog-contacts .contacts-box-r .contacts-table').find('[data-departmentid]');
@@ -449,12 +447,16 @@ jQuery.extend({
         };
 
         function contactsHTML(data){
+            var userId = Number($.session.get('userId'));
             $('.contacts-box-l .contacts-table-outer').html('');
             var tableHTML = '';
             tableHTML += '<table class="contacts-table">';
             tableHTML += '	<tbody>';
             if(data.length>0){
                 for(var i=0;i<data.length;i++){
+                    if(data[i].userId == userId || (window.createdId && data[i].userId == window.createdId)){
+                        continue;
+                    }
                     tableHTML += '		<tr>';
                     tableHTML += '			<td style="width:50px;text-align:center;">';
                     tableHTML += '				<input name="contacts-choice" data-type="'+data[i].type+'" data-receiveUserId="'+data[i].userId+'" data-receiveLastName="'+data[i].lastName+'" data-departmentId="'+data[i].departmentId+'" type="checkbox" class="contacts-table-input">';
@@ -746,7 +748,7 @@ jQuery.extend({
                 $(this).addClass('layui-disabled');
                 return false;
             }
-            $.getContact(this,{openType:true},'article')
+            $.getContact(this,{},'article')
             // $.getContact({id:this},'article');
         });
         $('.dialog-contacts .org-branch-one').trigger('click').addClass('cur');
@@ -792,6 +794,10 @@ jQuery.extend({
                             ul += '		<div class="tree-branch org-branch-three" data-count="'+data[i].count+'" data-lastName="'+data[i].departmentname+'" data-type="'+data[i].type+'" data-departmentid="'+data[i].departmentid+'"><img class="tree-icon icon-up" src="/resources/web/images/more-icon01.png" alt=""><img class="tree-icon icon-down" src="/resources/web/images/more-icon02.png" alt="">'+data[i].departmentname+'</div>';
                             ul += '	</li>';
                         }else if(data[i].userId){
+                            var userId = Number($.session.get('userId'));
+                            if(data[i].userId == userId || (window.createdId && data[i].userId == window.createdId )){
+                                continue;
+                            }
                             ul += '	<li>';
                             ul += '		<div class="tree-branch org-branch-personnel" data-type="'+data[i].type+'" data-userId="'+data[i].userId+'" data-lastName="'+data[i].lastName+'" data-departmentid="'+data[i].departmentId+'">'+data[i].lastName+'</div>';
                             ul += '	</li>';
@@ -861,12 +867,31 @@ function addRightTr(data,tag,direction){
             rightTrHTML += '			<input name="contacts-choice" data-type="'+$(data[j]).data('type')+'"  data-receiveUserId="'+($(data[j]).data('receiveuserid')||$(data[j]).data('userid'))+'" data-receiveLastName="'+($(data[j]).data('receivelastname')||$(data[j]).data('lastname'))+'" data-departmentId="'+($(data[j]).data('departmentid'))+'"type="checkbox" class="contacts-table-input">';
             rightTrHTML += '			<img src="/resources/web/images/head-icon.png" alt="">';
         }else if($(data[j]).data('type') === 'department'){
+            getCount({
+                dom:data[j],
+                data:{
+                    departmentid:$(data[j]).data('departmentid')
+                }
+            });
             rightTrHTML += '			<input name="contacts-choice" data-count="'+$(data[j]).data('count')+'" data-type="'+$(data[j]).data('type')+'"  data-receiveLastName="'+($(data[j]).data('receivelastname')||$(data[j]).data('lastname'))+'" data-departmentId="'+($(data[j]).data('departmentid'))+'"type="checkbox" class="contacts-table-input">';
             rightTrHTML += '			<span class="layui-icon layui-icon-group"></span>';
+
         }else if($(data[j]).data('type') === 'subcompany'){
+            getCount({
+                dom:data[j],
+                data:{
+                    supsubcomid:$(data[j]).data('supsubcomid')
+                }
+            });
             rightTrHTML += '			<input name="contacts-choice" data-count="'+$(data[j]).data('count')+'" data-type="'+$(data[j]).data('type')+'"  data-receiveLastName="'+($(data[j]).data('receivelastname')||$(data[j]).data('lastname'))+'" data-supsubcomid="'+($(data[j]).data('supsubcomid'))+'"type="checkbox" class="contacts-table-input">';
             rightTrHTML += '			<span class="layui-icon layui-icon-home"></span>';
         }else{
+            getCount({
+                dom:data[j],
+                data:{
+                    openType:true
+                }
+            });
             rightTrHTML += '			<input name="contacts-choice" data-count="'+$(data[j]).data('count')+'" data-type="'+$(data[j]).data('type')+'"  data-receiveLastName="'+($(data[j]).data('receivelastname')||$(data[j]).data('lastname'))+'" data-usertotal="'+($(data[j]).data('usertotal'))+'"type="checkbox" class="contacts-table-input">';
             rightTrHTML += '			<span class="layui-icon layui-icon-home"></span>';
         }
@@ -881,7 +906,29 @@ function addRightTr(data,tag,direction){
         rightTrHTML += '		</tr>';
     };
     $(tag).append(rightTrHTML);
+
 };
+function getCount(options){
+    var count = $(options.dom).attr('data-count');
+    if(Number(count)>0)return;
+    $.ajax({
+        url:'/web/hr/hrm-user-count.htm',
+        type:'post',
+        data:options.data,
+        async:false,
+        dataType:'json',
+        success:function(res){
+            if(res.code == '200'){
+                $(options.dom).attr('data-count',res.data.count)
+            }else{
+                layer.msg(res.msg,{time: 2000,icon: 2});
+            }
+        },
+        error:function(msg){
+            layer.msg('网络出错',{time: 2000,icon: 2});
+        }
+    })
+}
 // 组织架构右边添加回左边
 function addLeftTree(data){
     for(var i=0;i<data.length;i++){

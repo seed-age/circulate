@@ -55,7 +55,7 @@
 							<h3 class="interacts-bd">传阅讨论互动（0）</h3>
 							<div class="interacts-record">
 								<div class="comment-box">
-									<a href="javascript:void(0);" class="more">加载更多</a>
+
 									<ul class="interacts-list">
 										<!-- <li>
                                             <div class="user layui-clear">
@@ -65,6 +65,7 @@
                                             <p>传阅增加了那些新的功能？</p>
                                         </li> -->
 									</ul>
+									<a href="javascript:void(0);" class="more">加载更多</a>
 								</div>
 							</div>
 							<div class="oa-form-input">
