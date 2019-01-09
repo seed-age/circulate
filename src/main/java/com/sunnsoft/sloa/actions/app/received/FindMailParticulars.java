@@ -111,6 +111,7 @@ public class FindMailParticulars extends BaseParameter {
                                     }
 
                                     map.put("receivess", receiveList);
+                                    map.put("ReceiveCount", mail.getReceives().size());
                                     String string = stripHtml(mail.getMailContent());
                                     System.out.println("详情, 转义之后: " + string);
                                     mail.setMailContent(string);

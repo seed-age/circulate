@@ -36,6 +36,8 @@ public class BatchUpdateState extends BaseParameter {
 
 		// 定义一个统计这次标记传阅为已读状态的变量
 		int mailCount = 0;
+		// 统计已确认的收到传阅数量
+		int receiveConfirmCount = 0;
 
 		// 遍历传阅ID
 		for (long l : mailId) {
@@ -95,6 +97,7 @@ public class BatchUpdateState extends BaseParameter {
 
 					if(receive.getUserId() == userId && receive.getIfConfirm()){
 						confirmCount++;
+						receiveConfirmCount++;
 					}
 				}
 
@@ -151,23 +154,22 @@ public class BatchUpdateState extends BaseParameter {
 
 		}
 
+		if (receiveConfirmCount == mailId.length) {
+			msg = "您已经确认这些传阅";
+			success = false;
+			code = "404";
+			json = "null";
+			return Results.GLOBAL_FORM_JSON;
+		}
+
 		// 进行判断. 如果相等, 表示这次修改成功
 		if (mailCount > 0) {
 
-			if (mailCount == mailId.length) {
-				msg = "标识传阅为已读状态成功";
-				code = "200";
-				json = "null";
-				return Results.GLOBAL_FORM_JSON;
-
-			}
-
-			msg = "您已经确认这些传阅";
 			success = true;
+			msg = "标识传阅为已读状态成功";
 			code = "200";
 			json = "null";
 			return Results.GLOBAL_FORM_JSON;
-
 		} else {
 
 			msg = "确认失败，请您稍后再试～";

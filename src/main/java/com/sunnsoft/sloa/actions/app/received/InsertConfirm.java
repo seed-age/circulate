@@ -5,6 +5,7 @@ import com.sunnsoft.sloa.db.handler.Services;
 import com.sunnsoft.sloa.db.vo.Mail;
 import com.sunnsoft.sloa.db.vo.Receive;
 import com.sunnsoft.sloa.util.ConstantUtils;
+import com.sunnsoft.sloa.util.EmojiStringUtils;
 import com.sunnsoft.sloa.util.HrmMessagePushUtils;
 import com.sunnsoft.sloa.util.mail.MessageUtils;
 import com.sunnsoft.util.struts2.Results;
@@ -36,6 +37,8 @@ public class InsertConfirm extends BaseParameter {
         Assert.notNull(mailId, "传阅ID不能为空");
         Assert.notNull(userId, "收件人ID(也是当前用户ID)不能为空");
         Assert.notNull(remark, "确认信息不能为空");
+
+        remark = EmojiStringUtils.filterName(remark);
 
         // 通过传阅ID去查找收件人
         Mail mail = Services.getMailService().findById(mailId);
