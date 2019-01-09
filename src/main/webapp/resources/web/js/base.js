@@ -21,152 +21,152 @@ $(function(){
         })
     }
     loadAjax();
-});
-layui.use(['element','laypage','table','form','layer','jquery'], function(){
+    layui.use(['element','laypage','table','form','layer','jquery'], function(){
 
-    var element = layui.element;
-    var table = layui.table;
-    var laypage = layui.laypage;
-    var form = layui.form;
-    var $= layui.jquery;
+        var element = layui.element;
+        var table = layui.table;
+        var laypage = layui.laypage;
+        var form = layui.form;
+        var $= layui.jquery;
 
-    // 全选按钮
-    form.on('checkbox(all-checked)', function(data){
-        if(data.elem.checked === true){
-            $(data.elem).parents('thead').siblings('tbody').find('.layui-unselect').addClass('layui-form-checked');
-            $(data.elem).parents('thead').siblings('tbody').find('input[name="choice"]').prop('checked',true);
-            $('.layui-btn-action').removeClass('layui-btn-disabled').addClass('layui-btn-normal').attr("disabled",false)
-        }else{
-            $(data.elem).parents('thead').siblings('tbody').find('.layui-unselect').removeClass('layui-form-checked');
-            $(data.elem).parents('thead').siblings('tbody').find('input[name="choice"]').prop('checked',false);
-            $('.layui-btn-action').removeClass('layui-btn-normal').addClass('layui-btn-disabled').attr("disabled",true)
-        }
-    });
-    // 单选按钮阻止冒泡
-    form.on('checkbox(choice)', function(data){
-        $('.oa-read-table thead .layui-unselect').removeClass('layui-form-checked');
-        $('.oa-read-table thead input[name="all-checked"]').prop('checked',false);
-        if($(this).parents('tbody').find('input[name="choice"]:checked').length>0){
-            $('.layui-btn-action').removeClass('layui-btn-disabled').addClass('layui-btn-normal').attr("disabled",false)
-        }else{
-            $('.layui-btn-action').removeClass('layui-btn-normal').addClass('layui-btn-disabled').attr("disabled",true)
-        }
-        var oEvent = event || ev;
-        oEvent.stopPropagation();
-
-    });
-    // 关注
-    $(document).off('.oa-receive-list li .star,.oa-read-table .layui-table .star').on('click','.oa-receive-list li .star,.oa-read-table .layui-table .star',function(ev){
-        var oEvent = ev || event;
-        oEvent.stopPropagation();
-        var flg;
-        var id = $(this).parent().siblings().children('input[name="choice"]').val() ||$(this)[0].id;
-        if($(this).hasClass('active')){
-            flg = false;
-            $(this).removeClass('active');
-        }else{
-            flg = true;
-            $(this).addClass('active');
-        };
-        $.ajax({
-            type:'post',
-            url:'/web/send/insert-attention.htm',
-            dataType:'json',
-            data:{
-                userId:$.session.get('userId'),
-                mailId:id,
-                attention:flg,
-                status:$.session.get('attentionStatus')
-            },
-            beforeSend:function(xhr){
-                layer_del = layer.msg('正在提交数据中', {
-                    icon: 16,
-                    shade: 0.01,
-                    area:'40px',
-                    time:0
-                });
-            },
-            success:function(res){
-                layer.close(layer_del);
-                var page = $('input[name="currPage"]').val();
-                var currPage = page === ''?1:page;
-                if(res.code === '200'){
-                    setTimeout(function(){
-                        layer.msg(res.msg,{time: 2000});
-                    },200)
-                };
-            },
-            error:function(){
-                layer.close(layer_del);
-                layer.msg('网络出错',{time: 2000,icon: 2});
+        // 全选按钮
+        form.on('checkbox(all-checked)', function(data){
+            if(data.elem.checked === true){
+                $(data.elem).parents('thead').siblings('tbody').find('.layui-unselect').addClass('layui-form-checked');
+                $(data.elem).parents('thead').siblings('tbody').find('input[name="choice"]').prop('checked',true);
+                $('.layui-btn-action').removeClass('layui-btn-disabled').addClass('layui-btn-normal').attr("disabled",false)
+            }else{
+                $(data.elem).parents('thead').siblings('tbody').find('.layui-unselect').removeClass('layui-form-checked');
+                $(data.elem).parents('thead').siblings('tbody').find('input[name="choice"]').prop('checked',false);
+                $('.layui-btn-action').removeClass('layui-btn-normal').addClass('layui-btn-disabled').attr("disabled",true)
             }
         });
-    });
-    // 联系人展开与显示
-    $(document).on('click','.contact-tree .tree-branch',function(){
-        if($(this).children('img').length>0){
-            if($(this).hasClass('cur')){
-                $(this).removeClass('cur');
-                $(this).siblings('.tree-box').stop().slideUp();
+        // 单选按钮阻止冒泡
+        form.on('checkbox(choice)', function(data){
+            $('.oa-read-table thead .layui-unselect').removeClass('layui-form-checked');
+            $('.oa-read-table thead input[name="all-checked"]').prop('checked',false);
+            if($(this).parents('tbody').find('input[name="choice"]:checked').length>0){
+                $('.layui-btn-action').removeClass('layui-btn-disabled').addClass('layui-btn-normal').attr("disabled",false)
             }else{
+                $('.layui-btn-action').removeClass('layui-btn-normal').addClass('layui-btn-disabled').attr("disabled",true)
+            }
+            var oEvent = event || ev;
+            oEvent.stopPropagation();
 
-                $(this).addClass('cur');
-                $(this).siblings('.tree-box').stop().slideDown();
+        });
+        // 关注
+        $(document).off('.oa-receive-list li .star,.oa-read-table .layui-table .star').on('click','.oa-receive-list li .star,.oa-read-table .layui-table .star',function(ev){
+            var oEvent = ev || event;
+            oEvent.stopPropagation();
+            var flg;
+            var id = $(this).parent().siblings().children('input[name="choice"]').val() ||$(this)[0].id;
+            if($(this).hasClass('active')){
+                flg = false;
+                $(this).removeClass('active');
+            }else{
+                flg = true;
+                $(this).addClass('active');
             };
-        }
-    })
-    // 退出登录
-    $('.topcolor .layui-nav .layui-nav-item.quit').on('click',function(){
-        cookie.delAll();
-        setTimeout(function(){
-            window.location.href = 'http://sso-test.seedland.cc/pactera_sso_localmodel_exit.axd';
-        },200)
-    });
-    $('.contacts-content').off('click','.org-branch-one').on('click','.org-branch-one',function(){
-        if($(this).siblings('.tree-box')[0])return;
-        if($(this).hasClass('layui-disabled'))return;
-        $.getContact(this,{},'article')
-    });
-    $('.contacts-content').off('click','.org-branch-two').on('click','.org-branch-two',function(){
-        if($(this).siblings('.tree-box')[0])return;
-        var options = {
-            supsubcomid:$(this).data('supsubcomid')
-        }
-        var flag = true;
-        var departmentArr = $('.dialog-contacts .contacts-box-r .contacts-table').find('[data-supsubcomid]');
-        for(var i=0;i<departmentArr.length;i++){
-            var dom = $(departmentArr[i]);
-            if(dom.data('supsubcomid') === $(this).data('supsubcomid') && dom.data('type') === $(this).data('type')){
-                flag = false;
-                return;
-            }
-        }
-        if(flag){
-            $.getContact(this,options,'article')
-        }
-    })
-    $('.contacts-content').off('click','.org-branch-three').on('click','.org-branch-three',function(){
-        if($(this).siblings('.tree-box')[0])return;
-        var options = {
-            departmentid:$(this).data('departmentid')
-        };
-        var flag = true;
-        var departmentArr = $('.dialog-contacts .contacts-box-r .contacts-table').find('[data-departmentid]');
-        for(var i=0;i<departmentArr.length;i++){
-            var dom = $(departmentArr[i]);
-            if(dom.data('departmentid') === $(this).data('departmentid') && dom.data('type') === $(this).data('type')){
-                flag = false;
-                return;
-            }
-        }
-        if(flag){
-            $.getContact(this,options,'article')
-        }
-    })
-    $('.contacts-content').off('click','.org-branch-personnel').on('click','.org-branch-personnel',function(){
-        addLight(this);
-    })
+            $.ajax({
+                type:'post',
+                url:'/web/send/insert-attention.htm',
+                dataType:'json',
+                data:{
+                    userId:$.session.get('userId'),
+                    mailId:id,
+                    attention:flg,
+                    status:$.session.get('attentionStatus')
+                },
+                beforeSend:function(xhr){
+                    layer_del = layer.msg('正在提交数据中', {
+                        icon: 16,
+                        shade: 0.01,
+                        area:'40px',
+                        time:0
+                    });
+                },
+                success:function(res){
+                    layer.close(layer_del);
+                    var page = $('input[name="currPage"]').val();
+                    var currPage = page === ''?1:page;
+                    if(res.code === '200'){
+                        setTimeout(function(){
+                            layer.msg(res.msg,{time: 2000});
+                        },200)
+                    };
+                },
+                error:function(){
+                    layer.close(layer_del);
+                    layer.msg('网络出错',{time: 2000,icon: 2});
+                }
+            });
+        });
+        // 联系人展开与显示
+        $(document).on('click','.contact-tree .tree-branch',function(){
+            if($(this).children('img').length>0){
+                if($(this).hasClass('cur')){
+                    $(this).removeClass('cur');
+                    $(this).siblings('.tree-box').stop().slideUp();
+                }else{
 
+                    $(this).addClass('cur');
+                    $(this).siblings('.tree-box').stop().slideDown();
+                };
+            }
+        })
+        // 退出登录
+        $('.topcolor .layui-nav .layui-nav-item.quit').on('click',function(){
+            cookie.delAll();
+            setTimeout(function(){
+                window.location.href = 'http://sso-test.seedland.cc/pactera_sso_localmodel_exit.axd';
+            },200)
+        });
+        $('.contacts-content').off('click','.org-branch-one').on('click','.org-branch-one',function(){
+            if($(this).siblings('.tree-box')[0])return;
+            if($(this).hasClass('layui-disabled'))return;
+            $.getContact(this,{},'article')
+        });
+        $('.contacts-content').off('click','.org-branch-two').on('click','.org-branch-two',function(){
+            if($(this).siblings('.tree-box')[0])return;
+            var options = {
+                supsubcomid:$(this).data('supsubcomid')
+            }
+            var flag = true;
+            var departmentArr = $('.dialog-contacts .contacts-box-r .contacts-table').find('[data-supsubcomid]');
+            for(var i=0;i<departmentArr.length;i++){
+                var dom = $(departmentArr[i]);
+                if(dom.data('supsubcomid') === $(this).data('supsubcomid') && dom.data('type') === $(this).data('type')){
+                    flag = false;
+                    return;
+                }
+            }
+            if(flag){
+                $.getContact(this,options,'article')
+            }
+        })
+        $('.contacts-content').off('click','.org-branch-three').on('click','.org-branch-three',function(){
+            if($(this).siblings('.tree-box')[0])return;
+            var options = {
+                departmentid:$(this).data('departmentid')
+            };
+            var flag = true;
+            var departmentArr = $('.dialog-contacts .contacts-box-r .contacts-table').find('[data-departmentid]');
+            for(var i=0;i<departmentArr.length;i++){
+                var dom = $(departmentArr[i]);
+                if(dom.data('departmentid') === $(this).data('departmentid') && dom.data('type') === $(this).data('type')){
+                    flag = false;
+                    return;
+                }
+            }
+            if(flag){
+                $.getContact(this,options,'article')
+            }
+        })
+        $('.contacts-content').off('click','.org-branch-personnel').on('click','.org-branch-personnel',function(){
+            addLight(this);
+        })
+
+    });
 });
 (function($) {
     $.extend({

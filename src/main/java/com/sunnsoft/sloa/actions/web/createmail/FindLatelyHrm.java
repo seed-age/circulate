@@ -33,7 +33,7 @@ public class FindLatelyHrm extends BaseParameter {
 		// 参数校验
 		Assert.notNull(userId, "用户ID不能为空!");
 
-		String SQL1 = "select u.user_id userId, u.department_id departmentId, u.full_name fullName, u.dept_fullname deptFullname, u.last_name lastName, 'userMssage' as type from user_mssage_tbl u where u.user_id in (select * from (select distinct r.user_id from receive_tbl r where r.re_differentiate = " + userId + " order by r.receive_time desc LIMIT 200) as x)";
+		String SQL1 = "select u.user_id userId, u.department_id departmentId, u.full_name fullName, u.dept_fullname deptFullname, u.last_name lastName, 'userMssage' as type from user_mssage_tbl u where u.user_id in (select * from (select r.user_id from receive_tbl r where r.re_differentiate = " + userId + " order by r.receive_time desc LIMIT 200) as x)";
 		List<Map<String, Object>> mapList1 = jdbcTemplate.queryForList(SQL1);
 
 		json = JSONObject.toJSONString(mapList1);
