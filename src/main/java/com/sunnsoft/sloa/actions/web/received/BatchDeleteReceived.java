@@ -49,7 +49,7 @@ public class BatchDeleteReceived extends BaseParameter {
 		}
 
 		Receive lastReceive = null;
-		if (receiveUserId.length > 1) {
+		if (receiveUserId.length == ress.size() && receiveUserId.length > 1) {
 			lastReceive = ress.get(ress.size() - 1);
 		}
 
