@@ -252,7 +252,7 @@
         var mailId = Number(getQueryString('mailId'));
         $.ajax({
             type:'post',
-            url:'/web/received/find-mail-content.htm',
+            url:'/app/received/find-mail-content.htm',
             data:{
                 userId:userId,
                 mailId:mailId

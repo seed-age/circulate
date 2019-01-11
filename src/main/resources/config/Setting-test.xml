@@ -92,7 +92,7 @@
 	<!--Java版本下格式有所区别-->
 
 	<IncludeFileExtension
-			ext_value=".*(\.ico$|\.gif$|\.jpg$|\.png$|\.bmp$|\.css$|\.js$|\.jsx$|\.axd|/sys/webservice/.*|/resource/.*|/app/.*|/file/.*)"
+			ext_value=".*(\.ico$|\.gif$|\.jpg$|\.png$|\.bmp$|\.css$|\.js$|\.jsx$|\.axd|/sys/webservice/.*|/resource/.*|/app/.*|/rich_text.htm*|/file/.*)"
 			content_value=".*(/wd_sso_logout$)"
 			for_value=".*(/VerifyCodeAndRememberPwd$|/ssologout|/sso_localmodel_login|/ssoLoginServlet$|/wd_sso_logout$|/error_sso.jsp$|/clientGetCookiesServlet$|/LocalModelPage/html/login.html)"/>
 </SettingConfig>
