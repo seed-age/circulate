@@ -112,6 +112,7 @@ public class InsertMail extends BaseParameter {
 
 		// 把接收人的名称拼接成一个字符串
 		Set<UserMssage> userMssageSet = new HashSet<>();
+		Set<String> lastNameSet = new HashSet<>();
 		StringBuilder sb = new StringBuilder();
 		String allName = "";
 
@@ -123,14 +124,14 @@ public class InsertMail extends BaseParameter {
 				// 根据分部ID查询信息
 				List<Hrmsubcompany> hrmsubcompanyList = Services.getHrmsubcompanyService().findByIds(subcompanyIds);
 				for (Hrmsubcompany hrmsubcompany : hrmsubcompanyList) {
-					HrmUtils.getSubcompanyUserMssage(hrmsubcompany.getId(), null, userMssageSet, sb, id);
+					HrmUtils.getSubcompanyUserMssage(hrmsubcompany.getId(), null, userMssageSet, lastNameSet, id);
 				}
 			}
 
 			if(departmentIds != null){
 
 				List<Hrmdepartment> hrmdepartmentList = Services.getHrmdepartmentService().findByIds(departmentIds);
-				HrmUtils.getSubcompanyUserMssage(null, hrmdepartmentList, userMssageSet, sb, id);
+				HrmUtils.getSubcompanyUserMssage(null, hrmdepartmentList, userMssageSet, lastNameSet, id);
 
 			}
 
@@ -147,7 +148,8 @@ public class InsertMail extends BaseParameter {
 					}
 
 					userMssageSet.add(userMssage);
-					sb.append(userMssage.getLastName()).append(";");
+					lastNameSet.add(userMssage.getLastName());
+//					sb.append(userMssage.getLastName()).append(";");
 				}
 
 				System.out.println(receiveUserId.length);
@@ -228,7 +230,16 @@ public class InsertMail extends BaseParameter {
 				return Results.GLOBAL_FORM_JSON;
 			}
 
-			allName = sb.toString().substring(0, sb.toString().length() - 1);
+			if (userTotal == 1) {
+				allName = sb.toString().substring(0, sb.toString().length() - 1);
+			}else {
+				StringBuilder laseNames = new StringBuilder();
+				for (String lastName : lastNameSet) {
+					laseNames.append(lastName).append(";");
+				}
+
+				allName = laseNames.toString().substring(0, laseNames.toString().length() - 1);
+			}
 
 			Assert.notNull(userMssageSet, "接收人ID不能为空");
 			Assert.notNull(title, "传阅主题不能为空");
@@ -278,8 +289,8 @@ public class InsertMail extends BaseParameter {
 						.setDepartmentName(mssage.getDeptFullname()).setAllReceiveName(allName).setTitle(title)
 						.setMailContent(string).setCreateTime(new Date()).setSendTime(new Date())
 						.setCompleteTime(new Date()).setStepStatus(ConstantUtils.MAIL_HALFWAY_STATUS)
-						.setStatus(ConstantUtils.MAIL_STATUS)
 						.setIfImportant(ifImportant).setIfUpdate(ifUpdate)
+						.setStatus(ConstantUtils.MAIL_STATUS)
 						.setIfUpload(ifUpload).setIfRead(ifRead).setIfNotify(ifNotify).setIfRemind(ifRemind)
 						.setIfRemindAll(ifRemindAll).setIfSecrecy(ifSecrecy).setIfAdd(ifAdd).setIfSequence(ifSequence)
 						.setHasAttachment(hasAttachment).setEnabled(false).setAttention(false).setRuleName(ruleName)
@@ -403,9 +414,18 @@ public class InsertMail extends BaseParameter {
 			// 如果是false , 表示保存新建传阅
 		} else {
 
-			if (sb.toString() != null && !sb.toString().equals("")) {
-
-				allName = sb.toString().substring(0, sb.toString().length() - 1);
+			if (userTotal == 1) {
+				if (sb.toString() != null && !sb.toString().equals("")) {
+					allName = sb.toString().substring(0, sb.toString().length() - 1);
+				}
+			}else {
+				if (lastNameSet.size() > 0) {
+					StringBuilder laseNames = new StringBuilder();
+					for (String lastName : lastNameSet) {
+						laseNames.append(lastName).append(";");
+					}
+					allName = laseNames.toString().substring(0, laseNames.toString().length() - 1);
+				}
 			}
 
 			Mail mail = null;

@@ -64,8 +64,8 @@ public class HrmUserSchedule {
 		//String ip = "https://oa-uat.seedland.cc:8443/services/HrmService"; // 测试环境
 		//String ip = "oa-uat.seedland.cc:8443"; // 生产环境
 		//String ip = ThirdPartyConfiguration.getOaHrmSchedulerUrl();//"oa.seedland.cc"; // 生产环境
-        String ip = "oa.seedland.cc";// 生产环境
-//		String ip = "192.168.64.40";// 测试环境
+//        String ip = "oa.seedland.cc";// 生产环境
+		String ip = "192.168.64.40";// 测试环境
 
 		HrmService client = new HrmService();
 		HrmServicePortType service = client.getHrmServiceHttpPort();

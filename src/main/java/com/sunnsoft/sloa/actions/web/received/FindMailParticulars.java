@@ -309,6 +309,9 @@ public class FindMailParticulars extends BaseParameter {
 							if (receive.getMailState() == ConstantUtils.RECEIVE_UNREAD_STATUS) {
 								receivedStatus = true;
 								status = true;
+							}else {
+								receivedStatus = false;
+								status = false;
 							}
 
 							/*
@@ -318,6 +321,8 @@ public class FindMailParticulars extends BaseParameter {
 							if (mail.getIfRead()) { // 如果为 true 就进来
 								ifReadStatus = true;
 								status = false; // 设置为false， 不走普通的判断
+							}else {
+								ifReadStatus = false;
 							}
 
 						}
@@ -468,6 +473,11 @@ public class FindMailParticulars extends BaseParameter {
 
 			e.printStackTrace();
 			return Results.GLOBAL_FORM_JSON;
+		}finally {
+			// 对静态变量恢复初始值.
+			status = false; // 判断该传阅是否 是未读状态
+			receivedStatus = false; // 判断该传阅是否 是已读状态
+			ifReadStatus = false; // 判断该传阅是否 勾选了 开封已阅确认 这个选项.
 		}
 
 		// 对静态变量恢复初始值.

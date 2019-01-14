@@ -38,157 +38,174 @@ public class InsertConfirm extends BaseParameter {
         Assert.notNull(userId, "收件人ID(也是当前用户ID)不能为空");
         Assert.notNull(remark, "确认信息不能为空");
 
-        remark = EmojiStringUtils.filterName(remark);
+        try {
+            if (EmojiStringUtils.containsEmoji(remark)) {
+                success = false;
+                msg = "确认内容不能包含Emoji表情";
+                code = "205";
+                json = "null";
+                return Results.GLOBAL_FORM_JSON;
+            }
 
-        // 通过传阅ID去查找收件人
-        Mail mail = Services.getMailService().findById(mailId);
+            // 通过传阅ID去查找收件人
+            Mail mail = Services.getMailService().findById(mailId);
 
-        // 获取传阅对应的收件人数据
-        List<Receive> receives = mail.getReceives();
+            // 获取传阅对应的收件人数据
+            List<Receive> receives = mail.getReceives();
 
-        if (statusConfirm) { // true 表示第一次确认
+            if (statusConfirm) { // true 表示第一次确认
 
-            // 定义一个标记, 统计有多少个接收人确认了传阅
-            int count = 0;
-            // 推送消息
-            String lastName = "";
-            // 拼接id
-            String ids = "";
-            String userIds = "";
-            // 遍历收件人集合
-            for (Receive receive : receives) {
-                // 一旦该传阅的全部接收人对该传阅进行了确认, 那么该传阅的流程状态是 3 (已完成)
-                // 进行判断, 如果其余的接收人 都已经确认传阅的话, 就进来
-                if (receive.getIfConfirm()) {
-                    // 再次判断, 如果 确认/标识 为 null, 证明传阅没有确认
-                    if (receive.getConfirmRecord() != null) {
-                        count++; // 表示已经确认传阅的接收人 +1
+                // 定义一个标记, 统计有多少个接收人确认了传阅
+                int count = 0;
+                // 推送消息
+                String lastName = "";
+                // 拼接id
+                String ids = "";
+                String userIds = "";
+                // 遍历收件人集合
+                for (Receive receive : receives) {
+                    // 一旦该传阅的全部接收人对该传阅进行了确认, 那么该传阅的流程状态是 3 (已完成)
+                    // 进行判断, 如果其余的接收人 都已经确认传阅的话, 就进来
+                    if (receive.getIfConfirm()) {
+                        // 再次判断, 如果 确认/标识 为 null, 证明传阅没有确认
+                        if (receive.getConfirmRecord() != null) {
+                            count++; // 表示已经确认传阅的接收人 +1
+                        }
+                    }
+
+                    // 通过userId(页面传过来的当前用户ID)和查找到的收件人ID进行比较, 如果相等 和 是否确认为 false,就修改该收件人数据
+                    if (receive.getUserId() == userId && !receive.getIfConfirm()) {
+
+                        lastName = receive.getLastName();
+                        // 如果相等, 证明就是该用户的收到传阅的记录. 进行修改收到传阅记录
+                        // 修改收件人的传阅状态, 进行修改该传阅的状态 修改为 6 (表示已读) 以及进行确认传阅
+                        receive.setReceiveStatus(ConstantUtils.RECEIVE_OPEN_STATUS); // 1 表示 已开封
+                        receive.setOpenTime(new Date()); // 记录打开传阅的时间
+                        receive.setMailState(ConstantUtils.RECEIVE_READ_STATUS); // 收件人的传阅筛选状态 6 表示 已读
+                        receive.setIfConfirm(true); // true 表示 已确认该传阅
+                        receive.setAffirmTime(new Date()); // 设置确认时间
+                        receive.setRemark(remark); // 确认时的 确认信息
+                        // 设置确认/标识
+                        receive.setConfirmRecord(
+                                //							receive.getRemark() + "  确认(" + dateToString(receive.getAffirmTime()) + ")");
+                                receive.getRemark() + "  (" + dateToString(receive.getAffirmTime()) + ")");
+                        receive.setStepStatus(ConstantUtils.MAIL_HALFWAY_STATUS); // 收件人这边的传阅流程状态 1 表示传阅中, 就不再是待办状态了 .
+
+                        // 更新数据
+                        Services.getReceiveService().update(receive);
+                        code = "200";
+                        count++; // 当前用户也已经确认该传阅 , 所有要 + 1
+                    }else {
+                        // 拼接
+                        ids += receive.getLoginId() + ",";
+                        userIds += receive.getUserId() + ",";
                     }
                 }
 
-                // 通过userId(页面传过来的当前用户ID)和查找到的收件人ID进行比较, 如果相等 和 是否确认为 false,就修改该收件人数据
-                if (receive.getUserId() == userId && !receive.getIfConfirm()) {
+                // 再判断, 如果count相等于收件人集合的数量那么就是该传阅已经全部确认了
+                if (count == receives.size()) {
+                    // 如果是true, 那么就修改该传阅的流程状态
+                    mail.setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS); // 表示 该传阅已完成
+                    Services.getMailService().update(mail);
 
-                    lastName = receive.getLastName();
-                    // 如果相等, 证明就是该用户的收到传阅的记录. 进行修改收到传阅记录
-                    // 修改收件人的传阅状态, 进行修改该传阅的状态 修改为 6 (表示已读) 以及进行确认传阅
-                    receive.setReceiveStatus(ConstantUtils.RECEIVE_OPEN_STATUS); // 1 表示 已开封
-                    receive.setOpenTime(new Date()); // 记录打开传阅的时间
-                    receive.setMailState(ConstantUtils.RECEIVE_READ_STATUS); // 收件人的传阅筛选状态 6 表示 已读
-                    receive.setIfConfirm(true); // true 表示 已确认该传阅
-                    receive.setAffirmTime(new Date()); // 设置确认时间
-                    receive.setRemark(remark); // 确认时的 确认信息
-                    // 设置确认/标识
-                    receive.setConfirmRecord(
-//							receive.getRemark() + "  确认(" + dateToString(receive.getAffirmTime()) + ")");
-                            receive.getRemark() + "  (" + dateToString(receive.getAffirmTime()) + ")");
-                    receive.setStepStatus(ConstantUtils.MAIL_HALFWAY_STATUS); // 收件人这边的传阅流程状态 1 表示传阅中, 就不再是待办状态了 .
+                    // 那么, 收件人这边也要修改对应的流程状态, 修改为 已完成
+                    // 根据传阅ID获取传阅信息.
+                    Mail newMail = Services.getMailService().findById(mailId);
+                    // 获取最新的接收人信息
+                    List<Receive> newReceives = newMail.getReceives();
+                    // 遍历
+                    for (Receive receive : newReceives) {
+                        // 修改
+                        receive.setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS); // 修改为 已完成
+                        // 更新
+                        Services.getReceiveService().update(receive);
+                    }
 
-                    // 更新数据
-                    Services.getReceiveService().update(receive);
-                    code = "200";
-                    count++; // 当前用户也已经确认该传阅 , 所有要 + 1
-                }else {
-                    // 拼接
-                    ids += receive.getLoginId() + ",";
-                    userIds += receive.getUserId() + ",";
-                }
-            }
-
-            // 再判断, 如果count相等于收件人集合的数量那么就是该传阅已经全部确认了
-            if (count == receives.size()) {
-                // 如果是true, 那么就修改该传阅的流程状态
-                mail.setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS); // 表示 该传阅已完成
-                Services.getMailService().update(mail);
-
-                // 那么, 收件人这边也要修改对应的流程状态, 修改为 已完成
-                // 根据传阅ID获取传阅信息.
-                Mail newMail = Services.getMailService().findById(mailId);
-                // 获取最新的接收人信息
-                List<Receive> newReceives = newMail.getReceives();
-                // 遍历
-                for (Receive receive : newReceives) {
-                    // 修改
-                    receive.setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS); // 修改为 已完成
-                    // 更新
-                    Services.getReceiveService().update(receive);
+                    msg = " 该传阅已完成";
+                } else {
+                    msg = "该传阅还有其他收件人没有确认!";
                 }
 
-                msg = " 该传阅已完成";
-            } else {
-                msg = "该传阅还有其他收件人没有确认!";
-            }
+                if (mail.getIfRemind() || mail.getIfRemindAll()) {
 
-            if (mail.getIfRemind() || mail.getIfRemindAll()) {
+                    // 消息推送
+                    getPush(mail, lastName, ids, userIds);
+                }
 
-                // 消息推送
-                getPush(mail, lastName, ids, userIds);
-            }
+                success = true;
+                msg = "确认传阅成功! " + msg;
+                json = "null";
+                return Results.GLOBAL_FORM_JSON;
 
-            success = true;
-            msg = "确认传阅成功! " + msg;
-            json = "null";
-            return Results.GLOBAL_FORM_JSON;
+            } else { // false 表示 第二次确认
+                // 拼接id
+                int count = 0;
+                // 遍历收件人集合
+                for (Receive receive : receives) {
+                    // 一旦该传阅的全部接收人对该传阅进行了确认, 那么该传阅的流程状态是 3 (已完成)
+                    // 进行判断, 如果其余的接收人 都已经确认传阅的话, 就进来
+                    if (receive.getIfConfirm() == true) {
+                        // 再次判断, 如果 确认/标识 为 null, 证明传阅没有确认
+                        if (receive.getConfirmRecord() != null) {
+                            count++; // 表示已经确认传阅的接收人 +1
+                        }
+                    }
+                    // 通过userId(页面传过来的当前用户ID)和查找到的收件人ID进行比较, 如果相等 和 是否开启重新确认为 true,就修改该收件人数据
+                    if (receive.getUserId() == userId && receive.getAfreshConfim() == true) {
+                        // 如果相等, 证明就是该用户的收到传阅的记录. 进行修改收到传阅记录
+                        receive.setAfreshConfim(false);
+                        receive.setMhTime(new Date()); // 设置重新确认时间
+                        receive.setAfreshRemark(remark); // 确认时的 确认信息(重新)
+                        // 设置确认/标识
+                        //					receive.setAcRecord(receive.getAfreshRemark() + "  重新确认(" + dateToString(receive.getMhTime()) + ")");
+                        receive.setAcRecord(receive.getAfreshRemark() + "  (" + dateToString(receive.getMhTime()) + ")");
 
-        } else { // false 表示 第二次确认
-            // 拼接id
-            int count = 0;
-            // 遍历收件人集合
-            for (Receive receive : receives) {
-                // 一旦该传阅的全部接收人对该传阅进行了确认, 那么该传阅的流程状态是 3 (已完成)
-                // 进行判断, 如果其余的接收人 都已经确认传阅的话, 就进来
-                if (receive.getIfConfirm() == true) {
-                    // 再次判断, 如果 确认/标识 为 null, 证明传阅没有确认
-                    if (receive.getConfirmRecord() != null) {
-                        count++; // 表示已经确认传阅的接收人 +1
+                        // 更新数据
+                        Services.getReceiveService().update(receive);
+                        code = "200";
                     }
                 }
-                // 通过userId(页面传过来的当前用户ID)和查找到的收件人ID进行比较, 如果相等 和 是否开启重新确认为 true,就修改该收件人数据
-                if (receive.getUserId() == userId && receive.getAfreshConfim() == true) {
-                    // 如果相等, 证明就是该用户的收到传阅的记录. 进行修改收到传阅记录
-                    receive.setAfreshConfim(false);
-                    receive.setMhTime(new Date()); // 设置重新确认时间
-                    receive.setAfreshRemark(remark); // 确认时的 确认信息(重新)
-                    // 设置确认/标识
-//					receive.setAcRecord(receive.getAfreshRemark() + "  重新确认(" + dateToString(receive.getMhTime()) + ")");
-                    receive.setAcRecord(receive.getAfreshRemark() + "  (" + dateToString(receive.getMhTime()) + ")");
 
-                    // 更新数据
-                    Services.getReceiveService().update(receive);
-                    code = "200";
-                }
-            }
+                // 再判断, 如果count相等于收件人集合的数量那么就是该传阅已经全部确认了
+                if (count == receives.size()) {
+                    // 如果是true, 那么就修改该传阅的流程状态
+                    mail.setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS); // 表示 该传阅已完成
+                    Services.getMailService().update(mail);
 
-            // 再判断, 如果count相等于收件人集合的数量那么就是该传阅已经全部确认了
-            if (count == receives.size()) {
-                // 如果是true, 那么就修改该传阅的流程状态
-                mail.setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS); // 表示 该传阅已完成
-                Services.getMailService().update(mail);
+                    // 那么, 收件人这边也要修改对应的流程状态, 修改为 已完成
+                    // 根据传阅ID获取传阅信息.
+                    Mail newMail = Services.getMailService().findById(mailId);
+                    // 获取最新的接收人信息
+                    List<Receive> newReceives = newMail.getReceives();
+                    // 遍历
+                    for (Receive receive : newReceives) {
+                        // 修改
+                        receive.setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS); // 修改为 已完成
+                        // 更新
+                        Services.getReceiveService().update(receive);
+                    }
 
-                // 那么, 收件人这边也要修改对应的流程状态, 修改为 已完成
-                // 根据传阅ID获取传阅信息.
-                Mail newMail = Services.getMailService().findById(mailId);
-                // 获取最新的接收人信息
-                List<Receive> newReceives = newMail.getReceives();
-                // 遍历
-                for (Receive receive : newReceives) {
-                    // 修改
-                    receive.setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS); // 修改为 已完成
-                    // 更新
-                    Services.getReceiveService().update(receive);
+                    msg = " 该传阅已完成";
+                } else {
+                    msg = "该传阅还有其他收件人没有确认!";
                 }
 
-                msg = " 该传阅已完成";
-            } else {
-                msg = "该传阅还有其他收件人没有确认!";
-            }
+                success = true;
+                msg = "重新确认传阅成功! ";
+                json = "null";
+                return Results.GLOBAL_FORM_JSON;
 
-            success = true;
-            msg = "重新确认传阅成功! ";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            success = false;
+            msg = "网络繁忙, 请稍后重试";
             json = "null";
+            code = "404";
             return Results.GLOBAL_FORM_JSON;
-
         }
+
     }
 
     // 调用消息推送接口

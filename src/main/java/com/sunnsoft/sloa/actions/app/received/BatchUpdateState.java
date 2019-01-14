@@ -59,6 +59,10 @@ public class BatchUpdateState extends BaseParameter {
 			// 统计该传阅是否已经确认.
 			int confirmCount = 0;
 			for (Receive receive : receives) {
+
+				if (receive.getUserId() == userId && receive.getIfConfirm()) {
+					receiveConfirmCount++;
+				}
 				//用于消息接口
 				lastName = receive.getLastName();
 				// 一旦接收人确认了传阅, 那么发件人的传阅流程状态就改变了, 变成 1(传阅中)
@@ -97,7 +101,6 @@ public class BatchUpdateState extends BaseParameter {
 
 					if(receive.getUserId() == userId && receive.getIfConfirm()){
 						confirmCount++;
-						receiveConfirmCount++;
 					}
 				}
 
