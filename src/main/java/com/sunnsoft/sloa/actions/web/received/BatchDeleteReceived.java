@@ -139,7 +139,7 @@ public class BatchDeleteReceived extends BaseParameter {
 
 					if(receive.getIfConfirm() && !receive.getAfreshConfim()){
 						sum++;
-						updateReceiveIdList.add(receive.getUserId());
+						updateReceiveIdList.add(receive.getReceiveId());
 						continue;
 					}
 
@@ -154,7 +154,7 @@ public class BatchDeleteReceived extends BaseParameter {
 
 				// 如果确认数量相等于, 则改变传阅的流程状态
 				if (sum == receiveList.size()) {
-					Services.getReceiveService().createHelper().getUserId().In(updateReceiveIdList)
+					Services.getReceiveService().createHelper().getReceiveId().In(updateReceiveIdList)
 							.bean().setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS).update();
 
 					mail1.setStepStatus(ConstantUtils.MAIL_COMPLETE_STATUS);
