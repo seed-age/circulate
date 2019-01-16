@@ -216,11 +216,12 @@ public class InsertConfirm extends BaseParameter {
     private void getPush(Mail mail, String lastName, String ids, String userIds) {
         if (mail.getIfRemindAll()) {
 
-            ids += mail.getLoginId() + "";
+//			ids += mail.getLoginId() + "";
             userIds += mail.getUserId() + "";
 
             // 推送消息 --> (app)
-            MessageUtils.pushEmobile(ids, 2, mail.getMailId(), userId.intValue());
+            MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue(), 1);
+            MessageUtils.pushEmobile(ids, 2, mail.getMailId(), userId.intValue(), 3);
             // 推送消息 --> (web)
             HrmMessagePushUtils.getSendPush(lastName, 4, userIds, userId, 4, mailId, true);
 
@@ -229,7 +230,7 @@ public class InsertConfirm extends BaseParameter {
 
         if (mail.getIfRemind()) {
             // 推送消息 --> (app)
-            MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue());
+            MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue(), 1);
             // 推送消息 --> (web)
             HrmMessagePushUtils.getSendPush(lastName, 2, mail.getUserId() + "", mail.getUserId(), 3, mail.getMailId());
         }

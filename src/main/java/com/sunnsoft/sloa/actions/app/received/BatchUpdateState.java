@@ -44,6 +44,9 @@ public class BatchUpdateState extends BaseParameter {
 
 			// 通过传阅ID去查找收件人
 			Mail mail = Services.getMailService().findById(l);
+			// 拼接id
+			String ids = "";
+			String userIds = "";
 
 			// 获取传阅对应的收件人数据
 			List<Receive> receives = mail.getReceives();
@@ -99,6 +102,10 @@ public class BatchUpdateState extends BaseParameter {
 					success = true;
 				}else {
 
+					// 拼接
+					ids += receive.getLoginId() + ",";
+					userIds += receive.getUserId() + ",";
+
 					if(receive.getUserId() == userId && receive.getIfConfirm()){
 						confirmCount++;
 					}
@@ -138,19 +145,28 @@ public class BatchUpdateState extends BaseParameter {
 					msg = "该传阅已完成!";
 				}
 
-				if (mail.getIfRemind() || mail.getIfRemindAll()) {
-					if (confirmCount == 0){
-						try {
+				try {
+					if(mail.getIfRead() || mail.getIfRemind()) {
+						if (confirmCount == 0){
 
 							// 推送消息 --> (app)
-							MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue());
+							MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue(), 1);
 							// 推送消息 --> (web)
 							HrmMessagePushUtils.getSendPush(lastName, 2, mail.getUserId()+"", receiveUserId, 3, mail.getMailId());
-						} catch (Exception e) {
-							e.printStackTrace();
-							System.out.println("=========== web 消息推送失败============");
 						}
 					}
+
+					if (mail.getIfRemindAll()) {
+
+						// 推送消息 --> (app)
+						MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue(), 1);
+						MessageUtils.pushEmobile(ids, 2, mail.getMailId(), userId.intValue(), 3);
+						// 推送消息 --> (web)
+						HrmMessagePushUtils.getSendPush(lastName, 4, userIds, userId, 4, mail.getMailId(), true);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("=========== 消息推送失败============");
 				}
 
 			}

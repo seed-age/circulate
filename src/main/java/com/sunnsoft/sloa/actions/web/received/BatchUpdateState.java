@@ -37,11 +37,15 @@ public class BatchUpdateState extends BaseParameter {
 		// 定义一个统计这次标记传阅为已读状态的变量
 		int mailCount = 0;
 
+
 		// 遍历传阅ID
 		for (long l : mailId) {
 
 			// 通过传阅ID去查找收件人
 			Mail mail = Services.getMailService().findById(l);
+			// 拼接id
+			String ids = "";
+			String userIds = "";
 
 			// 获取传阅对应的收件人数据
 			List<Receive> receives = mail.getReceives();
@@ -56,6 +60,7 @@ public class BatchUpdateState extends BaseParameter {
 			for (Receive receive : receives) {
 				//用于消息推送
 				lastName = receive.getLastName();
+
 
 				// 一旦接收人确认了传阅, 那么发件人的传阅流程状态就改变了, 变成 1(传阅中)
 				// 如果,该传阅已经有一个或是多个接收人对该传阅进行了确认, 所以该传阅的流程状态是 1(传阅中)
@@ -86,6 +91,10 @@ public class BatchUpdateState extends BaseParameter {
 					Services.getReceiveService().update(receive);
 					re = true;
 					success = true;
+				}else {
+					// 拼接
+					ids += receive.getLoginId() + ",";
+					userIds += receive.getUserId() + ",";
 				}
 
 				// 如果为true 进来
@@ -122,13 +131,28 @@ public class BatchUpdateState extends BaseParameter {
 					msg = "该传阅已完成";
 				}
 			}
-			if(mail.getIfRead() || mail.getIfRemind()) {
+			try {
+				if(mail.getIfRead() || mail.getIfRemind()) {
 
-				// 推送消息 --> (app)
-				MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue());
-				// 推送消息 --> (web)
-				HrmMessagePushUtils.getSendPush(lastName, 2, mail.getUserId()+"", mail.getUserId(), 3, mail.getMailId());
+					// 推送消息 --> (app)
+					MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue(), 1);
+					// 推送消息 --> (web)
+					HrmMessagePushUtils.getSendPush(lastName, 2, mail.getUserId()+"", mail.getUserId(), 3, mail.getMailId());
+				}
+
+				if (mail.getIfRemindAll()) {
+
+					// 推送消息 --> (app)
+					MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue(), 1);
+					MessageUtils.pushEmobile(ids, 2, mail.getMailId(), userId.intValue(), 3);
+					// 推送消息 --> (web)
+					HrmMessagePushUtils.getSendPush(lastName, 4, userIds, userId, 4, mail.getMailId(), true);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println();
 			}
+
 		}
 
 		// 进行判断. 如果相等, 表示这次修改成功

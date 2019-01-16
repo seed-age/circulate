@@ -238,7 +238,7 @@ public class InsertMail extends BaseParameter {
 					map.put("transmission", true);
 
 					// 推送消息 --> (APP)
-					MessageUtils.pushEmobile(loginIds, 1, mail.getMailId(), null);
+					MessageUtils.pushEmobile(loginIds, 1, mail.getMailId(), (int)userId, 3);
 
 					// 调用消息推送的方法 --> (web)
 					HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, receiveuserId, 1, mail.getMailId());

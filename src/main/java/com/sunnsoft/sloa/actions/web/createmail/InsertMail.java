@@ -320,7 +320,9 @@ public class InsertMail extends BaseParameter {
 			// 定义标识
 			boolean receiveStr = false;
 
-			// 拼接收件人的loginId
+			// 拼接收件人的loginId, 主要用于APP消息推送
+			String receiveLoginIds = "";
+			// 拼接收件人的userId, 主要用于PC消息推送
 			String receiverIds = "";
 			// 短信接收人的手机号码(手机号码以英文逗号分隔，不超过50个号码)
 			List<String> phoneList = new ArrayList<>();
@@ -332,6 +334,7 @@ public class InsertMail extends BaseParameter {
 				num++;
 				// 拼接
 				receiverIds += userMssage.getUserId()+ ",";
+				receiveLoginIds += userMssage.getLoginId() + ",";
 
 				if (userMssage.getMobile() != null && !userMssage.getMobile().equals("")) {
 					phoneList.add(userMssage.getMobile());
@@ -370,6 +373,7 @@ public class InsertMail extends BaseParameter {
 
 			// 截取掉最后的 , 号
 			String ids = receiverIds.substring(0, receiverIds.toString().length() - 1);
+			String LoginIds = receiveLoginIds.substring(0, receiveLoginIds.toString().length() - 1);
 
 			// 判断
 			if (mail != null && receiveStr == true) {
@@ -378,11 +382,11 @@ public class InsertMail extends BaseParameter {
 				map.put("mailId", mail.getMailId());
 				map.put("userId", mail.getUserId());
 
+				// 推送消息 --> (APP)
+				MessageUtils.pushEmobile(LoginIds, 1, mail.getMailId(), (int)userId, 3);
+
 				// 调用消息推送的方法 --> (web)
 				HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, mail.getUserId(),1 , mail.getMailId());
-
-				// 推送消息 --> (APP)
-				MessageUtils.pushEmobile(ids, 1, mail.getMailId(), null);
 
 				if (mail.getIfNotify()) {
 					// 发送短信

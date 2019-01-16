@@ -347,11 +347,16 @@ public class FindMailParticulars extends BaseParameter {
                             count++; // 表示 该传阅已经有一个人确认了.
                             msg = "该传阅是开封已阅确认!";
 
-                            // 推送消息 --> (app)
-                            MessageUtils.pushEmobile(mail.getLoginId(), 3, mail.getMailId(), userId.intValue());
-                            // 推送消息 --> (web)
-                            HrmMessagePushUtils.getSendPush(receive.getLastName(), 3, mail.getUserId() + "",
-                                    mail.getUserId(), 3, mail.getMailId());
+                            try {
+                                // 推送消息 --> (app)
+                                MessageUtils.pushEmobile(mail.getLoginId(), 3, mail.getMailId(), userId.intValue(), 1);
+                                // 推送消息 --> (web)
+                                HrmMessagePushUtils.getSendPush(receive.getLastName(), 3, mail.getUserId() + "",
+                                        mail.getUserId(), 3, mail.getMailId());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                System.out.println(" ============== 消息推送失败 ============== ");
+                            }
 
                             ifReadStatus = false;
 

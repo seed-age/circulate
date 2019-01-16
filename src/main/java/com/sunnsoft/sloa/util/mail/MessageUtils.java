@@ -21,13 +21,13 @@ public class MessageUtils {
 
 	/**
 	 * APP端e-mobile推送消息
-	 *
-	 * @param LoginIds
-	 *            推送对象
-	 * @param type
-	 *            1：收到传阅提醒	2:确认时提醒	3：开封时提醒
+	 * @param  status 状态
+	 * @param  userId 发送消息推送的用户Id
+	 * @param  mailId 传阅Id
+	 * @param LoginIds 推送对象 接受推送消息的用户loginId
+	 * @param type 1：收到传阅提醒	2:确认时提醒	3：开封时提醒
 	 */
-	public static void pushEmobile(String LoginIds, Integer type, Long mailId, Integer userId) {
+	public static void pushEmobile(String LoginIds, Integer type, Long mailId, Integer userId, Integer status) {
 
 		String basePushUrl = ThirdPartyConfiguration.getOaEmobileUrl();//"http://oa-test.seedland.cc:89/pushMessage.do";
 		//String basePushUrl = "https://moa.seedland.cc:8443/pushMessage.do";
@@ -39,7 +39,7 @@ public class MessageUtils {
 		System.out.println("e-mobile的LoginIds：：：：：：：：：：：：：：：" + LoginIds);
 		String badge = "1"; // 消息数量+1
 		String message = null; // 推送消息标题
-		int status = 0; //状态
+//		int status = 0; //状态
 		Mail mail = Services.getMailService().findById(mailId);
 
 
@@ -47,21 +47,21 @@ public class MessageUtils {
 			case 1:
 //			message = "收到一封新的传阅，请及时查看。"; 张三-传阅标题-2018年11月29日
 				message = mail.getLastName() + "-" + StringEscapeUtils.unescapeHtml4(mail.getTitle()) + "-" + dateToString(mail.getSendTime()) + "";
-				status = 3;
+//			status = 3;
 				break;
 			case 2:
 //			message = "一封传阅被确认，请及时查看。";  张三-传阅标题-2018年11月29日被xxx确认
 				UserMssage userMssage1 = Services.getUserMssageService().createHelper().getUserId().Eq(userId).uniqueResult();
 				String confirmDate = getDate(userId, mail);
 				message = mail.getLastName() + "-" + StringEscapeUtils.unescapeHtml4(mail.getTitle()) + confirmDate + "被" + userMssage1.getLastName() + "确认";
-				status = 1;
+//			status = 1;
 				break;
 			case 3:
 //			message = "一封传阅被开封并确认，请及时查看。";
 				UserMssage userMssage = Services.getUserMssageService().createHelper().getUserId().Eq(userId).uniqueResult();
 				String openDate = getDate(userId, mail);
 				message = mail.getLastName() + "-" + StringEscapeUtils.unescapeHtml4(mail.getTitle()) + openDate + "被" + userMssage.getLastName() + "开封";
-				status = 1;
+//			status = 1;
 				break;
 			default:
 				System.out.println("default");
