@@ -570,7 +570,7 @@ function sendData(flg){
         if(!$('.mf_container .mf_list').children().length>0){
             layui.use('layer', function(){
                 var layer = layui.layer;
-                layer.msg('请填写收件人',{time: 2000});
+                layer.msg('请填写接收人',{time: 2000});
             });
             return false;
         };
