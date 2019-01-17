@@ -744,20 +744,12 @@ $(document).ready(function(){
                 page:1
             }
         });
-        setTimeout(function(){
-            try{
-                commentPage.getPage();
-                commentPage.clickPage();
-            }catch (e) {
-                setTimeout(function(){
-                    layer.msg('评论加载出错',{time: 2000});
-                },0)
-            }
+        commentPage.getPage();
+        commentPage.clickPage();
 
-        },100)
         // 评论发送
-        $('.oa-receive-right .input-addon').on('click',function(){
-            var discussContent = $(this).siblings('input[name=discussContent]');
+        function commentSend(_this){
+            var discussContent = $(_this).siblings('input[name=discussContent]');
             if(discussContent.val()===''){
                 layer.msg('发送内容不能为空',{time: 2000});
                 return false;
@@ -806,7 +798,16 @@ $(document).ready(function(){
                     layer.msg('网络出错',{time: 2000});
                 }
             })
+        }
+        $('.oa-receive-right .oa-form-input input[name="discussContent"]').on('keyup',function(e){
+            if(e.keyCode === 13){
+                commentSend($('.oa-receive-right .input-addon'))
+            }
+        })
+        $('.oa-receive-right .input-addon').on('click',function(){
+            commentSend(this)
         });
+
         function upFile(){
             var $list = $('#thelist');
             var uploader = WebUploader.create({
@@ -1002,6 +1003,7 @@ $(document).ready(function(){
         });
 
     });
+
 })
 // 判断传阅对象的对齐
 function objTable(){
@@ -1031,6 +1033,7 @@ function CommentPage(options){
     this.lastPage;
 }
 CommentPage.prototype = {
+    aa:1,
     getPage:function(page){
         this.data.page = page === undefined?this.curPage:page
         $.ajax({
@@ -1072,6 +1075,7 @@ CommentPage.prototype = {
                     // }
                     this.lastPage = res.data.lastPage;
                     this.curPage = res.data.currentPage+1;
+                    this.clickPage();
                 }else{
                     $('.interacts-record .more').html('加载失败');
                 }
@@ -1080,7 +1084,7 @@ CommentPage.prototype = {
     },
     clickPage:function(){
         // 点击加载更多
-        $('.interacts-record .more').on('click',function(){
+        $('.interacts-record .more').off('click').on('click',function(){
             if(this.lastPage){
                 $('.interacts-record .more').html('已是最后一页')
                 return false;
