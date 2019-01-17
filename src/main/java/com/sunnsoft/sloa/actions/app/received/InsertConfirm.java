@@ -211,19 +211,21 @@ public class InsertConfirm extends BaseParameter {
     // 调用消息推送接口
     private void getPush(Mail mail, String lastName, String ids, String userIds) {
 
-        if (mail.getIfRemindAll()) { // 发消息给全部对象
+        if (mail.getIfRemindAll()) {
 
+//			ids += mail.getLoginId() + "";
             userIds += mail.getUserId() + "";
-            ids += mail.getLoginId() + "";
 
             // 推送消息 --> (app)
-            MessageUtils.pushEmobile(ids, 2, mail.getMailId(), userId.intValue(), 1);
+            MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue(), 1);
+            MessageUtils.pushEmobile(ids, 2, mail.getMailId(), userId.intValue(), 3);
             // 推送消息 --> (web)
             HrmMessagePushUtils.getSendPush(lastName, 4, userIds, userId, 4, mailId, true);
 
+            return;
         }
 
-        if (mail.getIfRemind()) { // 发消息给发件人
+        if (mail.getIfRemind()) {
             // 推送消息 --> (app)
             MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue(), 1);
             // 推送消息 --> (web)

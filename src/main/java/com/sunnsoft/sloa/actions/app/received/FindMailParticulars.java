@@ -347,15 +347,35 @@ public class FindMailParticulars extends BaseParameter {
                             count++; // 表示 该传阅已经有一个人确认了.
                             msg = "该传阅是开封已阅确认!";
 
-                            try {
-                                // 推送消息 --> (app)
-                                MessageUtils.pushEmobile(mail.getLoginId(), 3, mail.getMailId(), userId.intValue(), 1);
-                                // 推送消息 --> (web)
-                                HrmMessagePushUtils.getSendPush(receive.getLastName(), 3, mail.getUserId() + "",
-                                        mail.getUserId(), 3, mail.getMailId());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                System.out.println(" ============== 消息推送失败 ============== ");
+//							// 推送消息 --> (app)
+//							MessageUtils.pushEmobile(mail.getLoginId(), 3, mail.getMailId(), userId.intValue(), 1);
+//							// 推送消息 --> (web)
+//							HrmMessagePushUtils.getSendPush(receive.getLastName(), 3, mail.getUserId() + "",
+//									mail.getUserId(), 3, mail.getMailId());
+                            if (mail.getIfRemind() || mail.getIfRemindAll()) {
+                                try {
+
+                                    // 获取消息推送人的名称
+                                    String lastName = receive.getLastName();
+                                    // 拼接, 接收消息的Id
+                                    String ids = "";
+                                    String userIds = "";
+                                    List<Receive> receives = mail.getReceives();
+                                    for (Receive r : receives) {
+                                        // 不需要当前用户的ID
+                                        if(r.getUserId() != userId){
+                                            // 拼接
+                                            ids += r.getLoginId() + ",";
+                                            userIds += r.getUserId() + ",";
+                                        }
+                                    }
+
+                                    // 调用消息推送接口
+                                    getPush(mail, lastName, ids, userIds);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    System.out.println("===============传阅开封已阅确认的时候:     消息推送失败============");
+                                }
                             }
 
                             ifReadStatus = false;
@@ -550,6 +570,29 @@ public class FindMailParticulars extends BaseParameter {
                 map.put("receivess", receivesList);
             }
         });
+    }
+
+    private void getPush(Mail mail, String lastName, String ids, String userIds) {
+        if (mail.getIfRemindAll()) {
+
+//			ids += mail.getLoginId() + "";
+            userIds += mail.getUserId() + "";
+
+            // 推送消息 --> (app)
+            MessageUtils.pushEmobile(ids, 2, mail.getMailId(), userId.intValue(), 3);
+            MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue(), 1);
+            // 推送消息 --> (web)
+            HrmMessagePushUtils.getSendPush(lastName, 4, userIds, userId, 4, mailId, true);
+
+            return;
+        }
+
+        if (mail.getIfRemind()) {
+            // 推送消息 --> (app)
+            MessageUtils.pushEmobile(mail.getLoginId(), 2, mail.getMailId(), userId.intValue(), 1);
+            // 推送消息 --> (web)
+            HrmMessagePushUtils.getSendPush(lastName, 2, mail.getUserId() + "", mail.getUserId(), 3, mail.getMailId());
+        }
     }
 
     /**
