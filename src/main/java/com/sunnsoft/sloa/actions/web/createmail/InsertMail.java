@@ -223,7 +223,7 @@ public class InsertMail extends BaseParameter {
 		if (transmission) {
 
 			if(userMssageSet.size() == 0){
-				msg = "请填写收件人";
+				msg = "请填写接收人";
 				success = false;
 				code = "205";
 				json = "null";

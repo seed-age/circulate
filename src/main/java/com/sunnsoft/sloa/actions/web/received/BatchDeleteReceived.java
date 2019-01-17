@@ -68,8 +68,10 @@ public class BatchDeleteReceived extends BaseParameter {
 				Long reDifferentiate = receive.getReDifferentiate();
 
 				if (lastReceive != null) {
-					if (lastReceive.getUserId() == receive.getUserId()){
-						continue;
+					if (deleteCount == 0) {
+						if (lastReceive.getUserId() == receive.getUserId()){
+							continue;
+						}
 					}
 				}
 

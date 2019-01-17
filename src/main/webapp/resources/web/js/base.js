@@ -12,15 +12,16 @@ $(function(){
                     $.session.set('userId',res.data.userId);
                     $('#mainTopBlockTr .layui-layout-right .login>a').append(res.data.loginId);
                 }else{
-                    alert(res.msg)
+                    layer.msg(res.msg,{time: 2000,icon: 2});
                 }
             },
-            error:function(){
-                alert('网络错误')
+            error:function(error){
+                layer.msg(error.statusText+'：'+error.status,{time: 2000,icon: 2});
             }
         })
     }
     loadAjax();
+
     layui.use(['element','laypage','table','form','layer','jquery'], function(){
 
         var element = layui.element;

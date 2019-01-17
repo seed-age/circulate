@@ -231,7 +231,7 @@
     <script src="/resources/web/js/jquery.min.js?${date}"></script>
     <script src="/resources/web/js/jquerysession.js?${date}"></script>
     <script src="/resources/web/layui/layui.js?${date}"></script>
-    <script src="/resources/web/js/base.js?${date}"></script>
+    <!-- <script src="/resources/web/js/base.js?${date}"></script> -->
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
     <script src="/resources/web/js/html5.min.js?${date}"></script>
@@ -246,6 +246,12 @@
 
 </div>
 <script>
+    //获取url中的参数
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    };
     layui.use(['jquery','layer'], function(){
         var layer = layui.layer;
         var userId = Number(getQueryString('userId'));
