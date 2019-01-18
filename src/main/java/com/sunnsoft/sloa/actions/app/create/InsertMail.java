@@ -2,11 +2,11 @@ package com.sunnsoft.sloa.actions.app.create;
 
 import com.alibaba.fastjson.JSONObject;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
+import com.sunnsoft.sloa.config.Config;
 import com.sunnsoft.sloa.db.handler.Services;
-import com.sunnsoft.sloa.db.vo.AttachmentItem;
-import com.sunnsoft.sloa.db.vo.Mail;
-import com.sunnsoft.sloa.db.vo.Receive;
-import com.sunnsoft.sloa.db.vo.UserMssage;
+import com.sunnsoft.sloa.db.vo.*;
+import com.sunnsoft.sloa.helper.ReceiveBean;
+import com.sunnsoft.sloa.util.ConstantUtils;
 import com.sunnsoft.sloa.util.HrmMessagePushUtils;
 import com.sunnsoft.sloa.util.mail.MessageUtils;
 import com.sunnsoft.util.struts2.Results;
@@ -14,15 +14,13 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.gteam.db.dao.TransactionalCallBack;
 import org.gteam.service.IService;
 import org.springframework.util.Assert;
+import org.apache.log4j.Logger;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 
 /**
- * 新建传阅(APP端): 添加收件人(多个) , 添加附件(多个) , 传阅主题 , 传阅内容 APP端是没有选项的, 但是 要默认选中 PC端
- * 的五个默认的选项
+ * 新建传阅 --点击发送/保存: 接收人名称, 附件 , 传阅主题, 传阅内容. (删除附件没有实现)
  *
  * @author chenjian
  *
@@ -30,8 +28,10 @@ import java.util.Map;
 public class InsertMail extends BaseParameter {
 
 	private static final long serialVersionUID = 1L;
+	private static final Logger LOGGER = Logger.getLogger(InsertMail.class);
 
 	private boolean transmission; // 如果是true 代表是发送新建传阅 如果是 false 表示保存新建传阅 不是发送
+
 
 	/** 该参数接收从前端页面传过来的接收人参数 */
 	private Integer[] receiveUserId; // 收件人id
@@ -44,6 +44,20 @@ public class InsertMail extends BaseParameter {
 	private long userId; // 发件人id
 	private String title; // 传阅主题
 	private String mailContent; // 邮件内容
+
+	private Boolean ifImportant = true; // 重要传阅
+	private Boolean ifUpdate = true; // 允许修订附件
+	private Boolean ifUpload = true; // 允许上传附件
+	private Boolean ifRemind = true; // 确认时提醒
+	private Boolean ifAdd = true; // 允许新添加人员
+	private Boolean ifRead = false; // 开封已阅确认
+	private Boolean ifNotify = false; // 短信提醒
+	private Boolean ifRemindAll = false; // 确认时提醒所有传阅对象
+	private Boolean ifSecrecy = false; // 传阅密送
+	private Boolean ifSequence = false; // 有序确认
+
+	@Resource
+	private Config config;
 
 	@Override
 	public String execute() throws Exception {
@@ -60,13 +74,9 @@ public class InsertMail extends BaseParameter {
 		} catch (Exception e) {
 			System.out.println("事物回滚了.....");
 			if(receiveUserId == null) {
-				msg = "联系人不能为空!";
-			}else if(title == null){
-				msg = "传阅主题不能为空";
-			}else if(mailContent == null){
-				msg = "传阅内容不能为空!";
-			}else{
-				msg = "网络繁忙,请稍后重试!";
+				msg = "接收人不能为空!";
+			}else {
+				msg = "系统繁忙!";
 			}
 			success = false;
 			code = "404";
@@ -82,38 +92,69 @@ public class InsertMail extends BaseParameter {
 		Assert.notNull(transmission, "发送/保存 传阅的开关,不能为空");
 		Assert.notNull(userId, "发件人ID不能为空");
 		Assert.notNull(mailContent, "邮件内容不能为空");
+		Assert.notNull(ifImportant, "重要传阅的值不能为空");
+		Assert.notNull(ifUpdate, "允许修订附件的值不能为空");
+		Assert.notNull(ifUpload, "允许上传附件不能的值为空");
+		Assert.notNull(ifRemind, "确认是提醒的值不能为空");
+		Assert.notNull(ifAdd, "允许新添加人员的值不能为空");
 
-		// 设置默认的选项参数
-		String ruleName = "重要传阅;允许修订Word、Excel附件;允许上传附件;确认时提醒;允许新添加人员";
-
-		// 把接收人拼接成一个字符串
-		StringBuilder sb = new StringBuilder();
-
-		// 把接收人的名称拼接成一个字符串
-		List<UserMssage> userMssages = null;
-		String allName = "";
-		if (receiveUserId != null) {
-			try {
-				// 查询接收人信息
-				userMssages = Services.getUserMssageService().createHelper().getUserId().In(receiveUserId).list();
-
-				for (UserMssage userMssage : userMssages) {
-					sb.append(userMssage.getLastName()).append(";");
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				msg = "请添加存在的联系人!";
-				success = false;
-				code = "205";
-				json = "null";
-				return Results.GLOBAL_FORM_JSON;
-			}
-			allName = sb.toString().substring(0, sb.toString().length() - 1);
+		if(title == null || title.equals("")) {
+			title = "传阅主题";
 		}
 
-		// 判断是否有附件
+		String ruleName = null;
+
+		// 把接收人的名称拼接成一个字符串
+		Set<UserMssage> userMssageSet = new HashSet<>();
+		Set<String> lastNameSet = new HashSet<>();
+		StringBuilder sb = new StringBuilder();
+		String allName = "";
+
+		try {
+
+			int id = (int)userId;
+
+			if(receiveUserId != null) {
+
+				// 查询接收人信息
+				List<UserMssage> userMssages  = Services.getUserMssageService().createHelper().getUserId().In(receiveUserId)
+						.list();
+
+				for (UserMssage userMssage : userMssages) {
+
+					if (userMssage.getUserId() == id) { // 如果接受人中有发件人, 直接跳过
+						continue;
+					}
+
+					userMssageSet.add(userMssage);
+					lastNameSet.add(userMssage.getLastName());
+//					sb.append(userMssage.getLastName()).append(";");
+				}
+
+				System.out.println(receiveUserId.length);
+				if (receiveUserId.length == 1 && userMssageSet.size() == 0) {
+					msg = "不可以自己对自己发送传阅";
+					success = false;
+					code = "205";
+					json = "null";
+					return Results.GLOBAL_FORM_JSON;
+				}
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			msg = "请添加存在的联系人!";
+			success = false;
+			code = "205";
+			json = "null";
+			return Results.GLOBAL_FORM_JSON;
+		}
+
+
 		boolean hasAttachment = false;
-		if (bulkId != null) { // 如果数组的长度大于 0 说明有附件, 反之, 则没有附件
+
+		// 判断是否有附件
+		if (bulkId != null) { // 如果数组不为null 说明有附件, 反之, 则没有附件
 			hasAttachment = true;
 		} else {
 			hasAttachment = false;
@@ -121,8 +162,9 @@ public class InsertMail extends BaseParameter {
 
 		// 转义
 		String string = StringEscapeUtils.unescapeHtml4(mailContent);
+		title = StringEscapeUtils.unescapeHtml4(title);
 
-		// 根据用户ID查询用户信息
+		// 根据当前用户ID 查询该用户的信息
 		UserMssage mssage = Services.getUserMssageService().createHelper().getUserId().Eq((int) userId).uniqueResult();
 
 		if (mssage == null) {
@@ -133,139 +175,220 @@ public class InsertMail extends BaseParameter {
 			return Results.GLOBAL_FORM_JSON;
 		}
 
+		/**
+		 * 如果是true 代表是发送传阅 false 表示保存新建传阅 不是发送
+		 */
 		// 如果是true 表示发送传阅
 		if (transmission) {
 
-			Assert.notNull(receiveUserId, "接收人ID不能为空!");
-			Assert.notNull(title, "传阅主题不能为空");
-
-			try {
-				Mail mail = null;
-				if (mailId > 0) { // 如果mailId 大于 0 又是发送选择, 那么修改状态
-					// 查询该传阅
-					mail = Services.getMailService().findById(mailId);
-					// 更新数据
-					mail.setAllReceiveName(allName); // 接收人名称
-					mail.setTitle(title);
-					mail.setMailContent(string);
-					if (hasAttachment) {
-						mail.setHasAttachment(hasAttachment);
-					}
-					mail.setRuleName(ruleName);
-					mail.setStepStatus(1); // 发阅中
-					mail.setStatus(0); // 无状态
-					mail.setCreateTime(new Date());
-					mail.setSendTime(new Date());
-					mail.setCompleteTime(new Date());
-
-					// 更新
-					Services.getMailService().update(mail);
-
-					// 更新接收人数据
-					List<Receive> receives = mail.getReceives();
-					//删除所有旧的联系人呢
-					Services.getReceiveService().deleteList(receives);
-				}
-
-				if (mailId == 0) {
-					// 新建传阅
-					mail = Services.getMailService().createHelper().bean().create().setUserId(mssage.getUserId())
-							.setWorkCode(mssage.getWorkCode()).setLastName(mssage.getLastName())
-							.setLoginId(mssage.getLoginId()).setSubcompanyName(mssage.getFullName())
-							.setDepartmentName(mssage.getDeptFullname()).setAllReceiveName(allName).setTitle(title)
-							.setMailContent(string).setCreateTime(new Date()).setSendTime(new Date())
-							.setCompleteTime(new Date()).setStepStatus(1).setIfImportant(true).setIfUpdate(true)
-							.setIfUpload(true).setIfRemind(true).setIfAdd(true).setIfRead(false).setIfNotify(false)
-							.setIfRemindAll(false).setIfSecrecy(false).setIfSequence(false)
-							.setHasAttachment(hasAttachment).setEnabled(false).setAttention(false).setRuleName(ruleName)
-							.insertUnique();
-
-				}
-				// 让附件和传阅建立关系
-				if (hasAttachment) { // 如果hasAttachment为false , 说明用户没有上传附件
-					// 遍历
-					for (int i = 0; i < bulkId.length; i++) {
-						// 通过附件批次ID查询附件
-						List<AttachmentItem> itemList = Services.getAttachmentItemService().createHelper().getBulkId()
-								.Eq(bulkId[i]).list();
-						// 遍历取出附件数据
-						for (AttachmentItem attachmentItem : itemList) {
-							// 设置传阅ID
-							attachmentItem.setMail(mail);
-							attachmentItem.setUserId(mail.getUserId());
-							// 更新
-							Services.getAttachmentItemService().update(attachmentItem);
-						}
-					}
-				}
-
-				// 添加接收人记录
-				// 定义标识
-				boolean receiveStr = false;
-
-				String LoginIds = "";
-				String userIds = "";
-				long receiveuserId = 0;
-				for (UserMssage userMssage : userMssages) {
-					receiveuserId = userMssage.getUserId();
-					// 收件人loginId拼接
-					LoginIds += userMssage.getLoginId() + ",";
-					userIds += userMssage.getUserId() + ",";
-					// 新增收件人记录
-					Services.getReceiveService().createHelper().bean().create().setMail(mail)
-							.setUserId(userMssage.getUserId()).setLastName(userMssage.getLastName())
-							.setLoginId(userMssage.getLoginId()).setWorkCode(userMssage.getWorkCode())
-							.setSubcompanyName(userMssage.getFullName()).setDepartmentName(userMssage.getDeptFullname())
-							.setReceiveTime(mail.getSendTime()).setReceiveStatus(0).setReDifferentiate(userId)
-							.setStepStatus(2).setMailState(5).setJoinTime(mail.getCreateTime()).setIfConfirm(false)
-							.insertUnique();
-
-					receiveStr = true;
-
-
-				}
-
-				// 判断
-				if (mail != null && receiveStr == true) {
-
-					String loginIds = LoginIds.substring(0, LoginIds.length() - 1);
-					String ids = userIds.substring(0, userIds.length() - 1);
-
-					Map<String, Object> map = new HashMap<String, Object>();
-					// 添加需要返回的数据
-					map.put("userId", mail.getUserId());
-					map.put("mailId", mail.getMailId());
-					map.put("transmission", true);
-
-					// 推送消息 --> (APP)
-					MessageUtils.pushEmobile(loginIds, 1, mail.getMailId(), (int)userId, 3);
-
-					// 调用消息推送的方法 --> (web)
-					HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, receiveuserId, 1, mail.getMailId());
-
-					msg = "传阅发送成功!";
-					success = true;
-					code = "200";
-					json = JSONObject.toJSONString(map);
-					return Results.GLOBAL_FORM_JSON;
-
-				} else {
-					msg = "传阅发送失败!";
-					success = false;
-					code = "404";
-					json = "null";
-					return Results.GLOBAL_FORM_JSON;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				msg = "传阅发送失败!";
+			if(userMssageSet.size() == 0){
+				msg = "请填写接收人";
 				success = false;
-				code = "4000";
+				code = "205";
 				json = "null";
 				return Results.GLOBAL_FORM_JSON;
 			}
 
-		} else { // 如果是false , 表示保存新建传阅
+			if (lastNameSet != null && lastNameSet.size() > 0) {
+				StringBuilder laseNames = new StringBuilder();
+				for (String lastName : lastNameSet) {
+					laseNames.append(lastName).append(";");
+				}
+
+				allName = laseNames.toString().substring(0, laseNames.toString().length() - 1);
+			}
+
+			Assert.notNull(userMssageSet, "接收人ID不能为空");
+			Assert.notNull(title, "传阅主题不能为空");
+
+			Mail mail = null;
+			if (mailId > 0) { // 如果mailId 大于 0 又是发送选择, 那么修改状态
+				// 查询该传阅
+				mail = Services.getMailService().findById(mailId);
+				// 更新数据
+				mail.setAllReceiveName(allName); // 接收人名称
+				mail.setTitle(title);
+				mail.setMailContent(string);
+				mail.setIfImportant(ifImportant);
+				mail.setIfUpdate(ifUpdate);
+				mail.setIfUpload(ifUpload);
+				mail.setIfRead(ifRead);
+				mail.setIfNotify(ifNotify);
+				mail.setIfRemind(ifRemind);
+				mail.setIfRemindAll(ifRemindAll);
+				mail.setIfSecrecy(ifSecrecy);
+				mail.setIfAdd(ifAdd);
+				mail.setIfSequence(ifSequence);
+				if (hasAttachment) {
+					mail.setHasAttachment(hasAttachment);
+				}
+				mail.setRuleName(ruleName);
+				mail.setStepStatus(ConstantUtils.MAIL_HALFWAY_STATUS); // 发阅中
+				mail.setStatus(ConstantUtils.MAIL_STATUS); // 无状态
+				mail.setCreateTime(new Date());
+				mail.setSendTime(new Date());
+				mail.setCompleteTime(new Date());
+
+				// 更新
+				Services.getMailService().update(mail);
+
+				// 更新接收人数据
+				List<Receive> receives = mail.getReceives();
+				//删除所有旧的联系人呢
+				Services.getReceiveService().deleteList(receives);
+			}
+
+			if (mailId == 0) {
+				// 新建传阅
+				mail = Services.getMailService().createHelper().bean().create().setUserId(mssage.getUserId())
+						.setWorkCode(mssage.getWorkCode()).setLastName(mssage.getLastName())
+						.setLoginId(mssage.getLoginId()).setSubcompanyName(mssage.getFullName())
+						.setDepartmentName(mssage.getDeptFullname()).setAllReceiveName(allName).setTitle(title)
+						.setMailContent(string).setCreateTime(new Date()).setSendTime(new Date())
+						.setCompleteTime(new Date()).setStepStatus(ConstantUtils.MAIL_HALFWAY_STATUS)
+						.setIfImportant(ifImportant).setIfUpdate(ifUpdate)
+						.setStatus(ConstantUtils.MAIL_STATUS)
+						.setIfUpload(ifUpload).setIfRead(ifRead).setIfNotify(ifNotify).setIfRemind(ifRemind)
+						.setIfRemindAll(ifRemindAll).setIfSecrecy(ifSecrecy).setIfAdd(ifAdd).setIfSequence(ifSequence)
+						.setHasAttachment(hasAttachment).setEnabled(false).setAttention(false).setRuleName(ruleName)
+						.insertUnique();
+
+			}
+
+			// 让附件和传阅建立关系
+			if (bulkId != null) { // 如果bulkid为长度为 0 , 说明用户没有上传附件
+				// 遍历
+				for (int i = 0; i < bulkId.length; i++) {
+					// 通过附件批次ID查询附件
+					List<AttachmentItem> itemList = Services.getAttachmentItemService().createHelper().getBulkId()
+							.Eq(bulkId[i]).list();
+					// 遍历取出附件数据
+					for (AttachmentItem attachmentItem : itemList) {
+						// 设置传阅ID
+						attachmentItem.setMail(mail);
+						attachmentItem.setUserId(mail.getUserId());
+						// 更新
+						Services.getAttachmentItemService().update(attachmentItem);
+					}
+				}
+			}
+
+			// 添加接收人记录
+			// 定义标识
+			boolean receiveStr = false;
+
+			// 拼接收件人的loginId, 主要用于APP消息推送
+			String receiveLoginIds = "";
+			// 拼接收件人的userId, 主要用于PC消息推送
+			String receiverIds = "";
+			// 短信接收人的手机号码(手机号码以英文逗号分隔，不超过50个号码)
+			List<String> phoneList = new ArrayList<>();
+
+			int num = 0;
+			ReceiveBean bean = Services.getReceiveService().createHelper().bean();
+			for (UserMssage userMssage : userMssageSet) {
+
+				num++;
+				// 拼接
+				receiverIds += userMssage.getUserId()+ ",";
+				receiveLoginIds += userMssage.getLoginId() + ",";
+
+				if (userMssage.getMobile() != null && !userMssage.getMobile().equals("")) {
+					phoneList.add(userMssage.getMobile());
+				}
+
+
+				try {
+					// 新增收件人记录
+					bean.create()
+							.setMail(mail).setUserId(userMssage.getUserId()).setLastName(userMssage.getLastName()).setLoginId(userMssage.getLoginId())
+							.setReceiveStatus(ConstantUtils.RECEIVE_NOTOPEN_STATUS).setWorkCode(userMssage.getWorkCode()).setReceiveTime(mail.getSendTime())
+							.setSubcompanyName(userMssage.getFullName()).setDepartmentName(userMssage.getDeptFullname())
+							.setStepStatus(ConstantUtils.RECEIVE_AWAIT_STATUS).setMailState(ConstantUtils.RECEIVE_UNREAD_STATUS)
+							.setJoinTime(mail.getCreateTime()).setIfConfirm(false)
+							.setReDifferentiate(userId);
+
+					if (num == 100) {
+						LOGGER.warn("开始新增接收人数据:::::::::: 一次一百条.");
+						bean.insert();
+						LOGGER.warn("新增后, 进行睡眠 两秒:::::::::::::::::::");
+						Thread.sleep(2000);
+						bean = Services.getReceiveService().createHelper().bean();
+						num = 0;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+
+				}
+				receiveStr = true;
+			}
+
+			if (num < 100) {
+				LOGGER.warn("一次性新增 " + num + "条接收人数据!");
+				bean.insert();
+			}
+
+			// 截取掉最后的 , 号
+			String ids = receiverIds.substring(0, receiverIds.toString().length() - 1);
+			String LoginIds = receiveLoginIds.substring(0, receiveLoginIds.toString().length() - 1);
+
+			// 判断
+			if (mail != null && receiveStr == true) {
+
+				Map<String, Object> map = new HashMap<>();
+				map.put("mailId", mail.getMailId());
+				map.put("userId", mail.getUserId());
+
+				try {
+
+					LOGGER.warn("========================开始进行消息推送========================================");
+					// 推送消息 --> (APP)
+					MessageUtils.pushEmobile(LoginIds, 1, mail.getMailId(), (int)userId, 3);
+
+					// 调用消息推送的方法 --> (web)
+					HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, mail.getUserId(),1 , mail.getMailId());
+				} catch (Exception e) {
+					e.printStackTrace();
+					LOGGER.warn("======================== 消息推送失败 ========================================");
+				}
+
+//				if (mail.getIfNotify()) {
+//					// 发送短信
+//					LOGGER.warn("========================开始进行发送短信========================================");
+//					// 1. 初始化
+//					UrmClient urmClient = UrmClientUtils.getUrmClient(config);
+//					// 2. 发送
+//					Map<String, String> smsResult = new HashMap<>();
+//					smsResult.put("title", mail.getTitle());
+//					smsResult.put("time", DateUtils.dateToString(mail.getSendTime(), null));
+//					smsResult.put("name", mail.getLastName());
+//					UrmClientUtils.getSendSms(urmClient, phoneList, config, JSON.toJSONString(smsResult));
+//				}
+
+				msg = "发送新建传阅成功!";
+				success = true;
+				code = "200";
+				json = JSONObject.toJSONString(map);
+				return Results.GLOBAL_FORM_JSON;
+
+			} else {
+				msg = "发送新建传阅失败!";
+				success = false;
+				code = "404";
+				json = "null";
+				return Results.GLOBAL_FORM_JSON;
+			}
+
+			// 如果是false , 表示保存新建传阅
+		} else {
+
+			if (lastNameSet != null && lastNameSet.size() > 0) {
+				StringBuilder laseNames = new StringBuilder();
+				for (String lastName : lastNameSet) {
+					laseNames.append(lastName).append(";");
+				}
+				allName = laseNames.toString().substring(0, laseNames.toString().length() - 1);
+			}
 
 			Mail mail = null;
 			if (mailId > 0) { // 如果mailId 大于 0 说明是第二次保存或是 N次
@@ -275,6 +398,16 @@ public class InsertMail extends BaseParameter {
 				mail.setAllReceiveName(allName); // 接收人名称
 				mail.setTitle(title);
 				mail.setMailContent(string);
+				mail.setIfImportant(ifImportant);
+				mail.setIfUpdate(ifUpdate);
+				mail.setIfUpload(ifUpload);
+				mail.setIfRead(ifRead);
+				mail.setIfNotify(ifNotify);
+				mail.setIfRemind(ifRemind);
+				mail.setIfRemindAll(ifRemindAll);
+				mail.setIfSecrecy(ifSecrecy);
+				mail.setIfAdd(ifAdd);
+				mail.setIfSequence(ifSequence);
 				mail.setHasAttachment(hasAttachment);
 				mail.setRuleName(ruleName);
 				mail.setCreateTime(new Date());
@@ -293,11 +426,13 @@ public class InsertMail extends BaseParameter {
 						.setLoginId(mssage.getLoginId()).setSubcompanyName(mssage.getFullName())
 						.setDepartmentName(mssage.getDeptFullname()).setAllReceiveName(allName).setTitle(title)
 						.setMailContent(string).setCreateTime(new Date()).setSendTime(new Date())
-						.setCompleteTime(new Date()).setStatus(1).setIfRead(false).setIfNotify(false)
-						.setIfRemindAll(false).setIfSecrecy(false).setIfSequence(false).setIfImportant(true)
-						.setIfUpdate(true).setIfUpload(true).setIfRemind(true).setIfAdd(true)
+						.setCompleteTime(new Date()).setStatus(ConstantUtils.MAIL_WAIT_STATUS)
+						.setIfImportant(ifImportant).setIfUpdate(ifUpdate)
+						.setIfUpload(ifUpload).setIfRead(ifRead).setIfNotify(ifNotify).setIfRemind(ifRemind)
+						.setIfRemindAll(ifRemindAll).setIfSecrecy(ifSecrecy).setIfAdd(ifAdd).setIfSequence(ifSequence)
 						.setHasAttachment(hasAttachment).setEnabled(false).setAttention(false).setRuleName(ruleName)
 						.insertUnique();
+
 			}
 
 			// 让附件和传阅建立关系
@@ -321,7 +456,7 @@ public class InsertMail extends BaseParameter {
 			// 定义标识
 			boolean receiveStr = false;
 
-			if (receiveUserId != null) {
+			if (userMssageSet != null && userMssageSet.size() > 0) {
 
 				// 更新接收人数据
 				List<Receive> receives = mail.getReceives();
@@ -329,42 +464,140 @@ public class InsertMail extends BaseParameter {
 					Services.getReceiveService().deleteList(receives);
 				}
 
-				for (UserMssage userMssage : userMssages) {
-					// 新增收件人记录
-					Services.getReceiveService().createHelper().bean().create().setMail(mail)
-							.setUserId(userMssage.getUserId()).setLastName(userMssage.getLastName())
-							.setLoginId(userMssage.getLoginId()).setWorkCode(userMssage.getWorkCode())
-							.setSubcompanyName(userMssage.getFullName()).setDepartmentName(userMssage.getDeptFullname())
-							.setReceiveTime(mail.getSendTime()).setReceiveStatus(0).setReDifferentiate(userId)
-							.setStepStatus(0).setMailState(4).setJoinTime(mail.getCreateTime()).setIfConfirm(false)
-							.insertUnique();
+				int num = 0;
+				ReceiveBean bean = Services.getReceiveService().createHelper().bean();
+
+				for (UserMssage userMssage : userMssageSet) {
+
+					num++;
+
+					try {
+						// 新增收件人记录
+						bean.create()
+								.setMail(mail).setUserId(userMssage.getUserId()).setLastName(userMssage.getLastName()).setLoginId(userMssage.getLoginId())
+								.setReceiveStatus(ConstantUtils.RECEIVE_NOTOPEN_STATUS).setWorkCode(userMssage.getWorkCode()).setReceiveTime(mail.getSendTime())
+								.setSubcompanyName(userMssage.getFullName()).setDepartmentName(userMssage.getDeptFullname())
+								.setStepStatus(ConstantUtils.RECEIVE_NOTOPEN_STATUS).setMailState(ConstantUtils.RECEIVE_WAIT_STATUS)
+								.setJoinTime(mail.getCreateTime()).setIfConfirm(false)
+								.setReDifferentiate(userId);
+
+						if (num == 100) {
+							LOGGER.warn("开始新增接收人数据:::::::::: 一次一百条.");
+							bean.insert();
+							LOGGER.warn("新增后, 进行睡眠 两秒:::::::::::::::::::");
+							Thread.sleep(2000);
+							bean = Services.getReceiveService().createHelper().bean();
+							num = 0;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+
+					}
 
 					receiveStr = true;
 				}
 
+				if (num < 100) {
+					LOGGER.warn("一次性新增 " + num + "条接收人数据!");
+					bean.insert();
+				}
+
+
 			}else {
 				receiveStr = true;
+				// 更新接收人数据
+				List<Receive> receives = mail.getReceives();
+				if(receives.size() > 0 && receives != null) {
+					Services.getReceiveService().deleteList(receives);
+				}
 			}
+
 			// 判断
 			if (mail != null && receiveStr == true) {
 				Map<String, Object> map = new HashMap<>();
 				map.put("mailId", mail.getMailId());
 				map.put("userId", mail.getUserId());
-				map.put("transmission", false);
-				msg = "传阅保存成功!";
+				msg = "保存新建传阅成功..";
 				success = true;
 				code = "201";
 				json = JSONObject.toJSONString(map);
 				return Results.GLOBAL_FORM_JSON;
 
 			} else {
-				msg = "传阅保存失败!";
+				msg = "保存新建传阅失败..";
 				success = false;
 				code = "404";
 				json = "null";
 				return Results.GLOBAL_FORM_JSON;
 			}
 		}
+	}
+
+	// 拼接规则名称, 已分号分隔
+	public String ruleNameMethod(List<Mail> list) {
+		StringBuilder sb = new StringBuilder();
+
+		for (Mail mail : list) {
+
+			if (mail.getIfImportant() == true) {
+				String if_important = "重要传阅";
+				sb.append(if_important).append(";");
+			}
+
+			if (mail.getIfUpdate() == true) {
+				String if_update = "允许修订Word、Excel附件";
+				sb.append(if_update).append(";");
+
+			}
+
+			if (mail.getIfUpload() == true) {
+				String if_up = "允许上传附件";
+				sb.append(if_up).append(";");
+			}
+
+			if (mail.getIfRead().equals(true)) {
+				String if_read = "开封已阅确认";
+				sb.append(if_read).append(";");
+			}
+
+			if (mail.getIfNotify() == true) {
+				String if_note = "短信提醒";
+				sb.append(if_note).append(";");
+
+			}
+
+			if (mail.getIfRemind() == true) {
+				String if_remind = "确认时提醒";
+				sb.append(if_remind).append(";");
+
+			}
+
+			if (mail.getIfRemindAll() == true) {
+				String if_remind_all = "确认时提醒所有传阅对象";
+				sb.append(if_remind_all).append(";");
+
+			}
+
+			if (mail.getIfSecrecy() == true) {
+				String if_secrecy = "传阅密送";
+				sb.append(if_secrecy).append(";");
+
+			}
+
+			if (mail.getIfAdd() == true) {
+				String if_add = "允许新添加人员";
+				sb.append(if_add).append(";");
+
+			}
+
+			if (mail.getIfSequence() == true) {
+				String if_sequence = "有序确认";
+				sb.append(if_sequence).append(";");
+
+			}
+		}
+
+		return sb.toString();
 	}
 
 	public boolean isTransmission() {
@@ -383,20 +616,20 @@ public class InsertMail extends BaseParameter {
 		this.receiveUserId = receiveUserId;
 	}
 
-	public long getMailId() {
-		return mailId;
-	}
-
-	public void setMailId(long mailId) {
-		this.mailId = mailId;
-	}
-
 	public String[] getBulkId() {
 		return bulkId;
 	}
 
 	public void setBulkId(String[] bulkId) {
 		this.bulkId = bulkId;
+	}
+
+	public long getMailId() {
+		return mailId;
+	}
+
+	public void setMailId(long mailId) {
+		this.mailId = mailId;
 	}
 
 	public long getUserId() {
@@ -423,4 +656,83 @@ public class InsertMail extends BaseParameter {
 		this.mailContent = mailContent;
 	}
 
+	public Boolean getIfImportant() {
+		return ifImportant;
+	}
+
+	public void setIfImportant(Boolean ifImportant) {
+		this.ifImportant = ifImportant;
+	}
+
+	public Boolean getIfUpdate() {
+		return ifUpdate;
+	}
+
+	public void setIfUpdate(Boolean ifUpdate) {
+		this.ifUpdate = ifUpdate;
+	}
+
+	public Boolean getIfUpload() {
+		return ifUpload;
+	}
+
+	public void setIfUpload(Boolean ifUpload) {
+		this.ifUpload = ifUpload;
+	}
+
+	public Boolean getIfRead() {
+		return ifRead;
+	}
+
+	public void setIfRead(Boolean ifRead) {
+		this.ifRead = ifRead;
+	}
+
+	public Boolean getIfNotify() {
+		return ifNotify;
+	}
+
+	public void setIfNotify(Boolean ifNotify) {
+		this.ifNotify = ifNotify;
+	}
+
+	public Boolean getIfRemind() {
+		return ifRemind;
+	}
+
+	public void setIfRemind(Boolean ifRemind) {
+		this.ifRemind = ifRemind;
+	}
+
+	public Boolean getIfRemindAll() {
+		return ifRemindAll;
+	}
+
+	public void setIfRemindAll(Boolean ifRemindAll) {
+		this.ifRemindAll = ifRemindAll;
+	}
+
+	public Boolean getIfSecrecy() {
+		return ifSecrecy;
+	}
+
+	public void setIfSecrecy(Boolean ifSecrecy) {
+		this.ifSecrecy = ifSecrecy;
+	}
+
+	public Boolean getIfAdd() {
+		return ifAdd;
+	}
+
+	public void setIfAdd(Boolean ifAdd) {
+		this.ifAdd = ifAdd;
+	}
+
+	public Boolean getIfSequence() {
+		return ifSequence;
+	}
+
+	public void setIfSequence(Boolean ifSequence) {
+		this.ifSequence = ifSequence;
+	}
 }

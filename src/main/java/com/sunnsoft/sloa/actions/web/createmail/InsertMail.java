@@ -1,8 +1,6 @@
 package com.sunnsoft.sloa.actions.web.createmail;
 
-import cc.seedland.sdk.exceptions.ClientException;
 import cc.seedland.sdk.urm.UrmClient;
-import cc.seedland.sdk.urm.model.SendSmsResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sunnsoft.sloa.actions.common.BaseParameter;
@@ -382,23 +380,29 @@ public class InsertMail extends BaseParameter {
 				map.put("mailId", mail.getMailId());
 				map.put("userId", mail.getUserId());
 
-				// 推送消息 --> (APP)
-				MessageUtils.pushEmobile(LoginIds, 1, mail.getMailId(), (int)userId, 3);
+				try {
+					LOGGER.warn("======================== 开始进行消息推送 ========================================");
+					// 推送消息 --> (APP)
+					MessageUtils.pushEmobile(LoginIds, 1, mail.getMailId(), (int)userId, 3);
 
-				// 调用消息推送的方法 --> (web)
-				HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, mail.getUserId(),1 , mail.getMailId());
+					// 调用消息推送的方法 --> (web)
+					HrmMessagePushUtils.getSendPush(mail.getLastName(), 1, ids, mail.getUserId(),1 , mail.getMailId());
 
-				if (mail.getIfNotify()) {
-					// 发送短信
-					LOGGER.warn("========================开始进行发送短信========================================");
-					// 1. 初始化
-					UrmClient urmClient = UrmClientUtils.getUrmClient(config);
-					// 2. 发送
-					Map<String, String> smsResult = new HashMap<>();
-					smsResult.put("title", mail.getTitle());
-					smsResult.put("time", DateUtils.dateToString(mail.getSendTime(), null));
-					smsResult.put("name", mail.getLastName());
-					UrmClientUtils.getSendSms(urmClient, phoneList, config, JSON.toJSONString(smsResult));
+					if (mail.getIfNotify()) {
+						// 发送短信
+						LOGGER.warn("========================开始进行发送短信========================================");
+						// 1. 初始化
+						UrmClient urmClient = UrmClientUtils.getUrmClient(config);
+						// 2. 发送
+						Map<String, String> smsResult = new HashMap<>();
+						smsResult.put("title", mail.getTitle());
+						smsResult.put("time", DateUtils.dateToString(mail.getSendTime(), null));
+						smsResult.put("name", mail.getLastName());
+						UrmClientUtils.getSendSms(urmClient, phoneList, config, JSON.toJSONString(smsResult));
+					}
+				} catch (Exception e) {
+					LOGGER.warn("======================== 调用第三方接口失败  消息推送, 短信 ========================================");
+					e.printStackTrace();
 				}
 
 				msg = "发送新建传阅成功!";
@@ -468,7 +472,7 @@ public class InsertMail extends BaseParameter {
 						.setLoginId(mssage.getLoginId()).setSubcompanyName(mssage.getFullName())
 						.setDepartmentName(mssage.getDeptFullname()).setAllReceiveName(allName).setTitle(title)
 						.setMailContent(string).setCreateTime(new Date()).setSendTime(new Date())
-						.setCompleteTime(new Date()).setStatus(ConstantUtils.MAIL_HALFWAY_STATUS)
+						.setCompleteTime(new Date()).setStatus(ConstantUtils.MAIL_WAIT_STATUS)
 						.setIfImportant(ifImportant).setIfUpdate(ifUpdate)
 						.setIfUpload(ifUpload).setIfRead(ifRead).setIfNotify(ifNotify).setIfRemind(ifRemind)
 						.setIfRemindAll(ifRemindAll).setIfSecrecy(ifSecrecy).setIfAdd(ifAdd).setIfSequence(ifSequence)

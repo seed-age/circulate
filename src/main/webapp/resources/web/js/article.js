@@ -1053,8 +1053,10 @@ CommentPage.prototype = {
                     // 判断是否显示加载更多按钮
                     $('.interacts-bd').html('传阅讨论互动（'+res.data.totalRecord+'）');
                     if(res.data.totalRecord<15){
-                        $('.interacts-record .more').remove();
-                    };
+                        $('.interacts-record .more').css('display','none');
+                    }else{
+                        $('.interacts-record .more').css('display','block');
+                    }
                     for(var k=0;k<res.data.list.length;k++){
                         var liHTML = '';
                         liHTML += '<li>';
