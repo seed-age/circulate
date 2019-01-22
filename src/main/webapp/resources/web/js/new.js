@@ -2,8 +2,8 @@ var loaduUrl = window.location.search.substr(1);//链接
 var urlReg = /listId/;//正则
 var editor;
 var fileBulkId = null;
-//JavaScript代码区域
-$(document).ready(function(){
+ //JavaScript代码区域
+ $(document).ready(function(){
     layui.use(['element','form','layer'], function(){
         var element = layui.element;
         var form = layui.form;
@@ -77,18 +77,18 @@ $(document).ready(function(){
             layer.msg('您的浏览器版本过低，不支持富文本功能，请升级您的浏览器',{time: 2000});
         }
         editor = new Simditor({
-            textarea: $('#editor'),
-            toolbar: ['title', 'bold', 'italic', 'underline', 'strikethrough','|', 'ol', 'ul',  '|', 'image', 'hr', '|', 'indent', 'outdent'],
-            pasteImage: true,//支持通过从剪贴板粘贴图像来上传
-            locale:'en-US',//语言
-            upload :{
-                url : '/web/createmail/insert-upload-image.htm', //文件上传的接口地址
-                params: null, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交
-                fileKey: 'fileData', //服务器端获取文件数据的参数名
-                connectionCount: 3,
-                leaveConfirm: '正在上传文件'
-            }
-        });
+			textarea: $('#editor'),
+			toolbar: ['title', 'bold', 'italic', 'underline', 'strikethrough','|', 'ol', 'ul',  '|', 'image', 'hr', '|', 'indent', 'outdent'],
+			pasteImage: true,//支持通过从剪贴板粘贴图像来上传
+			locale:'en-US',//语言
+			upload :{
+				url : '/web/createmail/insert-upload-image.htm', //文件上传的接口地址
+				params: null, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交
+				fileKey: 'fileData', //服务器端获取文件数据的参数名
+				connectionCount: 3,
+				leaveConfirm: '正在上传文件'
+			}
+		});
         awaitLoad();
         // 返回按钮
         $('.goback-btn').on('click',function(){
@@ -224,7 +224,7 @@ function addReceive(_this){
     // 判断是否重复
     for(var i=0;i<dataInput.length;i++){
         if(Number($($self).data('userid')) === $(dataInput[i]).data('userid')){
-            return false;
+          return false;
         }
     }
     receiveTag.append(li);
@@ -299,10 +299,10 @@ function uploaderFile(){
             fileSize = (file.size/1024).toFixed(2) + 'k';
         };
         $li = '<li id="'+file.id+'">'+
-            '<input type="hidden" name="upload_file"></input>'+
-            '<p class="txt">'+file.name+'</p>'+
-            '<i>（'+fileSize+'）</i>'+
-            '<span  class="state"></span>'+
+                '<input type="hidden" name="upload_file"></input>'+
+                '<p class="txt">'+file.name+'</p>'+
+                '<i>（'+fileSize+'）</i>'+
+                '<span  class="state"></span>'+
             '</li>';
         $list.append($li);
         $list.scrollTop($list.height());
@@ -313,15 +313,15 @@ function uploaderFile(){
         var id = file.id;
         var $li = $( '#'+file.id),
             $percent = $li.find('.progress .progress-bar');
-        $iTag = $li.find('.progress .progress-percent');
+            $iTag = $li.find('.progress .progress-percent');
         // 避免重复创建
         if ( !$percent.length ) {
             $percent = $('<div class="progress">'+
-                '<div class="progress-border">'+
-                '<span class="progress-bar"></span>'+
-                '</div>'+
-                '<i class="progress-percent"></i>'+
-                '<span class="cancel">取消</span>'+
+                    '<div class="progress-border">'+
+                        '<span class="progress-bar"></span>'+
+                    '</div>'+
+                    '<i class="progress-percent"></i>'+
+                    '<span class="cancel">取消</span>'+
                 '</div>').appendTo($li).find('.progress-bar');
             $iTag = $li.find('.progress .progress-percent');
         }
@@ -364,28 +364,28 @@ function uploaderFile(){
             function(index, layero){
                 //按钮【按钮一】的回调
                 // if(delId){
-                delAttachment({
-                    data:{
-                        userId:$.session.get('userId'),
-                        itemId:delId,
-                        mailId:getQueryString('listId')
-                    },
-                    then:function(res){
-                        if(res.code === '200'){
-                            layer.msg('删除成功',{time: 2000,icon: 1});
-                            self.parent().remove();
-                            awaitLoad();
+                    delAttachment({
+                        data:{
+                            userId:$.session.get('userId'),
+                            itemId:delId,
+                            mailId:getQueryString('listId')
+                        },
+                        then:function(res){
+                            if(res.code === '200'){
+                                layer.msg('删除成功',{time: 2000,icon: 1});
+                                self.parent().remove();
+                                awaitLoad();
 
-                        }else{
-                            layer.msg('删除失败',{time: 2000,icon: 2});
+                            }else{
+                                layer.msg('删除失败',{time: 2000,icon: 2});
+                            }
+                            layer.close(index);
+                        },
+                        fail:function(){
+                            layer.close(index);
+                            layer.msg('网络出错',{time: 2000,icon: 2});
                         }
-                        layer.close(index);
-                    },
-                    fail:function(){
-                        layer.close(index);
-                        layer.msg('网络出错',{time: 2000,icon: 2});
-                    }
-                });
+                    });
                 // }else{
                 //     self.parent().remove();
                 // }
@@ -488,12 +488,12 @@ function loadHTML(data){
         var fileHTML = '';
         for(var k=0;k<data.attachmentItemss.length;k++){
             fileHTML += '<li>'+
-                '    <input type="hidden" name="upload_file" data-bulkid="'+data.attachmentItemss[k].bulkId+'" data-itemid="'+data.attachmentItemss[k].itemId+'">'+
-                '    <p class="txt">'+data.attachmentItemss[k].fileName+'</p>'+
-                '    <i>（'+data.attachmentItemss[k].itemSize+'）</i>'+
-                // '    <span class="state">上传附件成功..</span>'+
-                '    <span class="dele">删除</span>'+
-                '</li>';
+            '    <input type="hidden" name="upload_file" data-bulkid="'+data.attachmentItemss[k].bulkId+'" data-itemid="'+data.attachmentItemss[k].itemId+'">'+
+            '    <p class="txt">'+data.attachmentItemss[k].fileName+'</p>'+
+            '    <i>（'+data.attachmentItemss[k].itemSize+'）</i>'+
+            // '    <span class="state">上传附件成功..</span>'+
+            '    <span class="dele">删除</span>'+
+            '</li>';
         };
         $('#thelist').html(fileHTML);
         //判断ueditor 编辑器是否创建成功
@@ -509,16 +509,16 @@ function loadHTML(data){
         // }
 
         layui.use(['form'], function(){
-            $('#ifImportant').prop('checked',data.ifImportant);//重要传阅
-            $('#ifUpdate').prop('checked',data.ifUpdate), ///允许修订附件
-                $('#ifUpload').prop('checked',data.ifUpload),//允许上传附件
-                $('#ifRemind').prop('checked',data.ifRemind),//确认时提醒
-                $('#ifAdd').prop('checked',data.ifAdd),//允许新添加人员
-                $('#ifRead').prop('checked',data.ifRead),//开封已阅确认
-                $('#ifNotify').prop('checked',data.ifNotify),//短信提醒
-                $('#ifRemindAll').prop('checked',data.ifRemindAll),//确认时提醒所有传阅对象
-                $('#ifSecrecy').prop('checked',data.ifSecrecy),//传阅密送(不用实现)
-                $('#ifSequence').prop('checked',data.ifSequence)//有序确认
+	        $('#ifImportant').prop('checked',data.ifImportant);//重要传阅
+	        $('#ifUpdate').prop('checked',data.ifUpdate), ///允许修订附件
+	        $('#ifUpload').prop('checked',data.ifUpload),//允许上传附件
+	        $('#ifRemind').prop('checked',data.ifRemind),//确认时提醒
+	        $('#ifAdd').prop('checked',data.ifAdd),//允许新添加人员
+	        $('#ifRead').prop('checked',data.ifRead),//开封已阅确认
+	        $('#ifNotify').prop('checked',data.ifNotify),//短信提醒
+	        $('#ifRemindAll').prop('checked',data.ifRemindAll),//确认时提醒所有传阅对象
+	        $('#ifSecrecy').prop('checked',data.ifSecrecy),//传阅密送(不用实现)
+	        $('#ifSequence').prop('checked',data.ifSequence)//有序确认
             var form = layui.form;
             form.render();
         });
@@ -597,7 +597,8 @@ function sendData(flg){
         });
         return false;
     }else{
-        params.title = $('.layui-form-item #theme').val();
+        var regHtml=/<[^<>]+>/g;
+        params.title = $('.layui-form-item #theme').val().replace(regHtml,'');
     }
     var file = $('.uploader-accessory input[name="upload_file"]');
     for(var j=0;j<file.length;j++){
@@ -639,17 +640,17 @@ function sendData(flg){
                 //     layer.msg('保存成功',{time: 2000,icon: 1});
                 // });
             }else if(res.code === '205'){// 超过150个联系人时,给出提示
-                layui.use('layer', function(){
+            	layui.use('layer', function(){
                     var layer = layui.layer;
                     layer.msg(res.msg,{time: 2000,icon: 2});
-                });
+            	});
             }else{
                 layui.use('layer', function(){// 其他状态
                     var layer = layui.layer;
                     layer.msg('提交失败',{time: 2000,icon: 2});
                 });
             }
-        },
+		},
         error:function(){
             layer.close(layer_msg);
             layer.msg('网络出错',{time: 2000,icon: 2});
